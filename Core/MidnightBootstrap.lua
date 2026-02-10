@@ -7,13 +7,15 @@ ns = ns or {}
 
 ns.MIDNIGHT_LIMP_MODE = true
 ns.MIDNIGHT_ERROR_REPORTING = false
+-- NOTE: Wrapping global C_Timer.* can taint secure Blizzard UI paths (e.g. UnitPopup).
+-- Keep this disabled unless explicitly needed for debugging.
+ns.MIDNIGHT_WRAP_CTIMER = false
 
 ns._midnightEvents = ns._midnightEvents or {}
 ns._midnightNotified = false
 ns._midnightDeferredOpen = false
 
 local realCombatClear
-local _timerWrapped = false
 local _wasLocked = false
 
 function ns.ExecutionLocked()
@@ -59,38 +61,6 @@ local function wrapFunction(fn, name)
   end
 end
 
-local function WrapCTimer()
-  if _timerWrapped or not C_Timer then return end
-
-  if C_Timer.After then
-    local realAfter = C_Timer.After
-    C_Timer.After = function(delay, callback)
-      if type(callback) ~= "function" then
-        return realAfter(delay, callback)
-      end
-      return realAfter(delay, function(...)
-        if ns.ExecutionLocked() then return end
-        callback(...)
-      end)
-    end
-  end
-
-  if C_Timer.NewTicker then
-    local realNewTicker = C_Timer.NewTicker
-    C_Timer.NewTicker = function(interval, callback, iterations)
-      if type(callback) ~= "function" then
-        return realNewTicker(interval, callback, iterations)
-      end
-      return realNewTicker(interval, function(...)
-        if ns.ExecutionLocked() then return end
-        callback(...)
-      end, iterations)
-    end
-  end
-
-  _timerWrapped = true
-end
-
 local DO_NOT_WRAP = {
   MidnightBootstrap    = true,
   ExecutionLocked      = true,
@@ -101,7 +71,11 @@ local DO_NOT_WRAP = {
 
 function ns.MidnightBootstrap()
   realCombatClear = ns.CombatClearIcons
-  WrapCTimer()
+  if ns.MIDNIGHT_WRAP_CTIMER then
+    -- Disabled by default to avoid tainting secure Blizzard UI paths.
+    -- Re-enable only if you accept the taint risk.
+    -- WrapCTimer()
+  end
 
   for k, v in pairs(ns) do
     if type(v) == "function" and not DO_NOT_WRAP[k] then
