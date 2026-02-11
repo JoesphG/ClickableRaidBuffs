@@ -26,6 +26,11 @@ CurseForge will package the tag and automatically set the file type based on the
 - Webhook URL format (keep token secret):
   - `https://www.curseforge.com/api/projects/{projectID}/package?token={token}`
 
+## Packaging (Wago via GitHub Actions)
+- Wago packaging runs on tag pushes via `.github/workflows/release.yml` using the BigWigs packager.
+- Ensure `## X-Wago-ID: mNwQE5Ko` is present in `ClickableRaidBuffs.toc`.
+- Set `WAGO_API_TOKEN` in GitHub repo secrets before tagging.
+
 ## Tag + Push Flow
 1. Commit changes.
 2. Create tag:
