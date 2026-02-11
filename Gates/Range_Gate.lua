@@ -17,6 +17,28 @@ local function GetSpellRange(spellID)
   return 0, info and info.name or nil
 end
 
+local function IsUnitInSpellRange(spellID, unit)
+  if C_Spell and C_Spell.IsSpellInRange then
+    local ret = C_Spell.IsSpellInRange(spellID, unit)
+    if ret == true then
+      return true
+    end
+    if ret == false then
+      return false
+    end
+  end
+
+  if UnitInRange then
+    local ur = UnitInRange(unit)
+    if ur == true then
+      return true
+    end
+  end
+
+  -- Fail open on unknown range to avoid suppressing valid rebuff prompts.
+  return true
+end
+
 local function UnitHasAnyBuffFromIDs(unit, ids)
   if not ids or not unit then
     return false
@@ -124,6 +146,7 @@ local function TickRangeGate()
   local spells = {}
   local anyMissing = false
   local anyGlowChanged = false
+  local anySuppressionChanged = false
 
   if ns._rangeTracked and next(ns._rangeTracked) then
     local units = GetGroupUnits()
@@ -133,38 +156,49 @@ local function TickRangeGate()
       local miss = {}
       local anyMissingOutOfRange = false
       local foundInRange = false
+      local playerHas = UnitHasAnyBuffFromIDs("player", ids)
 
-      for i = 1, #units do
-        local u = units[i]
-        if not UnitHasAnyBuffFromIDs(u, ids) then
-          local inRange = false
-          if C_Spell and C_Spell.IsSpellInRange then
-            local ret = C_Spell.IsSpellInRange(spellID, u)
-            inRange = (ret == true)
-          end
-          miss[#miss + 1] = { unit = u, name = UnitName(u), inRange = inRange }
-          if inRange then
-            foundInRange = true
-            break
-          else
-            anyMissingOutOfRange = true
+      if not playerHas then
+        if entry.lastSuppressed ~= false then
+          entry.lastSuppressed = false
+          anySuppressionChanged = true
+        end
+        spells[#spells + 1] = { spellID = spellID, name = spellName, maxRange = maxRange, missing = miss }
+      else
+        for i = 1, #units do
+          local u = units[i]
+          if u ~= "player" and not UnitHasAnyBuffFromIDs(u, ids) then
+            local inRange = IsUnitInSpellRange(spellID, u)
+            miss[#miss + 1] = { unit = u, name = UnitName(u), inRange = inRange }
+            if inRange then
+              foundInRange = true
+              break
+            else
+              anyMissingOutOfRange = true
+            end
           end
         end
+
+        if #miss > 0 then
+          anyMissing = true
+        end
+
+        local nowSuppressed = (#miss > 0) and not foundInRange
+        if entry.lastSuppressed ~= nowSuppressed then
+          entry.lastSuppressed = nowSuppressed
+          anySuppressionChanged = true
+        end
+
+        local nowAllIn = (#miss > 0) and (foundInRange and not anyMissingOutOfRange) or false
+        local desiredGlow = nowAllIn and "special" or nil
+
+        if entry.desiredGlow ~= desiredGlow then
+          entry.desiredGlow = desiredGlow
+          anyGlowChanged = true
+        end
+
+        spells[#spells + 1] = { spellID = spellID, name = spellName, maxRange = maxRange, missing = miss }
       end
-
-      if #miss > 0 then
-        anyMissing = true
-      end
-
-      local nowAllIn = (#miss > 0) and (foundInRange and not anyMissingOutOfRange) or false
-      local desiredGlow = nowAllIn and "special" or nil
-
-      if entry.desiredGlow ~= desiredGlow then
-        entry.desiredGlow = desiredGlow
-        anyGlowChanged = true
-      end
-
-      spells[#spells + 1] = { spellID = spellID, name = spellName, maxRange = maxRange, missing = miss }
     end
   end
 
@@ -181,6 +215,15 @@ local function TickRangeGate()
 
   if anyGlowChanged and type(ns.RequestRebuild) == "function" then
     ns.RequestRebuild()
+  end
+
+  if anySuppressionChanged then
+    if type(ns.MarkGatesDirty) == "function" then
+      ns.MarkGatesDirty()
+    end
+    if type(ns.PokeUpdateBus) == "function" then
+      ns.PokeUpdateBus()
+    end
   end
 end
 
@@ -264,11 +307,7 @@ function ns.Gate_Range(ctx, data)
     local u = units[i]
     if u ~= "player" and not UnitHasAnyBuffFromIDs(u, ids) then
       anyMissing = true
-      local inRange = false
-      if C_Spell and C_Spell.IsSpellInRange then
-        local ret = C_Spell.IsSpellInRange(spellID, u)
-        inRange = (ret == true)
-      end
+      local inRange = IsUnitInSpellRange(spellID, u)
       if inRange then
         anyMissingInRange = true
         break

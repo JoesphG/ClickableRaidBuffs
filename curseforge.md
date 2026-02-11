@@ -1,7 +1,7 @@
-# ClickableRaidBuffs v7.0.8 (Retail 12.0.1)
+# ClickableRaidBuffs v7.0.9 (Retail 12.0.1)
 
 ## Changelog
-- Fixed an intermittent issue where raid buff icons could fail to reappear after combat when a party or raid member lost a buff
+- Fixed an issue where raid/party rebuff icons could stay hidden out of combat when targets moved into range
 - General stability and maintenance updates
 
 ## Game Version
