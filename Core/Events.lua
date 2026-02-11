@@ -474,6 +474,16 @@ f:SetScript("OnEvent", function(_, event, ...)
         armPoke(debounce)
       end
     end
+    if not inEncounter() and not ns._inCombat and not (InCombatLockdown and InCombatLockdown()) then
+      if type(ns.CombatRestoreIcons) == "function" then
+        ns.CombatRestoreIcons()
+      elseif ns.RenderParent then
+        ns.RenderParent:Show()
+        if ns.RenderAll then
+          ns.RenderAll()
+        end
+      end
+    end
     if not inEncounter() and not ns._inCombat then
       postCatchup()
     end
