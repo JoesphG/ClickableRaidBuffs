@@ -49,10 +49,9 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
-**v7.0.4**
+**v7.0.5**
 
-- Updated for Retail 12.0.1: removed legacy spell APIs and standardized C_Spell usage  
-- Added guards for secret aura/cooldown values to prevent errors in restricted contexts  
+- Added Frost Mage Water Elemental support in the Pets module  
 - General stability and maintenance updates  
 
 
@@ -66,6 +65,12 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
 - Fixed delayed callbacks executing during restricted states in Mythic Keystone dungeons  
 - Fixed icons not reliably refreshing after entering or exiting instanced content  
 - Improved handling of deferred updates suppressed during Challenge Mode  
+
+**v7.0.4**
+
+- Updated for Retail 12.0.1: removed legacy spell APIs and standardized C_Spell usage  
+- Added guards for secret aura/cooldown values to prevent errors in restricted contexts  
+- General stability and maintenance updates  
 
 **v7.0.2**
 

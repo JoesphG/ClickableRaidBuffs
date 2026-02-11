@@ -1,8 +1,7 @@
-# ClickableRaidBuffs v7.0.4 Release Notes
+# ClickableRaidBuffs v7.0.5 Release Notes
 
 ## Summary
-- Updated for Retail 12.0.1: removed legacy spell APIs and standardized `C_Spell` usage
-- Added guards for secret aura/cooldown values to prevent errors in restricted contexts
+- Added Frost Mage Water Elemental support in the Pets module
 - General stability and maintenance updates
 
 ## Compatibility

@@ -116,3 +116,19 @@ if playerClassID == 9 then
       },
     }
 end
+
+-- =========================
+-- Mage (Frost)
+-- =========================
+if playerClassID == 8 then
+  ClickableRaidData["PETS"] = ClickableRaidData["PETS"]
+    or {
+      [31687] = {
+        name = "Summon Water Elemental",
+        spellID = 31687,
+        topLbl = "",
+        btmLbl = "",
+        gates = { "evenRested", "no_pet", "not_mounted" },
+      },
+    }
+end

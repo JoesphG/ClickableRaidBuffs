@@ -21,7 +21,6 @@ ClickableRaidBuffs is a World of Warcraft addon that scans player and raid state
 ## Support
 For support and downloads, see the links in `CHANGELOG.txt`.
 
-## Release Notes (v7.0.4)
-- Updated for Retail 12.0.1: removed legacy spell APIs and standardized `C_Spell` usage
-- Added guards for secret aura/cooldown values to prevent errors in restricted contexts
+## Release Notes (v7.0.5)
+- Added Frost Mage Water Elemental support in the Pets module
 - General stability and maintenance updates
