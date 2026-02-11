@@ -17,6 +17,7 @@ CurseForge will package the tag and automatically set the file type based on the
    - `README.md`
    - `RELEASE_NOTES.md`
    - `curseforge.md`
+   - **Guideline**: release notes must be user-facing and functional only. Exclude backend/dev workflow details.
 3. Run formatting and checks:
    - `make fmt`
    - `make check` (LLS warnings are acceptable if reviewed)
