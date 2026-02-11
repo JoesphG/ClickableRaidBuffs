@@ -22,8 +22,27 @@ jobs:
           URL="$(jq -r '.release.html_url' "$GITHUB_EVENT_PATH")"
           BODY="$(jq -r '.release.body // "No release notes provided."' "$GITHUB_EVENT_PATH")"
 
-          HEADER="**ClickableRaidBuffs ${NAME}**"$'\n'"Tag: \`${TAG}\`"$'\n'"${URL}"$'\n\n'
-          CONTENT="${HEADER}${BODY}"
+          SUMMARY_ONLY="$(
+            printf '%s\n' "$BODY" | awk '
+              BEGIN { in_summary = 0; found_summary = 0 }
+              tolower($0) ~ /^##[[:space:]]*summary[[:space:]]*$/ { in_summary = 1; found_summary = 1; next }
+              in_summary && /^##[[:space:]]/ { in_summary = 0 }
+              in_summary { print }
+            '
+          )"
+
+          if [ -n "${SUMMARY_ONLY//[[:space:]]/}" ]; then
+            CHANGES="$(printf '%s\n' "$SUMMARY_ONLY" | grep -E '^[[:space:]]*[-*][[:space:]]+' || true)"
+          else
+            CHANGES="$(printf '%s\n' "$BODY" | grep -E '^[[:space:]]*[-*][[:space:]]+' || true)"
+          fi
+
+          if [ -z "${CHANGES//[[:space:]]/}" ]; then
+            CHANGES="- See release page for details."
+          fi
+
+          HEADER="**ClickableRaidBuffs ${NAME}**"$'\n'"Tag: \`${TAG}\`"$'\n'"${URL}"
+          CONTENT="${HEADER}"$'\n\n'"**Changes**"$'\n'"${CHANGES}"
 
           # Discord message hard limit is 2000 characters.
           MAX_LEN=1990
