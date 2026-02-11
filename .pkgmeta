@@ -8,3 +8,5 @@ ignore:
   - .github
   - context.md
   - AGENTS.md
+  - .DS_Store
+  - .editorconfig
