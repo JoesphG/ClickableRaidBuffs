@@ -1517,6 +1517,7 @@ ClickableRaidData["EATING"] = {
   462177, --"Food and Drink"
   167152, --"Refreshment"
   104269, --"Drink"
+  452319, --"Eating"
 }
 
 ClickableRaidData["WELLFED"] = {

@@ -1,11 +1,13 @@
-# ClickableRaidBuffs v7.0.5 Release Notes
+# ClickableRaidBuffs v7.0.6 Release Notes
 
 ## Summary
-- Added Frost Mage Water Elemental support in the Pets module
+- Fixed icons not restoring after resurrection (no reload needed)
+- Added eating aura ID 452319 for correct food timer/icon updates
+- Added Wago packaging workflow and deployment process docs
 - General stability and maintenance updates
 
 ## Compatibility
 - Retail 12.0.1+
 
 ## Notes
-- This release includes internal maintenance and compatibility adjustments.
+- Manual CurseForge uploads can be used until webhook permissions are available.

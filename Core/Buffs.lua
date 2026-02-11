@@ -76,7 +76,9 @@ function ns.GetPlayerBuffExpire(spellIDs, nameMode, infinite)
       end
 
       local sid = aura.spellId
-      if type(sid) == "number" and spellLookup[sid] then
+      if IsSecret and IsSecret(sid) then
+        -- Secret spell ids cannot be used for table lookup.
+      elseif type(sid) == "number" and spellLookup[sid] then
         return safeExpiration(aura)
       end
 
@@ -131,9 +133,13 @@ function ns.GetRaidBuffExpire(spellIDs, nameMode, infinite)
       end
 
       local sid = aura.spellId
-      if type(sid) == "number" then
+      if IsSecret and IsSecret(sid) then
+        -- Secret spell ids cannot be used for table lookup.
+      elseif type(sid) == "number" then
         if nameMode then
-          if aura.name and type(aura.name) == "string" and nameLookup[aura.name] and not NAME_MODE_EXCLUDE[sid] then
+          if IsSecret and IsSecret(aura.name) then
+            -- Secret names cannot be used for lookup.
+          elseif aura.name and type(aura.name) == "string" and nameLookup[aura.name] and not NAME_MODE_EXCLUDE[sid] then
             found = true
             local exp = aura.expirationTime
             if IsSecret and IsSecret(exp) then
@@ -208,10 +214,13 @@ function ns.GetRaidBuffExpireMine(spellIDs, nameMode, infinite)
         break
       end
 
-      if type(aura.spellId) == "number" and UnitGUID(aura.sourceUnit) == playerGUID then
+      if IsSecret and IsSecret(aura.spellId) then
+        -- Secret spell ids cannot be used for table lookup.
+      elseif type(aura.spellId) == "number" and UnitGUID(aura.sourceUnit) == playerGUID then
         if nameMode then
           if
-            aura.name
+            not (IsSecret and IsSecret(aura.name))
+            and aura.name
             and type(aura.name) == "string"
             and nameLookup[aura.name]
             and not NAME_MODE_EXCLUDE[aura.spellId]

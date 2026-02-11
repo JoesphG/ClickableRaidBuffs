@@ -49,9 +49,11 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
-**v7.0.5**
+**v7.0.6**
 
-- Added Frost Mage Water Elemental support in the Pets module  
+- Fixed icons not restoring after resurrection (no reload needed)  
+- Added eating aura ID 452319 for correct food timer/icon updates  
+- Added Wago packaging workflow and deployment process docs  
 - General stability and maintenance updates  
 
 
@@ -65,6 +67,11 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
 - Fixed delayed callbacks executing during restricted states in Mythic Keystone dungeons  
 - Fixed icons not reliably refreshing after entering or exiting instanced content  
 - Improved handling of deferred updates suppressed during Challenge Mode  
+
+**v7.0.5**
+
+- Added Frost Mage Water Elemental support in the Pets module  
+- General stability and maintenance updates  
 
 **v7.0.4**
 
