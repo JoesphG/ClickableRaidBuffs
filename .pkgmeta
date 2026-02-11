@@ -1,0 +1,8 @@
+ignore:
+  - Tools
+  - .luarc.json
+  - .stylua.toml
+  - Makefile
+  - RELEASE_NOTES.md
+  - curseforge.md
+  - .github
