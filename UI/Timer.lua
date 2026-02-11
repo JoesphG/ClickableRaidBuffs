@@ -4,8 +4,11 @@
 
 local addonName, ns = ...
 ns = ns or {}
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
-local function now() return GetTimePreciseSec() end
+local function now()
+  return GetTimePreciseSec()
+end
 
 local function fmt_bottom(remaining)
   remaining = math.max(0, remaining)
@@ -20,7 +23,9 @@ end
 
 local function updateBottomTimer(btn, entry, tNow)
   local tt = btn and btn.timerText
-  if not (tt and entry) then return end
+  if not (tt and entry) then
+    return
+  end
 
   local function ensureAnchor()
     local bt = btn.bottomText
@@ -41,6 +46,12 @@ local function updateBottomTimer(btn, entry, tNow)
     end
   end
 
+  if IsSecret and entry.expireTime and IsSecret(entry.expireTime) then
+    if tt:IsShown() then
+      tt:Hide()
+    end
+    return
+  end
   if entry.category ~= "EATING" and entry.expireTime and entry.expireTime ~= math.huge then
     local remaining = entry.expireTime - tNow
 
@@ -50,13 +61,18 @@ local function updateBottomTimer(btn, entry, tNow)
         local formatted = fmt_bottom(remaining)
         if tt:GetText() ~= formatted then
           local db = (ns.GetDB and ns.GetDB()) or {}
-          ns.UpdateFontString(tt, formatted,
+          ns.UpdateFontString(
+            tt,
+            formatted,
             db.fontName or "Fonts\\FRIZQT__.TTF",
             db.timerBottomSize or 14,
             db.timerBottomOutline ~= false,
-            db.timerBottomColor or { r=1,g=1,b=1,a=1 })
+            db.timerBottomColor or { r = 1, g = 1, b = 1, a = 1 }
+          )
         end
-        if not tt:IsShown() then tt:Show() end
+        if not tt:IsShown() then
+          tt:Show()
+        end
         return
       end
     else
@@ -65,63 +81,92 @@ local function updateBottomTimer(btn, entry, tNow)
         local formatted = fmt_bottom(remaining)
         if tt:GetText() ~= formatted then
           local db = (ns.GetDB and ns.GetDB()) or {}
-          ns.UpdateFontString(tt, formatted,
+          ns.UpdateFontString(
+            tt,
+            formatted,
             db.fontName or "Fonts\\FRIZQT__.TTF",
             db.timerBottomSize or 12,
             db.timerBottomOutline ~= false,
-            db.timerBottomColor or { r=1,g=1,b=1,a=1 })
+            db.timerBottomColor or { r = 1, g = 1, b = 1, a = 1 }
+          )
         end
-        if not tt:IsShown() then tt:Show() end
+        if not tt:IsShown() then
+          tt:Show()
+        end
         return
       end
     end
   end
 
-  if tt:IsShown() then tt:Hide() end
+  if tt:IsShown() then
+    tt:Hide()
+  end
 end
-
 
 local _ticker
 
 local function stopTicker()
-  if _ticker and _ticker.Cancel then _ticker:Cancel() end
+  if _ticker and _ticker.Cancel then
+    _ticker:Cancel()
+  end
   _ticker = nil
 end
 
 local function anyActive(tNow)
   local frames = ns.RenderFrames
-  if not (frames and #frames > 0) then return false end
-  for i=1,#frames do
+  if not (frames and #frames > 0) then
+    return false
+  end
+  for i = 1, #frames do
     local btn = frames[i]
     if btn and btn:IsShown() then
       if btn._crb_cd_start and btn._crb_cd_dur then
         local endsAt = btn._crb_cd_start + btn._crb_cd_dur
-        if endsAt - tNow > 0 then return true end
+        if endsAt - tNow > 0 then
+          return true
+        end
       end
       local e = btn._crb_entry
       if e and e.category ~= "EATING" and e.expireTime and e.expireTime ~= math.huge then
-        local rem = e.expireTime - tNow
-        if e.category == "AUGMENT_RUNE" then
-          if rem > 0 then return true end
+        if IsSecret and IsSecret(e.expireTime) then
+          -- If the value is secret, treat it as unknown to avoid errors.
         else
-          if rem > -1 then return true end
+          local rem = e.expireTime - tNow
+          if e.category == "AUGMENT_RUNE" then
+            if rem > 0 then
+              return true
+            end
+          else
+            if rem > -1 then
+              return true
+            end
+          end
         end
       end
     end
   end
   local disp = _G.clickableRaidBuffCache and _G.clickableRaidBuffCache.displayable
-  local aug  = disp and disp.AUGMENT_RUNE
+  local aug = disp and disp.AUGMENT_RUNE
   if type(aug) == "table" then
     for _, e in pairs(aug) do
-      if e and e.showAt and (e.showAt - tNow) > 0 then return true end
-      if e and e.showAt and (e.showAt - tNow) <= 0 then return true end
+      if e and e.showAt and (e.showAt - tNow) > 0 then
+        return true
+      end
+      if e and e.showAt and (e.showAt - tNow) <= 0 then
+        return true
+      end
     end
   end
   return false
 end
 
 local function tick()
-  if ns._inCombat or (IsEncounterInProgress and IsEncounterInProgress()) or (UnitIsDeadOrGhost and UnitIsDeadOrGhost("player")) or InCombatLockdown() then
+  if
+    ns._inCombat
+    or (IsEncounterInProgress and IsEncounterInProgress())
+    or (UnitIsDeadOrGhost and UnitIsDeadOrGhost("player"))
+    or InCombatLockdown()
+  then
     stopTicker()
     return
   end
@@ -129,7 +174,7 @@ local function tick()
   local t2 = now()
 
   local disp = _G.clickableRaidBuffCache and _G.clickableRaidBuffCache.displayable
-  local aug  = disp and disp.AUGMENT_RUNE
+  local aug = disp and disp.AUGMENT_RUNE
   if type(aug) == "table" then
     local due
     for _, e in pairs(aug) do
@@ -145,7 +190,7 @@ local function tick()
 
   local frames = ns.RenderFrames
   if frames then
-    for i=1,#frames do
+    for i = 1, #frames do
       local btn = frames[i]
       if btn and btn:IsShown() then
         if ns.CooldownTick and btn._crb_cd_start and btn._crb_cd_dur then
@@ -155,13 +200,19 @@ local function tick()
         if e then
           updateBottomTimer(btn, e, t2)
           if e.category ~= "EATING" and e.expireTime and e.expireTime ~= math.huge then
-            if e.category == "AUGMENT_RUNE" then
-              if (t2 - e.expireTime) >= 0 then
-                if type(ns.UpdateAugmentRunes) == "function" then ns.UpdateAugmentRunes() end
-              end
+            if IsSecret and IsSecret(e.expireTime) then
+              -- Skip secret values.
             else
-              if (t2 - e.expireTime) >= 1.0 then
-                btn:Hide()
+              if e.category == "AUGMENT_RUNE" then
+                if (t2 - e.expireTime) >= 0 then
+                  if type(ns.UpdateAugmentRunes) == "function" then
+                    ns.UpdateAugmentRunes()
+                  end
+                end
+              else
+                if (t2 - e.expireTime) >= 1.0 then
+                  btn:Hide()
+                end
               end
             end
           end
@@ -176,7 +227,12 @@ local function tick()
 end
 
 function ns.Timer_RecomputeSchedule()
-  if ns._inCombat or (IsEncounterInProgress and IsEncounterInProgress()) or (UnitIsDeadOrGhost and UnitIsDeadOrGhost("player")) or InCombatLockdown() then
+  if
+    ns._inCombat
+    or (IsEncounterInProgress and IsEncounterInProgress())
+    or (UnitIsDeadOrGhost and UnitIsDeadOrGhost("player"))
+    or InCombatLockdown()
+  then
     stopTicker()
     return
   end
@@ -196,7 +252,9 @@ do
     local _orig = ns.Cooldown_RefreshAll
     ns.Cooldown_RefreshAll = function(...)
       local r = _orig(...)
-      if ns.Timer_RecomputeSchedule then ns.Timer_RecomputeSchedule() end
+      if ns.Timer_RecomputeSchedule then
+        ns.Timer_RecomputeSchedule()
+      end
       return r
     end
     ns._crb_cd_refresh_wrapped = true

@@ -10,7 +10,9 @@ ns.FontObjects = ns.FontObjects or {}
 local function fontPath(name)
   if LSM then
     local ok, path = pcall(LSM.Fetch, LSM, "font", name or "Friz Quadrata TT")
-    if ok and path then return path end
+    if ok and path then
+      return path
+    end
   end
   return name or "Fonts\\FRIZQT__.TTF"
 end
@@ -30,19 +32,23 @@ end
 
 if not ns.UpdateFontString then
   function ns.UpdateFontString(fs, text, fontName, size, outline, color)
-    if not fs then return end
+    if not fs then
+      return
+    end
     local fo = ns.GetFontObject(fontName, size, outline)
-    if fs:GetFontObject() ~= fo then fs:SetFontObject(fo) end
+    if fs:GetFontObject() ~= fo then
+      fs:SetFontObject(fo)
+    end
     if fs._crb_text ~= text then
       fs:SetText(text or "")
       fs._crb_text = text
     end
     if color then
-      local r,g,b,a = color.r or 1, color.g or 1, color.b or 1, color.a or 1
+      local r, g, b, a = color.r or 1, color.g or 1, color.b or 1, color.a or 1
       local c = fs._crb_color
       if not c or c[1] ~= r or c[2] ~= g or c[3] ~= b or c[4] ~= a then
-        fs:SetTextColor(r,g,b,a)
-        fs._crb_color = {r,g,b,a}
+        fs:SetTextColor(r, g, b, a)
+        fs._crb_color = { r, g, b, a }
       end
     end
   end

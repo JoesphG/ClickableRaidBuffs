@@ -5,7 +5,9 @@
 local addonName, ns = ...
 
 function ns.Gate_Level(minLevel, playerLevel)
-  if not minLevel or minLevel <= 0 then return true end
+  if not minLevel or minLevel <= 0 then
+    return true
+  end
   playerLevel = playerLevel or (UnitLevel and UnitLevel("player")) or 0
   return playerLevel >= minLevel
 end

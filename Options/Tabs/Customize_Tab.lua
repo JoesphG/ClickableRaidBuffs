@@ -3,38 +3,49 @@
 -- ====================================
 
 local addonName, ns = ...
-ns.Options        = ns.Options or {}
-ns.NumberSelect   = ns.NumberSelect or {}
-local O  = ns.Options
+ns.Options = ns.Options or {}
+ns.NumberSelect = ns.NumberSelect or {}
+local O = ns.Options
 local NS = ns.NumberSelect
 
-local ORDER_BOX_BG  = {0.08, 0.09, 0.12, 1.00}
-local TILE_BG       = {0.10, 0.115, 0.16, 1.00}
-local BORDER_COL    = {0.20, 0.22, 0.28, 1.00}
+local ORDER_BOX_BG = { 0.08, 0.09, 0.12, 1.00 }
+local TILE_BG = { 0.10, 0.115, 0.16, 1.00 }
+local BORDER_COL = { 0.20, 0.22, 0.28, 1.00 }
 
 local THEME = {
-  fontPath    = function() if O and O.ResolvePanelFont then return O.ResolvePanelFont() end return "Fonts\\FRIZQT__.TTF" end,
-  sizeLabel   = function() return (O and O.SIZE_LABEL) or 14 end,
-  cardBG      = {0.09,0.10,0.14,0.95},
-  cardBR      = BORDER_COL,
-  wellBG      = ORDER_BOX_BG,
-  wellBR      = BORDER_COL,
-  rowBG       = TILE_BG,
-  rowBR       = BORDER_COL,
-  tickTint    = {0.35,0.80,1.00,1},
-  checkboxBox = function() return (O and O.TEXT_CHECKBOX_W) or 20 end,
-  tabH        = 24,
-  tabGap      = 6,
+  fontPath = function()
+    if O and O.ResolvePanelFont then
+      return O.ResolvePanelFont()
+    end
+    return "Fonts\\FRIZQT__.TTF"
+  end,
+  sizeLabel = function()
+    return (O and O.SIZE_LABEL) or 14
+  end,
+  cardBG = { 0.09, 0.10, 0.14, 0.95 },
+  cardBR = BORDER_COL,
+  wellBG = ORDER_BOX_BG,
+  wellBR = BORDER_COL,
+  rowBG = TILE_BG,
+  rowBR = BORDER_COL,
+  tickTint = { 0.35, 0.80, 1.00, 1 },
+  checkboxBox = function()
+    return (O and O.TEXT_CHECKBOX_W) or 20
+  end,
+  tabH = 24,
+  tabGap = 6,
   cardSidePad = 6,
 }
 
 local function PaintBackdrop(frame, bg, br)
-  frame:SetBackdrop({ bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=1 })
+  frame:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1 })
   frame:SetBackdropColor(unpack(bg))
   frame:SetBackdropBorderColor(unpack(br))
 end
 
-local function DB() return (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB or {} end
+local function DB()
+  return (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB or {}
+end
 local defaults = (O and O.DEFAULTS) or {}
 
 local function NewCheckbox(parent, label, initial, onToggle)
@@ -44,7 +55,7 @@ local function NewCheckbox(parent, label, initial, onToggle)
   local tick = cb:CreateTexture(nil, "ARTWORK")
   tick:SetAtlas("common-icon-checkmark", true)
   tick:SetPoint("CENTER")
-  tick:SetSize(THEME.checkboxBox()-4, THEME.checkboxBox()-4)
+  tick:SetSize(THEME.checkboxBox() - 4, THEME.checkboxBox() - 4)
   tick:SetVertexColor(unpack(THEME.tickTint))
   tick:Hide()
   cb._tick = tick
@@ -54,12 +65,18 @@ local function NewCheckbox(parent, label, initial, onToggle)
   local rawSetChecked = getmetatable(cb).__index.SetChecked
   function cb:SetChecked(state)
     rawSetChecked(self, state and true or false)
-    if self._tick then self._tick:SetShown(state and true or false) end
+    if self._tick then
+      self._tick:SetShown(state and true or false)
+    end
   end
   cb:SetScript("OnClick", function(self)
     local v = self:GetChecked()
-    if self._tick then self._tick:SetShown(v) end
-    if onToggle then onToggle(self, v) end
+    if self._tick then
+      self._tick:SetShown(v)
+    end
+    if onToggle then
+      onToggle(self, v)
+    end
   end)
   cb:SetChecked(initial and true or false)
   return cb, fs
@@ -76,39 +93,61 @@ local function MakeMiniTab(parent, label)
   b:SetFontString(fs)
   b._fs = fs
   b._basePad = 10
-  b:SetScript("OnEnter", function(self) self:SetBackdropBorderColor(0.45,0.85,1,1) end)
-  b:SetScript("OnLeave", function(self) self:SetBackdropBorderColor(unpack(THEME.rowBR)) end)
+  b:SetScript("OnEnter", function(self)
+    self:SetBackdropBorderColor(0.45, 0.85, 1, 1)
+  end)
+  b:SetScript("OnLeave", function(self)
+    self:SetBackdropBorderColor(unpack(THEME.rowBR))
+  end)
   return b
 end
 
 local function StyleTabSelected(b)
-  if not b then return end
-  b:SetBackdropColor(0.14,0.18,0.24,1)
-  b:SetBackdropBorderColor(0.35,0.60,1.0,1)
+  if not b then
+    return
+  end
+  b:SetBackdropColor(0.14, 0.18, 0.24, 1)
+  b:SetBackdropBorderColor(0.35, 0.60, 1.0, 1)
 end
 
 local function StyleTabNormal(b)
-  if not b then return end
+  if not b then
+    return
+  end
   b:SetBackdropColor(unpack(THEME.rowBG))
   b:SetBackdropBorderColor(unpack(THEME.rowBR))
 end
 
 local function PingMythicPlus()
-  if ns and ns.MythicPlus_Recompute then ns.MythicPlus_Recompute() end
-  if _G.updateWeaponEnchants then _G.updateWeaponEnchants() end
+  if ns and ns.MythicPlus_Recompute then
+    ns.MythicPlus_Recompute()
+  end
+  if _G.updateWeaponEnchants then
+    _G.updateWeaponEnchants()
+  end
   local suppress = (ns and ns.MPlus_DisableConsumablesActive and ns.MPlus_DisableConsumablesActive()) or false
   if suppress then
     _G.clickableRaidBuffCache = _G.clickableRaidBuffCache or {}
     _G.clickableRaidBuffCache.displayable = _G.clickableRaidBuffCache.displayable or {}
     local d = _G.clickableRaidBuffCache.displayable
     d.FOOD, d.FLASK, d.MAIN_HAND, d.OFF_HAND = {}, {}, {}, {}
-    if ns and ns.RenderAll then ns.RenderAll() end
+    if ns and ns.RenderAll then
+      ns.RenderAll()
+    end
     return
   end
-  if type(_G.scanAllBags) == "function" then _G.scanAllBags() end
-  if ns and ns.UpdateAugmentRunes then ns.UpdateAugmentRunes() end
-  if ns and ns.RequestRebuild then ns.RequestRebuild() end
-  if ns and ns.RenderAll then ns.RenderAll() end
+  if type(_G.scanAllBags) == "function" then
+    _G.scanAllBags()
+  end
+  if ns and ns.UpdateAugmentRunes then
+    ns.UpdateAugmentRunes()
+  end
+  if ns and ns.RequestRebuild then
+    ns.RequestRebuild()
+  end
+  if ns and ns.RenderAll then
+    ns.RenderAll()
+  end
 end
 
 local function BuildMythicPlusPanel(parent)
@@ -126,7 +165,9 @@ local function BuildMythicPlusPanel(parent)
 
   local enableCB, enableLabel = NewCheckbox(col, "Enable Mythic+ Threshold", enabled, function(_, v)
     d.mplusThresholdEnabled = v and true or false
-    if col._nsHolder then col._nsHolder:SetEnabled(v) end
+    if col._nsHolder then
+      col._nsHolder:SetEnabled(v)
+    end
     PingMythicPlus()
   end)
   enableCB:SetPoint("TOPLEFT", col, "TOPLEFT", 0, -4)
@@ -136,11 +177,11 @@ local function BuildMythicPlusPanel(parent)
   local curV = (d.mplusThreshold ~= nil) and d.mplusThreshold or defV
 
   local nsHolder = NS.Create(col, {
-    label   = "Mythic+ Buffs (Minutes)",
-    min     = 1,
-    max     = 120,
-    step    = 0.5,
-    value   = curV,
+    label = "Mythic+ Buffs (Minutes)",
+    min = 1,
+    max = 120,
+    step = 0.5,
+    value = curV,
     default = defV,
     onChange = function(v)
       d.mplusThreshold = v
@@ -151,10 +192,15 @@ local function BuildMythicPlusPanel(parent)
   nsHolder:SetEnabled(enabled)
   col._nsHolder = nsHolder
 
-  local cb, lab = NewCheckbox(col, "Disable Consumables after Key Starts", d.mplusDisableConsumables == true, function(_, v)
-    d.mplusDisableConsumables = v and true or false
-    PingMythicPlus()
-  end)
+  local cb, lab = NewCheckbox(
+    col,
+    "Disable Consumables after Key Starts",
+    d.mplusDisableConsumables == true,
+    function(_, v)
+      d.mplusDisableConsumables = v and true or false
+      PingMythicPlus()
+    end
+  )
   cb:SetPoint("TOPLEFT", nsHolder, "BOTTOMLEFT", 0, -14)
   lab:SetPoint("LEFT", cb, "RIGHT", 8, 0)
 
@@ -171,8 +217,12 @@ local function BuildHunterPetsPanel(parent)
   local hp = d.hunterPets
 
   local function refresh()
-    if ns.Pets_Rebuild then ns.Pets_Rebuild() end
-    if ns.RenderAll then ns.RenderAll() end
+    if ns.Pets_Rebuild then
+      ns.Pets_Rebuild()
+    end
+    if ns.RenderAll then
+      ns.RenderAll()
+    end
   end
 
   local cb1, lab1 = NewCheckbox(holder, "Reverse Pet Order", hp.reverseOrder == true, function(_, v)
@@ -196,10 +246,15 @@ local function BuildHunterPetsPanel(parent)
   cb3:SetPoint("TOPLEFT", cb2, "BOTTOMLEFT", 0, -12)
   lab3:SetPoint("LEFT", cb3, "RIGHT", 8, 0)
 
-  local cb4, lab4 = NewCheckbox(holder, "Show Pet Ability on Mouseover", hp.showAbilityOnMouseover ~= false, function(_, v)
-    hp.showAbilityOnMouseover = v and true or false
-    refresh()
-  end)
+  local cb4, lab4 = NewCheckbox(
+    holder,
+    "Show Pet Ability on Mouseover",
+    hp.showAbilityOnMouseover ~= false,
+    function(_, v)
+      hp.showAbilityOnMouseover = v and true or false
+      refresh()
+    end
+  )
   cb4:SetPoint("TOPLEFT", cb3, "BOTTOMLEFT", 0, -12)
   lab4:SetPoint("LEFT", cb4, "RIGHT", 8, 0)
 
@@ -231,10 +286,17 @@ local function BuildDelvesPanel(parent)
 
   local d = DB()
 
-  local cb, lab = NewCheckbox(holder, "Disable Consumables in Delves", d.delvesDisableConsumables == true, function(_, v)
-    d.delvesDisableConsumables = v and true or false
-    if ns.Delves_Recompute then ns.Delves_Recompute() end
-  end)
+  local cb, lab = NewCheckbox(
+    holder,
+    "Disable Consumables in Delves",
+    d.delvesDisableConsumables == true,
+    function(_, v)
+      d.delvesDisableConsumables = v and true or false
+      if ns.Delves_Recompute then
+        ns.Delves_Recompute()
+      end
+    end
+  )
   cb:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, -4)
   lab:SetPoint("LEFT", cb, "RIGHT", 8, 0)
 
@@ -251,7 +313,7 @@ local function BuildMountsPanel(parent)
 
   local faction = select(1, UnitFactionGroup("player"))
   local ttm = (faction == "Alliance") and 280 or ((faction == "Horde") and 284 or nil)
-  local ids = {1039, 460, 2237, ttm}
+  local ids = { 1039, 460, 2237, ttm }
 
   local selected = tonumber(d.mounts.selectedMount or ns.SelectedMount or 0) or 0
   local cbs = {}
@@ -262,14 +324,20 @@ local function BuildMountsPanel(parent)
     for _, cb in ipairs(cbs) do
       cb:SetChecked(cb._crb_id == id)
     end
-    if ns.Durability_SetSelectedMount then ns.Durability_SetSelectedMount(id) end
+    if ns.Durability_SetSelectedMount then
+      ns.Durability_SetSelectedMount(id)
+    end
   end
 
   local prevCB
 
   for _, id in ipairs(ids) do
     if id then
-      local name = (C_MountJournal and C_MountJournal.GetMountInfoByID and select(1, C_MountJournal.GetMountInfoByID(id))) or ("Mount " .. id)
+      local name = (
+        C_MountJournal
+        and C_MountJournal.GetMountInfoByID
+        and select(1, C_MountJournal.GetMountInfoByID(id))
+      ) or ("Mount " .. id)
       local cb, lab = NewCheckbox(holder, name, selected == id, function(cb, v)
         if v then
           setSelected(id)
@@ -339,12 +407,31 @@ O.RegisterSection(function(AddSection)
     local panels = {}
 
     local function showPanel(key)
-      for _, f in pairs(panels) do if f then f:Hide() end end
-      if key == "MYTHIC" then panels.MYTHIC = panels.MYTHIC or BuildMythicPlusPanel(inner); panels.MYTHIC:Show() end
-      if key == "HUNTER" then panels.HUNTER = panels.HUNTER or BuildHunterPetsPanel(inner); panels.HUNTER:Show() end
-      if key == "TIPS" then panels.TIPS = panels.TIPS or BuildTooltipsPanel(inner); panels.TIPS:Show() end
-      if key == "DELVES" then panels.DELVES = panels.DELVES or BuildDelvesPanel(inner); panels.DELVES:Show() end
-      if key == "MOUNTS" then panels.MOUNTS = panels.MOUNTS or BuildMountsPanel(inner); panels.MOUNTS:Show() end
+      for _, f in pairs(panels) do
+        if f then
+          f:Hide()
+        end
+      end
+      if key == "MYTHIC" then
+        panels.MYTHIC = panels.MYTHIC or BuildMythicPlusPanel(inner)
+        panels.MYTHIC:Show()
+      end
+      if key == "HUNTER" then
+        panels.HUNTER = panels.HUNTER or BuildHunterPetsPanel(inner)
+        panels.HUNTER:Show()
+      end
+      if key == "TIPS" then
+        panels.TIPS = panels.TIPS or BuildTooltipsPanel(inner)
+        panels.TIPS:Show()
+      end
+      if key == "DELVES" then
+        panels.DELVES = panels.DELVES or BuildDelvesPanel(inner)
+        panels.DELVES:Show()
+      end
+      if key == "MOUNTS" then
+        panels.MOUNTS = panels.MOUNTS or BuildMountsPanel(inner)
+        panels.MOUNTS:Show()
+      end
     end
 
     local function selectTab(which)
@@ -353,20 +440,42 @@ O.RegisterSection(function(AddSection)
       StyleTabNormal(tipsBtn)
       StyleTabNormal(delvesBtn)
       StyleTabNormal(mountsBtn)
-      if which == "MYTHIC" then StyleTabSelected(mythicBtn) end
-      if which == "HUNTER" then StyleTabSelected(hunterBtn) end
-      if which == "TIPS" then StyleTabSelected(tipsBtn) end
-      if which == "DELVES" then StyleTabSelected(delvesBtn) end
-      if which == "MOUNTS" then StyleTabSelected(mountsBtn) end
+      if which == "MYTHIC" then
+        StyleTabSelected(mythicBtn)
+      end
+      if which == "HUNTER" then
+        StyleTabSelected(hunterBtn)
+      end
+      if which == "TIPS" then
+        StyleTabSelected(tipsBtn)
+      end
+      if which == "DELVES" then
+        StyleTabSelected(delvesBtn)
+      end
+      if which == "MOUNTS" then
+        StyleTabSelected(mountsBtn)
+      end
       showPanel(which)
     end
 
-    mythicBtn:SetScript("OnClick", function() selectTab("MYTHIC") end)
-    hunterBtn:SetScript("OnClick", function() selectTab("HUNTER") end)
-    tipsBtn:SetScript("OnClick", function() selectTab("TIPS") end)
-    delvesBtn:SetScript("OnClick", function() selectTab("DELVES") end)
-    mountsBtn:SetScript("OnClick", function() selectTab("MOUNTS") end)
+    mythicBtn:SetScript("OnClick", function()
+      selectTab("MYTHIC")
+    end)
+    hunterBtn:SetScript("OnClick", function()
+      selectTab("HUNTER")
+    end)
+    tipsBtn:SetScript("OnClick", function()
+      selectTab("TIPS")
+    end)
+    delvesBtn:SetScript("OnClick", function()
+      selectTab("DELVES")
+    end)
+    mountsBtn:SetScript("OnClick", function()
+      selectTab("MOUNTS")
+    end)
 
-    card:SetScript("OnShow", function() selectTab("MYTHIC") end)
+    card:SetScript("OnShow", function()
+      selectTab("MYTHIC")
+    end)
   end)
 end)

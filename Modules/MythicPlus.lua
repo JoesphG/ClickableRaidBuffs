@@ -1,25 +1,29 @@
 -- ====================================
 -- \Modules\MythicPlus.lua
 -- ====================================
- 
- local addonName, ns = ...
+
+local addonName, ns = ...
 local function DB()
   return (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB or {}
 end
 
 local function IsTestKeystone()
   local ok, val = pcall(function()
-    if type(mPlusDifficultyID) == "function" then return mPlusDifficultyID() end
+    if type(mPlusDifficultyID) == "function" then
+      return mPlusDifficultyID()
+    end
   end)
   return ok and val == 205
 end
 
-local DIFF_MYTHIC   = 23
+local DIFF_MYTHIC = 23
 local DIFF_KEYSTONE = 8
 
 local function InInstanceReal()
   local inInst = select(1, IsInInstance())
-  if not inInst then return false end
+  if not inInst then
+    return false
+  end
   local name, _, difficultyID, _, _, _, _, instanceMapID, lfgDungeonID = GetInstanceInfo()
   return true, difficultyID, name, instanceMapID, lfgDungeonID
 end
@@ -43,26 +47,38 @@ local function buildSeasonMapIDLookup()
 end
 
 local function isCurrentSeasonDungeonByMapID(mapID)
-  if not mapID then return false end
-  if not seasonByDungeonMapID then buildSeasonMapIDLookup() end
+  if not mapID then
+    return false
+  end
+  if not seasonByDungeonMapID then
+    buildSeasonMapIDLookup()
+  end
   return seasonByDungeonMapID and seasonByDungeonMapID[mapID] == true
 end
 
-ns._mp_overridden          = ns._mp_overridden or false
+ns._mp_overridden = ns._mp_overridden or false
 ns._mp_setThresholdsHooked = ns._mp_setThresholdsHooked or false
-ns._mp_origSetThresholds   = ns._mp_origSetThresholds
-ns._mp_baseThresholds      = ns._mp_baseThresholds or nil
+ns._mp_origSetThresholds = ns._mp_origSetThresholds
+ns._mp_baseThresholds = ns._mp_baseThresholds or nil
 
 local function shallowCopy(tbl)
-  if not tbl then return nil end
+  if not tbl then
+    return nil
+  end
   local out = {}
-  for k, v in pairs(tbl) do out[k] = v end
+  for k, v in pairs(tbl) do
+    out[k] = v
+  end
   return out
 end
 
 local function EnsureHookSetThresholds()
-  if ns._mp_setThresholdsHooked then return end
-  if type(ns.SetThresholds) ~= "function" then return end
+  if ns._mp_setThresholdsHooked then
+    return
+  end
+  if type(ns.SetThresholds) ~= "function" then
+    return
+  end
 
   ns._mp_origSetThresholds = ns.SetThresholds
   ns.SetThresholds = function(incoming)
@@ -70,8 +86,12 @@ local function EnsureHookSetThresholds()
     local eff = shallowCopy(incoming)
     if ns._mp_overridden then
       local m = tonumber(DB().mplusThreshold) or 45
-      if eff.spell ~= nil then eff.spell = m end
-      if eff.item  ~= nil then eff.item  = m end
+      if eff.spell ~= nil then
+        eff.spell = m
+      end
+      if eff.item ~= nil then
+        eff.item = m
+      end
     end
     return ns._mp_origSetThresholds(eff)
   end
@@ -82,19 +102,25 @@ end
 function ns.MythicPlus_RecomputeThresholdsNow()
   EnsureHookSetThresholds()
   local base = ns._mp_baseThresholds
-  if not (base and ns._mp_origSetThresholds) then return end
+  if not (base and ns._mp_origSetThresholds) then
+    return
+  end
 
   local eff = shallowCopy(base)
   if ns._mp_overridden then
     local m = tonumber(DB().mplusThreshold) or 45
-    if eff.spell ~= nil then eff.spell = m end
-    if eff.item  ~= nil then eff.item  = m end
+    if eff.spell ~= nil then
+      eff.spell = m
+    end
+    if eff.item ~= nil then
+      eff.item = m
+    end
   end
   ns._mp_origSetThresholds(eff)
 end
 
-ns._mp_disable  = ns._mp_disable or false
-ns._mp_lastKey  = ns._mp_lastKey or ""
+ns._mp_disable = ns._mp_disable or false
+ns._mp_lastKey = ns._mp_lastKey or ""
 
 function mythicPlusDisableMode()
   return ns and ns._mp_disable == true
@@ -115,14 +141,23 @@ local function recomputeState()
     ns.MythicPlus_RecomputeThresholdsNow()
   end
 
-  local disableNow = (inInst and (difficultyID == DIFF_KEYSTONE or IsTestKeystone()) and seasonal and d.mplusDisableConsumables == true) or false
+  local disableNow = (
+    inInst
+    and (difficultyID == DIFF_KEYSTONE or IsTestKeystone())
+    and seasonal
+    and d.mplusDisableConsumables == true
+  ) or false
   ns._mp_disable = disableNow
 
   local key = (ns._mp_overridden and 1 or 0) .. ":" .. (disableNow and 1 or 0)
   if key ~= ns._mp_lastKey then
     ns._mp_lastKey = key
-    if ns.RequestRebuild then ns.RequestRebuild() end
-    if ns.RenderAll    then ns.RenderAll()    end
+    if ns.RequestRebuild then
+      ns.RequestRebuild()
+    end
+    if ns.RenderAll then
+      ns.RenderAll()
+    end
   end
 end
 
@@ -132,14 +167,20 @@ end
 
 local function IsMPlusOverrideContext()
   local inInst, difficultyID, _, instanceMapID = InInstanceReal()
-  if not inInst then return false end
-  if not isCurrentSeasonDungeonByMapID(instanceMapID) then return false end
+  if not inInst then
+    return false
+  end
+  if not isCurrentSeasonDungeonByMapID(instanceMapID) then
+    return false
+  end
   return difficultyID == DIFF_MYTHIC
 end
 
 local function IsMPlusOverrideEnabled()
   local d = DB()
-  if d.mplusThresholdEnabled == nil then return true end
+  if d.mplusThresholdEnabled == nil then
+    return true
+  end
   return d.mplusThresholdEnabled and true or false
 end
 
@@ -161,9 +202,15 @@ end
 
 function ns.MPlus_DisableConsumablesActive()
   local inInst, difficultyID, _, instanceMapID = InInstanceReal()
-  if not inInst then return false end
-  if not isCurrentSeasonDungeonByMapID(instanceMapID) then return false end
-  if not (difficultyID == DIFF_KEYSTONE or IsTestKeystone()) then return false end
+  if not inInst then
+    return false
+  end
+  if not isCurrentSeasonDungeonByMapID(instanceMapID) then
+    return false
+  end
+  if not (difficultyID == DIFF_KEYSTONE or IsTestKeystone()) then
+    return false
+  end
   local d = DB()
   return d.mplusDisableConsumables and true or false
 end
@@ -171,7 +218,9 @@ end
 function ns.MPlus_GetEffectiveThresholdSecs(kind, baseMinutes)
   local base = tonumber(baseMinutes) or 0
   local inInst, difficultyID, _, instanceMapID = InInstanceReal()
-  if not inInst then return base * 60 end
+  if not inInst then
+    return base * 60
+  end
   if isCurrentSeasonDungeonByMapID(instanceMapID) and difficultyID == DIFF_MYTHIC then
     local d = (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB or {}
     if d.mplusThresholdEnabled ~= false then

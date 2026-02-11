@@ -105,7 +105,8 @@ local function OnReceiveDrag(self)                                              
 		if C_Spell and C_Spell.GetSpellName then
 			info = C_Spell.GetSpellName(extra)
 		else
-			info = GetSpellInfo(id, info)
+			local spellInfo = C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(id)
+			info = spellInfo and spellInfo.name or nil
 		end
 	elseif type ~= "item" then
 		return

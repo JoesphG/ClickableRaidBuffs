@@ -5,8 +5,12 @@
 local addonName, ns = ...
 clickableRaidBuffCache = clickableRaidBuffCache or {}
 
-local function InCombat() return InCombatLockdown() end
-local function DB() return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {} end
+local function InCombat()
+  return InCombatLockdown()
+end
+local function DB()
+  return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
+end
 
 local function EnsureParent()
   return ns and ns.RenderParent
@@ -27,13 +31,15 @@ local function ApplySavedAnchor()
     return
   end
   local parent = EnsureParent()
-  if not parent then return end
+  if not parent then
+    return
+  end
 
   local db = DB()
-  db.anchor = db.anchor or { point="CENTER", relative="UIParent", relativePoint="CENTER", x=0, y=0 }
+  db.anchor = db.anchor or { point = "CENTER", relative = "UIParent", relativePoint = "CENTER", x = 0, y = 0 }
 
   local point, relative, relativePoint, x, y =
-      db.anchor.point, db.anchor.relative, db.anchor.relativePoint, db.anchor.x, db.anchor.y
+    db.anchor.point, db.anchor.relative, db.anchor.relativePoint, db.anchor.x, db.anchor.y
 
   parent:SetClampedToScreen(true)
   parent:ClearAllPoints()
@@ -45,23 +51,27 @@ end
 
 local function SaveAnchor()
   local parent = EnsureParent()
-  if not parent then return end
+  if not parent then
+    return
+  end
   local p, rel, rp, x, y = ReadPoint(parent)
   local db = DB()
   db.anchor = db.anchor or {}
-  db.anchor.point         = p
-  db.anchor.relative      = rel or "UIParent"
+  db.anchor.point = p
+  db.anchor.relative = rel or "UIParent"
   db.anchor.relativePoint = rp or "CENTER"
-  db.anchor.x             = x or 0
-  db.anchor.y             = y or 0
+  db.anchor.x = x or 0
+  db.anchor.y = y or 0
 end
 
 local function HookDragSavers()
   local parent = EnsureParent()
-  if not parent or parent._crb_anchor_hooks then return end
+  if not parent or parent._crb_anchor_hooks then
+    return
+  end
 
   parent:HookScript("OnDragStop", SaveAnchor)
-  parent:HookScript("OnMouseUp",  SaveAnchor)
+  parent:HookScript("OnMouseUp", SaveAnchor)
   parent._crb_anchor_hooks = true
 end
 

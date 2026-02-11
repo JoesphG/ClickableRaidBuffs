@@ -7,24 +7,29 @@ local addonName, ns = ...
 clickableRaidBuffCache = clickableRaidBuffCache or {}
 clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
 
-local function DB() return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {} end
+local function DB()
+  return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
+end
 DB().fixedTargets = DB().fixedTargets or {}
 
-local CAT          = "SHAMAN_SHIELDS"
+local CAT = "SHAMAN_SHIELDS"
 local ORBIT_TALENT = 383010
-local TRUNC_N      = 6
+local TRUNC_N = 6
 
-local function InCombat() return InCombatLockdown() end
+local function InCombat()
+  return InCombatLockdown()
+end
 
 local function isShaman()
   local cid = (clickableRaidBuffCache.playerInfo and clickableRaidBuffCache.playerInfo.playerClassId)
-              or (type(getPlayerClass)=="function" and getPlayerClass())
+    or (type(getPlayerClass) == "function" and getPlayerClass())
   return cid == 7
 end
 
 local function knowSpell(id)
   return (C_SpellBook and C_SpellBook.IsSpellKnown and C_SpellBook.IsSpellKnown(id))
-         or (IsPlayerSpell and IsPlayerSpell(id)) or false
+    or (IsPlayerSpell and IsPlayerSpell(id))
+    or false
 end
 
 local function thresholdSecs()
@@ -42,7 +47,9 @@ local function ensureCat()
 end
 
 local function clearCat()
-  if clickableRaidBuffCache.displayable[CAT] then wipe(clickableRaidBuffCache.displayable[CAT]) end
+  if clickableRaidBuffCache.displayable[CAT] then
+    wipe(clickableRaidBuffCache.displayable[CAT])
+  end
 end
 
 local function shortName(unit)
@@ -57,22 +64,30 @@ end
 local function IterateGroupUnits()
   local u = {}
   if IsInRaid() then
-    for i=1, GetNumGroupMembers() do u[#u+1] = "raid"..i end
+    for i = 1, GetNumGroupMembers() do
+      u[#u + 1] = "raid" .. i
+    end
   elseif IsInGroup() then
-    for i=1, GetNumSubgroupMembers() do u[#u+1] = "party"..i end
-    u[#u+1] = "player"
+    for i = 1, GetNumSubgroupMembers() do
+      u[#u + 1] = "party" .. i
+    end
+    u[#u + 1] = "player"
   else
-    u[#u+1] = "player"
+    u[#u + 1] = "player"
   end
   return u
 end
 
 local function auraRem(unit, buffId, mineOnly)
-  if not buffId then return nil end
-  local i=1
+  if not buffId then
+    return nil
+  end
+  local i = 1
   while true do
     local a = C_UnitAuras.GetAuraDataByIndex(unit, i, "HELPFUL")
-    if not a then break end
+    if not a then
+      break
+    end
     if a.spellId == buffId then
       if not mineOnly or (a.sourceUnit and UnitIsUnit(a.sourceUnit, "player")) then
         if a.expirationTime and a.expirationTime > 0 then
@@ -82,17 +97,25 @@ local function auraRem(unit, buffId, mineOnly)
         end
       end
     end
-    i=i+1
+    i = i + 1
   end
   return nil
 end
 
 local function hasGate(entry, name)
   local g = entry and entry.gates
-  if not g then return false end
-  if g[name] == true then return true end
+  if not g then
+    return false
+  end
+  if g[name] == true then
+    return true
+  end
   local n = #g
-  for i=1,n do if g[i] == name then return true end end
+  for i = 1, n do
+    if g[i] == name then
+      return true
+    end
+  end
   return false
 end
 
@@ -102,10 +125,16 @@ local function countSelfElementals(tbl, hasOrbit, mineOnlyES)
   local ES = tbl[974]
 
   local c = 0
-  if LS and auraRem("player", LS.buffID and LS.buffID[1], true) then c=c+1 end
-  if WS and auraRem("player", WS.buffID and WS.buffID[1], true) then c=c+1 end
+  if LS and auraRem("player", LS.buffID and LS.buffID[1], true) then
+    c = c + 1
+  end
+  if WS and auraRem("player", WS.buffID and WS.buffID[1], true) then
+    c = c + 1
+  end
   local selfESid = hasOrbit and (ES and ES.buffOnSelf) or (ES and ES.buffOnOthers)
-  if selfESid and auraRem("player", selfESid, mineOnlyES) then c=c+1 end
+  if selfESid and auraRem("player", selfESid, mineOnlyES) then
+    c = c + 1
+  end
   return c
 end
 
@@ -116,66 +145,92 @@ local function countSelfAbove(tbl, hasOrbit, tSec, mineOnlyES)
 
   local c = 0
   local r = LS and auraRem("player", LS.buffID and LS.buffID[1], true)
-  if r and r > tSec then c=c+1 end
+  if r and r > tSec then
+    c = c + 1
+  end
   r = WS and auraRem("player", WS.buffID and WS.buffID[1], true)
-  if r and r > tSec then c=c+1 end
+  if r and r > tSec then
+    c = c + 1
+  end
   local selfESid = hasOrbit and (ES and ES.buffOnSelf) or (ES and ES.buffOnOthers)
   r = selfESid and auraRem("player", selfESid, mineOnlyES)
-  if r and r > tSec then c=c+1 end
+  if r and r > tSec then
+    c = c + 1
+  end
   return c
 end
 
 local function soonestEarthOnOthers(ES, mineOnlyES)
-  if not ES or not ES.buffOnOthers then return nil end
+  if not ES or not ES.buffOnOthers then
+    return nil
+  end
   local want = ES.buffOnOthers
   local best
   for _, u in ipairs(IterateGroupUnits()) do
     if u ~= "player" then
       local rem = auraRem(u, want, mineOnlyES)
-      if rem and (not best or rem < best) then best = rem end
+      if rem and (not best or rem < best) then
+        best = rem
+      end
     end
   end
   return best
 end
 
 local function soonestEarthAnywhere_NoOrbit(ES, mineOnlyES)
-  if not ES or not ES.buffOnOthers then return nil end
+  if not ES or not ES.buffOnOthers then
+    return nil
+  end
   local want = ES.buffOnOthers
   local best
   for _, u in ipairs(IterateGroupUnits()) do
     local rem = auraRem(u, want, mineOnlyES)
-    if rem and (not best or rem < best) then best = rem end
+    if rem and (not best or rem < best) then
+      best = rem
+    end
   end
   return best
 end
 
 local function nameInGroup(short)
-  if not short or short=="" then return false end
+  if not short or short == "" then
+    return false
+  end
   for _, u in ipairs(IterateGroupUnits()) do
-    if shortName(u) == short then return true end
+    if shortName(u) == short then
+      return true
+    end
   end
   return false
 end
 
 local function learnEarthFixedFrom(unit, ES)
-  if not ES or not ES.buffOnOthers then return false end
-  if not unit or unit=="player" then return false end
-  if not (unit:match("^party%d") or unit:match("^raid%d")) then return false end
+  if not ES or not ES.buffOnOthers then
+    return false
+  end
+  if not unit or unit == "player" then
+    return false
+  end
+  if not (unit:match("^party%d") or unit:match("^raid%d")) then
+    return false
+  end
 
   local want = ES.buffOnOthers
-  local i=1
+  local i = 1
   while true do
     local a = C_UnitAuras.GetAuraDataByIndex(unit, i, "HELPFUL")
-    if not a then break end
+    if not a then
+      break
+    end
     if a.spellId == want and a.sourceUnit and UnitIsUnit(a.sourceUnit, "player") then
       local who = shortName(unit)
-      local me  = shortName("player")
+      local me = shortName("player")
       if who and who ~= me and DB().fixedTargets[974] ~= who then
         DB().fixedTargets[974] = who
         return true
       end
     end
-    i=i+1
+    i = i + 1
   end
   return false
 end
@@ -185,19 +240,30 @@ local function InRestedArea()
 end
 
 local function Build()
-  if InCombat() then return end
-  if not isShaman() then clearCat(); return end
-  if InRestedArea() then clearCat(); return end
+  if InCombat() then
+    return
+  end
+  if not isShaman() then
+    clearCat()
+    return
+  end
+  if InRestedArea() then
+    clearCat()
+    return
+  end
 
   local tbl = ClickableRaidData and ClickableRaidData[CAT]
-  if not tbl then clearCat(); return end
+  if not tbl then
+    clearCat()
+    return
+  end
 
   local out = ensureCat()
   wipe(out)
 
-  local tSec      = thresholdSecs()
-  local hasOrbit  = knowSpell(ORBIT_TALENT)
-  local capSelf   = hasOrbit and 2 or 1
+  local tSec = thresholdSecs()
+  local hasOrbit = knowSpell(ORBIT_TALENT)
+  local capSelf = hasOrbit and 2 or 1
 
   local LS = tbl[192106]
   local WS = tbl[52127]
@@ -205,21 +271,23 @@ local function Build()
 
   local mineOnlyES = hasGate(ES, "mineOnly")
 
-  local selfAbove   = countSelfAbove(tbl, hasOrbit, tSec, mineOnlyES)
+  local selfAbove = countSelfAbove(tbl, hasOrbit, tSec, mineOnlyES)
   local atCapStrict = (selfAbove >= capSelf)
 
   local function addSelfIcon(row, orderHint, rem)
-    if not row or not knowSpell(row.spellID) then return end
+    if not row or not knowSpell(row.spellID) then
+      return
+    end
     local info = C_Spell.GetSpellInfo(row.spellID)
     local e = ns.copyItemData(row)
-    e.category  = CAT
-    e.spellID   = row.spellID
-    e.macro     = "/use " .. (info and info.name or row.name or "")
+    e.category = CAT
+    e.spellID = row.spellID
+    e.macro = "/use " .. (info and info.name or row.name or "")
     e.orderHint = orderHint
     if rem and rem > 0 and rem <= tSec then
       e.expireTime = GetTime() + rem
     end
-    out["self:"..row.spellID] = e
+    out["self:" .. row.spellID] = e
   end
 
   if LS and knowSpell(LS.spellID) then
@@ -250,7 +318,9 @@ local function Build()
     if hasOrbit then
       local othersAbove = (otherRem ~= nil) and (otherRem > tSec)
       local selfESid = (ES and ES.buffOnSelf) or (ES and ES.buffOnOthers)
-      if ES and ES.buffOnSelf then selfESid = ES.buffOnSelf end
+      if ES and ES.buffOnSelf then
+        selfESid = ES.buffOnSelf
+      end
       local selfESrem = selfESid and auraRem("player", selfESid, mineOnlyES) or nil
       local selfESAbove = (selfESrem ~= nil) and (selfESrem > tSec)
       local twoSelfAbove = (selfAbove >= 2)
@@ -265,9 +335,9 @@ local function Build()
 
       do
         local e = ns.copyItemData(ES)
-        e.category  = CAT
-        e.spellID   = ES.spellID
-        e.macro     = "/use [@target,help,nodead] " .. spellName
+        e.category = CAT
+        e.spellID = ES.spellID
+        e.macro = "/use [@target,help,nodead] " .. spellName
         e.orderHint = 10
         if otherRem and otherRem > 0 and otherRem <= tSec then
           e.expireTime = GetTime() + otherRem
@@ -277,15 +347,15 @@ local function Build()
 
       do
         local who = DB().fixedTargets[974]
-        local me  = shortName("player")
+        local me = shortName("player")
         if who and who ~= me and nameInGroup(who) then
           local e = ns.copyItemData(ES)
           e.category = CAT
-          e.spellID  = ES.spellID
-          e.isFixed  = true
-          e.macro    = "/use [@" .. who .. "] " .. spellName
-          e.btmLbl   = truncName(who)
-          e.orderHint= 20
+          e.spellID = ES.spellID
+          e.isFixed = true
+          e.macro = "/use [@" .. who .. "] " .. spellName
+          e.btmLbl = truncName(who)
+          e.orderHint = 20
           if otherRem and otherRem > 0 and otherRem <= tSec then
             e.expireTime = GetTime() + otherRem
           end
@@ -297,9 +367,13 @@ local function Build()
 end
 
 function ns.ShamanShields_Rebuild()
-  if InCombat() then return end
+  if InCombat() then
+    return
+  end
   Build()
-  if ns.RenderAll and not InCombat() then ns.RenderAll() end
+  if ns.RenderAll and not InCombat() then
+    ns.RenderAll()
+  end
 end
 
 function ns.ShamanShields_OnPEW()
@@ -333,8 +407,10 @@ end
 
 function ns.ShamanShields_OnUnitAura(unit)
   local tbl = ClickableRaidData and ClickableRaidData[CAT]
-  local ES  = tbl and tbl[974]
-  if not ES then return false end
+  local ES = tbl and tbl[974]
+  if not ES then
+    return false
+  end
   if unit and (unit == "player" or unit:match("^party%d") or unit:match("^raid%d")) then
     local changed = learnEarthFixedFrom(unit, ES)
     if changed then

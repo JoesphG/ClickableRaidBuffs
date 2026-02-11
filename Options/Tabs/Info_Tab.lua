@@ -8,28 +8,35 @@ local O = ns.Options
 
 local function _readVersion()
   local v = (C_AddOns and C_AddOns.GetAddOnMetadata and C_AddOns.GetAddOnMetadata(addonName, "Version"))
-          or (GetAddOnMetadata and GetAddOnMetadata(addonName, "Version"))
+    or (GetAddOnMetadata and GetAddOnMetadata(addonName, "Version"))
   return (v and v ~= "") and v or "dev"
 end
 
 ns.VERSION = _readVersion()
 
-local ORDER_BOX_BG  = {0.08, 0.09, 0.12, 1.00}
-local TILE_BG       = {0.10, 0.115, 0.16, 1.00}
-local BORDER_COL    = {0.20, 0.22, 0.28, 1.00}
+local ORDER_BOX_BG = { 0.08, 0.09, 0.12, 1.00 }
+local TILE_BG = { 0.10, 0.115, 0.16, 1.00 }
+local BORDER_COL = { 0.20, 0.22, 0.28, 1.00 }
 
 local THEME = {
-  fontPath    = function() if O and O.ResolvePanelFont then return O.ResolvePanelFont() end return "Fonts\\FRIZQT__.TTF" end,
-  sizeLabel   = function() return (O and O.SIZE_LABEL) or 14 end,
-  cardBG      = {0.09,0.10,0.14,0.95},
-  cardBR      = BORDER_COL,
-  wellBG      = ORDER_BOX_BG,
-  wellBR      = BORDER_COL,
-  rowBG       = TILE_BG,
-  rowBR       = BORDER_COL,
+  fontPath = function()
+    if O and O.ResolvePanelFont then
+      return O.ResolvePanelFont()
+    end
+    return "Fonts\\FRIZQT__.TTF"
+  end,
+  sizeLabel = function()
+    return (O and O.SIZE_LABEL) or 14
+  end,
+  cardBG = { 0.09, 0.10, 0.14, 0.95 },
+  cardBR = BORDER_COL,
+  wellBG = ORDER_BOX_BG,
+  wellBR = BORDER_COL,
+  rowBG = TILE_BG,
+  rowBR = BORDER_COL,
 }
 local function PaintBackdrop(frame, bg, br)
-  frame:SetBackdrop({ bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=1 })
+  frame:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1 })
   frame:SetBackdropColor(unpack(bg))
   frame:SetBackdropBorderColor(unpack(br))
 end
@@ -59,7 +66,7 @@ O.RegisterSection(function(AddSection)
     local TOP_PAD, SIDE_PAD, BAR_WIDTH, RIGHT_GAP = 8, 10, 16, 8
 
     local scroll = CreateFrame("ScrollFrame", nil, inner, "BackdropTemplate")
-    scroll:SetPoint("TOPLEFT",     inner, "TOPLEFT",  SIDE_PAD, -TOP_PAD)
+    scroll:SetPoint("TOPLEFT", inner, "TOPLEFT", SIDE_PAD, -TOP_PAD)
     scroll:SetPoint("BOTTOMRIGHT", inner, "BOTTOMRIGHT", -(SIDE_PAD + BAR_WIDTH + RIGHT_GAP), SIDE_PAD)
 
     local contentFrame = CreateFrame("Frame", nil, scroll)
@@ -76,10 +83,10 @@ O.RegisterSection(function(AddSection)
     title:SetFont(THEME.fontPath(), THEME.sizeLabel() + 4, "")
     title:SetJustifyH("LEFT")
     title:SetText(
-      "NOTE:  This addon is mostly disabled in cities\n" ..
-      "            and rested areas.  If icons are missing,\n" ..
-      "            check whether you're in one of those areas.\n" ..
-      "            Consumables only load inside instances."
+      "NOTE:  This addon is mostly disabled in cities\n"
+        .. "            and rested areas.  If icons are missing,\n"
+        .. "            check whether you're in one of those areas.\n"
+        .. "            Consumables only load inside instances."
     )
 
     local body = contentFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
@@ -95,17 +102,17 @@ O.RegisterSection(function(AddSection)
     body2:SetFont("Interface\\AddOns\\ClickableRaidBuffs\\Media\\Fonts\\Fira_Sans\\FiraSans-Medium.ttf", 16, "")
     body2:SetJustifyH("LEFT")
     body2:SetText(
-      "Commands:\n" ..
-      "      |cFF00ccff/crb /buff /funki|r |cffff7d0Funlock|r  -  Toggle icon lock\n" ..
-      "      |cFF00ccff/crb /buff /funki|r |cffff7d0Flock|r  -  Toggle icon lock\n" ..
-      "      |cFF00ccff/crb /buff /funki|r |cffff7d0Fminimap|r  -  Toggle minimap icon\n" ..
-      "      |cFF00ccff/crb /buff /funki|r |cffff7d0Freset|r  -  Reset all settings to default and reload UI"
+      "Commands:\n"
+        .. "      |cFF00ccff/crb /buff /funki|r |cffff7d0Funlock|r  -  Toggle icon lock\n"
+        .. "      |cFF00ccff/crb /buff /funki|r |cffff7d0Flock|r  -  Toggle icon lock\n"
+        .. "      |cFF00ccff/crb /buff /funki|r |cffff7d0Fminimap|r  -  Toggle minimap icon\n"
+        .. "      |cFF00ccff/crb /buff /funki|r |cffff7d0Freset|r  -  Reset all settings to default and reload UI"
     )
 
     local unlockCB = CreateFrame("CheckButton", nil, inner, "BackdropTemplate")
     unlockCB:SetSize(20, 20)
     unlockCB:SetPoint("BOTTOMLEFT", inner, "BOTTOMLEFT", 5, 5)
-    PaintBackdrop(unlockCB, {0.05,0.06,0.08,1}, {0.22,0.24,0.30,1})
+    PaintBackdrop(unlockCB, { 0.05, 0.06, 0.08, 1 }, { 0.22, 0.24, 0.30, 1 })
 
     local tick = unlockCB:CreateTexture(nil, "ARTWORK")
     tick:SetAtlas("common-icon-checkmark", true)
@@ -121,26 +128,32 @@ O.RegisterSection(function(AddSection)
 
     unlockCB:SetScript("OnClick", function(self)
       local state = self:GetChecked()
-      if self._tick then self._tick:SetShown(state) end
-      if ns.ToggleMover then ns.ToggleMover(state) end
+      if self._tick then
+        self._tick:SetShown(state)
+      end
+      if ns.ToggleMover then
+        ns.ToggleMover(state)
+      end
     end)
 
     ns.InfoTab_UpdateUnlockCheckbox = function(state)
       unlockCB:SetChecked(state and true or false)
-      if unlockCB._tick then unlockCB._tick:SetShown(state and true or false) end
+      if unlockCB._tick then
+        unlockCB._tick:SetShown(state and true or false)
+      end
     end
 
     local hideCB = CreateFrame("CheckButton", nil, inner, "BackdropTemplate")
     hideCB:SetSize(20, 20)
     hideCB:SetPoint("LEFT", lab, "RIGHT", 16, 0)
-    PaintBackdrop(hideCB, {0.05,0.06,0.08,1}, {0.22,0.24,0.30,1})
+    PaintBackdrop(hideCB, { 0.05, 0.06, 0.08, 1 }, { 0.22, 0.24, 0.30, 1 })
 
     local ver = contentFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
     ver:SetPoint("TOPLEFT", inner, "TOPLEFT", -45, -12)
     ver:SetWidth(200)
     ver:SetFont("Interface\\AddOns\\ClickableRaidBuffs\\Media\\Fonts\\Fira_Sans\\FiraSans-ExtraBold.ttf", 22, "")
     ver:SetJustifyH("RIGHT")
-    ver:SetText("Version:  |cFF00ccff" .. ns.VERSION .."|r")
+    ver:SetText("Version:  |cFF00ccff" .. ns.VERSION .. "|r")
 
     local hideTick = hideCB:CreateTexture(nil, "ARTWORK")
     hideTick:SetAtlas("common-icon-checkmark", true)
@@ -156,7 +169,9 @@ O.RegisterSection(function(AddSection)
 
     hideCB:SetScript("OnClick", function(self)
       local state = self:GetChecked()
-      if self._tick then self._tick:SetShown(state) end
+      if self._tick then
+        self._tick:SetShown(state)
+      end
       local addon = LibStub("AceAddon-3.0"):GetAddon("ClickableRaidBuffs", true)
       if addon and addon.ToggleMinimapButton then
         addon:ToggleMinimapButton(state)
@@ -169,7 +184,9 @@ O.RegisterSection(function(AddSection)
         state = GetMinimapHidden()
       end
       hideCB:SetChecked(state and true or false)
-      if hideCB._tick then hideCB._tick:SetShown(state and true or false) end
+      if hideCB._tick then
+        hideCB._tick:SetShown(state and true or false)
+      end
     end
 
     C_Timer.After(0, function()

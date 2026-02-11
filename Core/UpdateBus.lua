@@ -7,61 +7,96 @@ ns = ns or {}
 _G[addonName] = ns
 
 local _flags = {
-  bagsDirty      = false,
-  rosterDirty    = false,
-  enchantsDirty  = false,
-  optionsDirty   = false,
-  gatesDirty     = false,
+  bagsDirty = false,
+  rosterDirty = false,
+  enchantsDirty = false,
+  optionsDirty = false,
+  gatesDirty = false,
 }
 local _aurasDirty = {}
-local _dirtyBags  = {}
+local _dirtyBags = {}
 
-local _updateArmed   = false
+local _updateArmed = false
 local _renderPending = false
-local _renderDelay   = 0.05
-local _updateDelay   = 0.02
+local _renderDelay = 0.05
+local _updateDelay = 0.02
 
 function ns.MarkBagsDirty(bagID)
   _flags.bagsDirty = true
-  if type(bagID) == "number" then _dirtyBags[bagID] = true end
+  if type(bagID) == "number" then
+    _dirtyBags[bagID] = true
+  end
 end
-function ns.MarkRosterDirty()    _flags.rosterDirty   = true end
-function ns.MarkEnchantsDirty()  _flags.enchantsDirty = true end
-function ns.MarkOptionsDirty()   _flags.optionsDirty  = true end
-function ns.MarkGatesDirty()     _flags.gatesDirty    = true end
+function ns.MarkRosterDirty()
+  _flags.rosterDirty = true
+end
+function ns.MarkEnchantsDirty()
+  _flags.enchantsDirty = true
+end
+function ns.MarkOptionsDirty()
+  _flags.optionsDirty = true
+end
+function ns.MarkGatesDirty()
+  _flags.gatesDirty = true
+end
 function ns.MarkAurasDirty(unit)
-  if unit and type(unit)=="string" then _aurasDirty[unit] = true end
+  if unit and type(unit) == "string" then
+    _aurasDirty[unit] = true
+  end
 end
 
 function ns.ConsumeDirtyBags(out)
-  if not _flags.bagsDirty then return 0 end
+  if not _flags.bagsDirty then
+    return 0
+  end
   local n = 0
-  for b in pairs(_dirtyBags) do out[b] = true; _dirtyBags[b] = nil; n = n + 1 end
+  for b in pairs(_dirtyBags) do
+    out[b] = true
+    _dirtyBags[b] = nil
+    n = n + 1
+  end
   return n
 end
 
 local function _callRenderNow()
-  if type(ns._RenderAllInner) == "function" then ns._RenderAllInner(); return end
-  if type(ns.RenderAll) == "function" then ns.RenderAll() end
+  if type(ns._RenderAllInner) == "function" then
+    ns._RenderAllInner()
+    return
+  end
+  if type(ns.RenderAll) == "function" then
+    ns.RenderAll()
+  end
 end
 
 function ns.PushRender()
-  if _renderPending then return end
+  if _renderPending then
+    return
+  end
   _renderPending = true
-  C_Timer.After(_renderDelay, function() _renderPending = false; _callRenderNow() end)
+  C_Timer.After(_renderDelay, function()
+    _renderPending = false
+    _callRenderNow()
+  end)
 end
 
 if type(ns.RenderAll) == "function" and type(ns._RenderAllInner) ~= "function" then
   ns._RenderAllInner = ns.RenderAll
-  ns.RenderAll = function() return ns.PushRender() end
+  ns.RenderAll = function()
+    return ns.PushRender()
+  end
 end
 
 if type(ns.RequestRebuild) ~= "function" then
-  function ns.RequestRebuild() ns.MarkOptionsDirty(); ns.PokeUpdateBus() end
+  function ns.RequestRebuild()
+    ns.MarkOptionsDirty()
+    ns.PokeUpdateBus()
+  end
 end
 
 local function _recomputeGates()
-  if type(getPlayerLevel) == "function" then getPlayerLevel() end
+  if type(getPlayerLevel) == "function" then
+    getPlayerLevel()
+  end
   if type(restedXPGate) == "function" then
     restedXPGate()
   else
@@ -86,14 +121,18 @@ local function _isConsumablesSuppressed()
     local _, _, diffID = GetInstanceInfo()
     if diffID == 8 then
       local ddb = (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB or {}
-      if ddb and ddb.mplusDisableConsumables == true then return true end
+      if ddb and ddb.mplusDisableConsumables == true then
+        return true
+      end
     end
   end
   return false
 end
 
 local function _applyConsumableSuppressionIfActive()
-  if not _isConsumablesSuppressed() then return false end
+  if not _isConsumablesSuppressed() then
+    return false
+  end
   clickableRaidBuffCache = clickableRaidBuffCache or {}
   clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
   local d = clickableRaidBuffCache.displayable
@@ -102,7 +141,15 @@ local function _applyConsumableSuppressionIfActive()
 end
 
 local function _runOnce()
-  if ns and (ns._inCombat or (IsEncounterInProgress and IsEncounterInProgress()) or (UnitIsDeadOrGhost and UnitIsDeadOrGhost("player")) or InCombatLockdown()) then
+  if
+    ns
+    and (
+      ns._inCombat
+      or (IsEncounterInProgress and IsEncounterInProgress())
+      or (UnitIsDeadOrGhost and UnitIsDeadOrGhost("player"))
+      or InCombatLockdown()
+    )
+  then
     _updateArmed = false
     return
   end
@@ -110,20 +157,23 @@ local function _runOnce()
   _updateArmed = false
 
   local hadAuras = false
-  for _ in pairs(_aurasDirty) do hadAuras = true; break end
+  for _ in pairs(_aurasDirty) do
+    hadAuras = true
+    break
+  end
   wipe(_aurasDirty)
 
-  local doBags     = _flags.bagsDirty
-  local doRoster   = _flags.rosterDirty
+  local doBags = _flags.bagsDirty
+  local doRoster = _flags.rosterDirty
   local doEnchants = _flags.enchantsDirty
-  local doOptions  = _flags.optionsDirty
-  local doGates    = _flags.gatesDirty
+  local doOptions = _flags.optionsDirty
+  local doGates = _flags.gatesDirty
 
-  _flags.bagsDirty     = false
-  _flags.rosterDirty   = false
+  _flags.bagsDirty = false
+  _flags.rosterDirty = false
   _flags.enchantsDirty = false
-  _flags.optionsDirty  = false
-  _flags.gatesDirty    = false
+  _flags.optionsDirty = false
+  _flags.gatesDirty = false
 
   _recomputeGates()
 
@@ -146,8 +196,12 @@ local function _runOnce()
   end
 
   if doOptions then
-    if type(ns.RebuildDisplayables) == "function" then ns.RebuildDisplayables() end
-    if type(ns.RefreshEverything)   == "function" then ns.RefreshEverything()   end
+    if type(ns.RebuildDisplayables) == "function" then
+      ns.RebuildDisplayables()
+    end
+    if type(ns.RefreshEverything) == "function" then
+      ns.RefreshEverything()
+    end
   end
 
   ns.PushRender()
@@ -158,7 +212,9 @@ local function _runOnce()
 end
 
 function ns.PokeUpdateBus()
-  if _updateArmed then return end
+  if _updateArmed then
+    return
+  end
   _updateArmed = true
   C_Timer.After(_updateDelay, _runOnce)
 end

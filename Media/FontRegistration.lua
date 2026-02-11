@@ -4,7 +4,9 @@
 
 local addon = ...
 local LSM = LibStub("LibSharedMedia-3.0", true)
-if not LSM then return end
+if not LSM then
+  return
+end
 
 local base = "Interface\\AddOns\\" .. addon .. "\\Media\\Fonts"
 

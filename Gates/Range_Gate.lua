@@ -5,7 +5,9 @@
 local addonName, ns = ...
 ns = ns or {}
 
-local function DB() return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {} end
+local function DB()
+  return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
+end
 
 local function GetSpellRange(spellID)
   local info = C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(spellID)
@@ -16,7 +18,9 @@ local function GetSpellRange(spellID)
 end
 
 local function UnitHasAnyBuffFromIDs(unit, ids)
-  if not ids or not unit then return false end
+  if not ids or not unit then
+    return false
+  end
   local found = false
   AuraUtil.ForEachAura(unit, "HELPFUL", nil, function(a)
     if a and a.spellId and ids[a.spellId] then
@@ -30,32 +34,48 @@ end
 local function GetGroupUnits()
   local out, n = {}, 0
   if IsInRaid() then
-    for i=1,GetNumGroupMembers() do
-      local u = "raid"..i
-      if UnitExists(u) then n=n+1; out[n] = u end
+    for i = 1, GetNumGroupMembers() do
+      local u = "raid" .. i
+      if UnitExists(u) then
+        n = n + 1
+        out[n] = u
+      end
     end
   elseif IsInGroup() then
-    for i=1,GetNumSubgroupMembers() do
-      local u = "party"..i
-      if UnitExists(u) then n=n+1; out[n] = u end
+    for i = 1, GetNumSubgroupMembers() do
+      local u = "party" .. i
+      if UnitExists(u) then
+        n = n + 1
+        out[n] = u
+      end
     end
   end
-  n=n+1; out[n] = "player"
+  n = n + 1
+  out[n] = "player"
   return out, n
 end
 
 local function ResolveBuffIDsForData(data)
-  if not data then return {} end
+  if not data then
+    return {}
+  end
   local list = data.buffID or data.buffIDs
   if not list then
     if data.spellID then
-      local s = {}; s[data.spellID] = true; return s
+      local s = {}
+      s[data.spellID] = true
+      return s
     end
     return {}
   end
   local ids = {}
   if type(list) == "table" then
-    for i = 1, #list do local v = list[i]; if v then ids[v] = true end end
+    for i = 1, #list do
+      local v = list[i]
+      if v then
+        ids[v] = true
+      end
+    end
   elseif type(list) == "number" then
     ids[list] = true
   end
@@ -73,10 +93,18 @@ function ns.IsRangeTickerRunning()
 end
 
 local function IsTickerEligible()
-  if type(ns.locked) == "function" and ns.locked() then return false end
-  if ns._inCombat or (InCombatLockdown and InCombatLockdown()) then return false end
-  if ns._isDead   or (UnitIsDeadOrGhost and UnitIsDeadOrGhost("player")) then return false end
-  if not (IsInGroup() or IsInRaid()) then return false end
+  if type(ns.locked) == "function" and ns.locked() then
+    return false
+  end
+  if ns._inCombat or (InCombatLockdown and InCombatLockdown()) then
+    return false
+  end
+  if ns._isDead or (UnitIsDeadOrGhost and UnitIsDeadOrGhost("player")) then
+    return false
+  end
+  if not (IsInGroup() or IsInRaid()) then
+    return false
+  end
   return true
 end
 
@@ -114,7 +142,7 @@ local function TickRangeGate()
             local ret = C_Spell.IsSpellInRange(spellID, u)
             inRange = (ret == true)
           end
-          miss[#miss+1] = { unit = u, name = UnitName(u), inRange = inRange }
+          miss[#miss + 1] = { unit = u, name = UnitName(u), inRange = inRange }
           if inRange then
             foundInRange = true
             break
@@ -124,7 +152,9 @@ local function TickRangeGate()
         end
       end
 
-      if #miss > 0 then anyMissing = true end
+      if #miss > 0 then
+        anyMissing = true
+      end
 
       local nowAllIn = (#miss > 0) and (foundInRange and not anyMissingOutOfRange) or false
       local desiredGlow = nowAllIn and "special" or nil
@@ -134,7 +164,7 @@ local function TickRangeGate()
         anyGlowChanged = true
       end
 
-      spells[#spells+1] = { spellID = spellID, name = spellName, maxRange = maxRange, missing = miss }
+      spells[#spells + 1] = { spellID = spellID, name = spellName, maxRange = maxRange, missing = miss }
     end
   end
 
@@ -155,7 +185,9 @@ local function TickRangeGate()
 end
 
 local function StartTicker()
-  if RangeState.ticker or not IsTickerEligible() then return end
+  if RangeState.ticker or not IsTickerEligible() then
+    return
+  end
   RangeState.inactivityTicks = 0
   RangeState.ticker = C_Timer.NewTicker(2.0, TickRangeGate)
 end
@@ -166,7 +198,9 @@ function ns.InitRangeGate()
 end
 
 function ns.RangeGate_OnRosterOrSpellsChanged()
-  if not ns._rangeTracked then return end
+  if not ns._rangeTracked then
+    return
+  end
 
   local shouldRun = false
   if next(ns._rangeTracked) then
@@ -182,7 +216,9 @@ function ns.RangeGate_OnRosterOrSpellsChanged()
           end
         end
       end
-      if shouldRun then break end
+      if shouldRun then
+        break
+      end
     end
   end
 
@@ -194,7 +230,9 @@ function ns.RangeGate_OnRosterOrSpellsChanged()
 end
 
 local function EnsureTracked(spellID, ids)
-  if not ns._rangeTracked then ns._rangeTracked = {} end
+  if not ns._rangeTracked then
+    ns._rangeTracked = {}
+  end
   local t = ns._rangeTracked[spellID]
   if not t then
     ns._rangeTracked[spellID] = { ids = ids }
@@ -204,7 +242,9 @@ local function EnsureTracked(spellID, ids)
 end
 
 function ns.Gate_Range(ctx, data)
-  if not data or not data.spellID then return true end
+  if not data or not data.spellID then
+    return true
+  end
 
   local ids = ResolveBuffIDsForData(data)
   local spellID = data.spellID

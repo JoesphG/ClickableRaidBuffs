@@ -6,25 +6,31 @@ local addonName, ns = ...
 ns.ScrollBar = ns.ScrollBar or {}
 
 local CFG = {
-  width          = 14, 
-  sliderWidth    = 14,
-  minThumbH      = 22,
-  stepSmall      = 24,
-  pageFrac       = 0.9,
-  padTrackTop    = 2,
+  width = 14,
+  sliderWidth = 14,
+  minThumbH = 22,
+  stepSmall = 24,
+  pageFrac = 0.9,
+  padTrackTop = 2,
   padTrackBottom = 2,
 }
 
 local function clamp(v, lo, hi)
-  if v < lo then return lo elseif v > hi then return hi else return v end
+  if v < lo then
+    return lo
+  elseif v > hi then
+    return hi
+  else
+    return v
+  end
 end
 
 function ns.ScrollBar.Create(parent, opts)
   opts = opts or {}
-  local W    = opts.width       or CFG.width
-  local SW   = opts.sliderWidth or CFG.sliderWidth
-  local MINH = opts.minThumbH   or CFG.minThumbH
-  local STEP = opts.stepSmall   or CFG.stepSmall
+  local W = opts.width or CFG.width
+  local SW = opts.sliderWidth or CFG.sliderWidth
+  local MINH = opts.minThumbH or CFG.minThumbH
+  local STEP = opts.stepSmall or CFG.stepSmall
 
   local bar = CreateFrame("Frame", nil, parent, "BackdropTemplate")
   bar:SetWidth(W)
@@ -45,12 +51,12 @@ function ns.ScrollBar.Create(parent, opts)
   down:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 0, 0)
 
   local track = CreateFrame("Button", nil, bar, "BackdropTemplate")
-  track:SetPoint("TOP",    up,   "BOTTOM", 0, -CFG.padTrackTop)
-  track:SetPoint("BOTTOM", down, "TOP",    0,  CFG.padTrackBottom)
+  track:SetPoint("TOP", up, "BOTTOM", 0, -CFG.padTrackTop)
+  track:SetPoint("BOTTOM", down, "TOP", 0, CFG.padTrackBottom)
   track:SetWidth(SW)
   track:EnableMouse(true)
-  track:SetBackdrop({ bgFile="Interface\\Buttons\\WHITE8x8" })
-  track:SetBackdropColor(0.10,0.115,0.16, 0.9)
+  track:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8" })
+  track:SetBackdropColor(0.10, 0.115, 0.16, 0.9)
 
   local slider = CreateFrame("Slider", nil, track)
   slider:SetOrientation("VERTICAL")
@@ -71,15 +77,27 @@ function ns.ScrollBar.Create(parent, opts)
   core:SetPoint("CENTER", thumb, "CENTER", 0, 0)
   core:SetSize(SW - 4, MINH - 4)
 
-  function bar:SetMinMaxValues(a, b) slider:SetMinMaxValues(a, b) end
-  function bar:GetMinMaxValues() return slider:GetMinMaxValues() end
-  function bar:SetValue(v) slider:SetValue(v) end
-  function bar:GetValue() return slider:GetValue() end
-  function bar:SetValueStep(s) slider:SetValueStep(s or STEP) end
+  function bar:SetMinMaxValues(a, b)
+    slider:SetMinMaxValues(a, b)
+  end
+  function bar:GetMinMaxValues()
+    return slider:GetMinMaxValues()
+  end
+  function bar:SetValue(v)
+    slider:SetValue(v)
+  end
+  function bar:GetValue()
+    return slider:GetValue()
+  end
+  function bar:SetValueStep(s)
+    slider:SetValueStep(s or STEP)
+  end
   function bar:SetEnabledState(state)
     local alpha = state and 1 or 0.35
-    up:SetEnabled(state); down:SetEnabled(state)
-    up:SetAlpha(alpha);   down:SetAlpha(alpha)
+    up:SetEnabled(state)
+    down:SetEnabled(state)
+    up:SetAlpha(alpha)
+    down:SetAlpha(alpha)
     slider:EnableMouse(state and true or false)
     track:EnableMouse(state and true or false)
   end
@@ -99,17 +117,23 @@ function ns.ScrollBar.Create(parent, opts)
     local th = math.max(MINH, (track:GetHeight() - 8) * ratio)
     thumb:SetHeight(th)
     core:SetHeight(math.max(8, th - 4))
-    thumb:Show(); core:Show()
+    thumb:Show()
+    core:Show()
   end
 
   function bar:BindToScroll(scroll, content)
     bar._scroll = scroll
     bar._content = content
     slider:SetScript("OnValueChanged", function(_, v)
-      if bar._scroll then bar._scroll:SetVerticalScroll(v) end
-      if bar._onValue then bar._onValue(bar, v) end
+      if bar._scroll then
+        bar._scroll:SetVerticalScroll(v)
+      end
+      if bar._onValue then
+        bar._onValue(bar, v)
+      end
       local lo, hi = slider:GetMinMaxValues()
-      up:SetEnabled(v > lo); down:SetEnabled(v < hi)
+      up:SetEnabled(v > lo)
+      down:SetEnabled(v < hi)
       up:SetAlpha(up:IsEnabled() and 1 or 0.35)
       down:SetAlpha(down:IsEnabled() and 1 or 0.35)
     end)
@@ -139,13 +163,21 @@ function ns.ScrollBar.Create(parent, opts)
     local page = viewH * CFG.pageFrac
     local lo, hi = slider:GetMinMaxValues()
     local scale = bar:GetEffectiveScale()
-    local _, cy = GetCursorPosition(); cy = cy / scale
+    local _, cy = GetCursorPosition()
+    cy = cy / scale
     local top, bot = track:GetTop() or 0, track:GetBottom() or 0
-    local frac = 0; local h = (top - bot)
-    if h > 0 then frac = clamp((top - cy) / h, 0, 1) end
+    local frac = 0
+    local h = (top - bot)
+    if h > 0 then
+      frac = clamp((top - cy) / h, 0, 1)
+    end
     local target = lo + frac * (hi - lo)
     local v = slider:GetValue()
-    if target > v then v = v + page else v = v - page end
+    if target > v then
+      v = v + page
+    else
+      v = v - page
+    end
     slider:SetValue(clamp(v, lo, hi))
   end)
 
@@ -163,19 +195,28 @@ function ns.ScrollBar.Create(parent, opts)
   local activeTicker
   local function startRepeat(dir)
     nudge(dir)
-    activeTicker = C_Timer.NewTicker(0.06, function() nudge(dir) end)
+    activeTicker = C_Timer.NewTicker(0.06, function()
+      nudge(dir)
+    end)
   end
   local function stopRepeat()
-    if activeTicker then activeTicker:Cancel(); activeTicker = nil end
+    if activeTicker then
+      activeTicker:Cancel()
+      activeTicker = nil
+    end
   end
   up:SetScript("OnMouseDown", function(_, btn)
-    if btn == "LeftButton" then startRepeat(-1) end
+    if btn == "LeftButton" then
+      startRepeat(-1)
+    end
   end)
   up:SetScript("OnMouseUp", stopRepeat)
   up:SetScript("OnHide", stopRepeat)
 
   down:SetScript("OnMouseDown", function(_, btn)
-    if btn == "LeftButton" then startRepeat(1) end
+    if btn == "LeftButton" then
+      startRepeat(1)
+    end
   end)
   down:SetScript("OnMouseUp", stopRepeat)
   down:SetScript("OnHide", stopRepeat)

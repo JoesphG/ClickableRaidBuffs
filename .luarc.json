@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime.version": "Lua 5.1",
+  "runtime.builtin": {
+    "basic": true,
+    "math": true,
+    "string": true,
+    "table": true,
+    "coroutine": true,
+    "debug": true,
+    "io": false,
+    "os": false,
+    "package": false
+  },
+  "workspace.library": [
+    "Tools/lls"
+  ],
+  "workspace.ignoreDir": [
+    "Libs",
+    ".lls"
+  ],
+  "workspace.checkThirdParty": false,
+  "diagnostics.globals": [
+    "_G",
+    "ClickableRaidBuffsDB",
+    "ClickableRaidBuffsMinimapDB",
+    "ClickableRaidData",
+    "clickableRaidBuffCache",
+    "LibStub",
+    "UIParent",
+    "GameTooltip",
+    "DEFAULT_CHAT_FRAME"
+  ]
+}

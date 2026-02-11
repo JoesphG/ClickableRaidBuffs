@@ -6,32 +6,36 @@ local addonName, ns = ...
 
 local C = _G.clickableRaidBuffCache or {}
 _G.clickableRaidBuffCache = C
-C.playerInfo  = C.playerInfo  or {}
+C.playerInfo = C.playerInfo or {}
 C.displayable = C.displayable or {}
 
 local function DB()
   return (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB or {}
 end
 
-local WEAPON_CLASS = (Enum and Enum.ItemClass and Enum.ItemClass.Weapon) or (LE_ITEM_CLASS_WEAPON) or 2
+local WEAPON_CLASS = (Enum and Enum.ItemClass and Enum.ItemClass.Weapon) or LE_ITEM_CLASS_WEAPON or 2
 local W = (Enum and Enum.ItemWeaponSubclass) or {}
 
 local function setFrom(...)
   local t = {}
   for i = 1, select("#", ...) do
     local v = select(i, ...)
-    if v ~= nil then t[v] = true end
+    if v ~= nil then
+      t[v] = true
+    end
   end
   return t
 end
 
-local BLADED  = setFrom(W.Axe1H, W.Axe2H, W.Sword1H, W.Sword2H, W.Dagger, W.Polearm, W.Warglaive)
-local BLUNT   = setFrom(W.Mace1H, W.Mace2H, W.Staff, W.Fist)
-local RANGED  = setFrom(W.Bow, W.Gun, W.Crossbow, W.Wand)
+local BLADED = setFrom(W.Axe1H, W.Axe2H, W.Sword1H, W.Sword2H, W.Dagger, W.Polearm, W.Warglaive)
+local BLUNT = setFrom(W.Mace1H, W.Mace2H, W.Staff, W.Fist)
+local RANGED = setFrom(W.Bow, W.Gun, W.Crossbow, W.Wand)
 local NEUTRAL = setFrom(W.FishingPole)
 
 local function GetInstantInfo(itemID)
-  if not itemID then return nil end
+  if not itemID then
+    return nil
+  end
   if C_Item and C_Item.GetItemInfoInstant then
     local _, _, _, equipLoc, _, classID, subClassID = C_Item.GetItemInfoInstant(itemID)
     return classID, subClassID, equipLoc
@@ -41,31 +45,39 @@ local function GetInstantInfo(itemID)
 end
 
 local function NormalizeSlotType(s)
-  if not s then return nil end
-  s = tostring(s):gsub("%s+",""):upper():gsub("1H","ONEHAND"):gsub("2H","TWOHAND")
+  if not s then
+    return nil
+  end
+  s = tostring(s):gsub("%s+", ""):upper():gsub("1H", "ONEHAND"):gsub("2H", "TWOHAND")
   return s
 end
 
 local ENCHANTABLE_EQUIP = {
-  INVTYPE_WEAPON         = { type = "ONEHAND", enchantable = true  },
-  INVTYPE_WEAPONMAINHAND = { type = "ONEHAND", enchantable = true  },
-  INVTYPE_WEAPONOFFHAND  = { type = "ONEHAND", enchantable = true  },
-  INVTYPE_2HWEAPON       = { type = "TWOHAND", enchantable = true  },
-  INVTYPE_RANGED         = { type = "TWOHAND", enchantable = true  },
-  INVTYPE_RANGEDRIGHT    = { type = "ONEHAND", enchantable = true  },
-  INVTYPE_SHIELD         = { type = nil,       enchantable = false },
-  INVTYPE_HOLDABLE       = { type = nil,       enchantable = false },
-  INVTYPE_FISHINGPOLE    = { type = "TWOHAND", enchantable = false },
+  INVTYPE_WEAPON = { type = "ONEHAND", enchantable = true },
+  INVTYPE_WEAPONMAINHAND = { type = "ONEHAND", enchantable = true },
+  INVTYPE_WEAPONOFFHAND = { type = "ONEHAND", enchantable = true },
+  INVTYPE_2HWEAPON = { type = "TWOHAND", enchantable = true },
+  INVTYPE_RANGED = { type = "TWOHAND", enchantable = true },
+  INVTYPE_RANGEDRIGHT = { type = "ONEHAND", enchantable = true },
+  INVTYPE_SHIELD = { type = nil, enchantable = false },
+  INVTYPE_HOLDABLE = { type = nil, enchantable = false },
+  INVTYPE_FISHINGPOLE = { type = "TWOHAND", enchantable = false },
 }
 
 local function HandTypeAndEnchantable(hand)
   local slot = (hand == "mainHand") and 16 or 17
   local itemID = GetInventoryItemID("player", slot)
-  if not itemID then return nil, false end
+  if not itemID then
+    return nil, false
+  end
   local _, _, equipLoc = GetInstantInfo(itemID)
-  if not equipLoc then return nil, false end
+  if not equipLoc then
+    return nil, false
+  end
   local info = ENCHANTABLE_EQUIP[equipLoc]
-  if not info then return nil, false end
+  if not info then
+    return nil, false
+  end
   return info.type, info.enchantable
 end
 
@@ -77,41 +89,71 @@ end
 local function EquippedWeaponCategory(hand)
   local slot = (hand == "mainHand") and 16 or 17
   local itemID = GetInventoryItemID("player", slot)
-  if not itemID then return nil end
+  if not itemID then
+    return nil
+  end
   local classID, subClassID, equipLoc = GetInstantInfo(itemID)
-  if not classID or not subClassID then return nil end
-  if equipLoc == "INVTYPE_SHIELD" or equipLoc == "INVTYPE_HOLDABLE" then return nil end
-  if classID ~= WEAPON_CLASS then return nil end
-  if subClassID and BLADED[subClassID] then return "BLADED" end
-  if subClassID and BLUNT[subClassID]  then return "BLUNT"  end
-  if subClassID and RANGED[subClassID] then return "RANGED" end
+  if not classID or not subClassID then
+    return nil
+  end
+  if equipLoc == "INVTYPE_SHIELD" or equipLoc == "INVTYPE_HOLDABLE" then
+    return nil
+  end
+  if classID ~= WEAPON_CLASS then
+    return nil
+  end
+  if subClassID and BLADED[subClassID] then
+    return "BLADED"
+  end
+  if subClassID and BLUNT[subClassID] then
+    return "BLUNT"
+  end
+  if subClassID and RANGED[subClassID] then
+    return "RANGED"
+  end
   return "NEUTRAL"
-
 end
 
 local function WeaponTypeForItem(itemID)
   local classID, subClassID, equipLoc = GetInstantInfo(itemID)
-  if not classID then return nil end
-  if equipLoc == "INVTYPE_SHIELD" or equipLoc == "INVTYPE_HOLDABLE" then return nil end
-  if classID ~= WEAPON_CLASS then return nil end
-  if subClassID and BLADED[subClassID] then return "BLADED" end
-  if subClassID and BLUNT[subClassID]  then return "BLUNT"  end
-  if subClassID and RANGED[subClassID] then return "RANGED" end
+  if not classID then
+    return nil
+  end
+  if equipLoc == "INVTYPE_SHIELD" or equipLoc == "INVTYPE_HOLDABLE" then
+    return nil
+  end
+  if classID ~= WEAPON_CLASS then
+    return nil
+  end
+  if subClassID and BLADED[subClassID] then
+    return "BLADED"
+  end
+  if subClassID and BLUNT[subClassID] then
+    return "BLUNT"
+  end
+  if subClassID and RANGED[subClassID] then
+    return "RANGED"
+  end
   return "NEUTRAL"
-
 end
 
 local lastMHType, lastOHType
 local lastBelowMH, lastBelowOH
 
 local function belowThresh(expireAbs, thresh)
-  if not expireAbs then return true end
-  if expireAbs == math.huge then return false end
+  if not expireAbs then
+    return true
+  end
+  if expireAbs == math.huge then
+    return false
+  end
   return (expireAbs - GetTime()) <= thresh
 end
 
 local function _updateWeaponEnchants()
-  if ns._inCombat then return false, false end
+  if ns._inCombat then
+    return false, false
+  end
 
   C.playerInfo.weaponEnchants = C.playerInfo.weaponEnchants or {}
 
@@ -122,7 +164,7 @@ local function _updateWeaponEnchants()
   local ohType = WeaponTypeForItem(ohItem)
 
   C.playerInfo.mainHand = mhType
-  C.playerInfo.offHand  = ohType
+  C.playerInfo.offHand = ohType
 
   local typesChanged = (mhType ~= lastMHType) or (ohType ~= lastOHType)
   lastMHType, lastOHType = mhType, ohType
@@ -130,11 +172,11 @@ local function _updateWeaponEnchants()
   local hasMH, mhMS, _, _, hasOH, ohMS = GetWeaponEnchantInfo()
   local now = GetTime()
 
-  local mhExpire = (mhType and hasMH and mhMS and mhMS > 0) and (now + mhMS/1000) or nil
-  local ohExpire = (ohType and hasOH and ohMS and ohMS > 0) and (now + ohMS/1000) or nil
+  local mhExpire = (mhType and hasMH and mhMS and mhMS > 0) and (now + mhMS / 1000) or nil
+  local ohExpire = (ohType and hasOH and ohMS and ohMS > 0) and (now + ohMS / 1000) or nil
 
   C.playerInfo.weaponEnchants.mainhand = mhExpire
-  C.playerInfo.weaponEnchants.offhand  = ohExpire
+  C.playerInfo.weaponEnchants.offhand = ohExpire
 
   local t = (DB().itemThreshold or 5) * 60
   local bMH = belowThresh(mhExpire, t)
@@ -157,16 +199,28 @@ function ns.WeaponEnchants_NormalizeSlotType(s)
 end
 
 function ns.WeaponEnchants_MatchesCategory(hand, reqCat)
-  if not reqCat then return true end
+  if not reqCat then
+    return true
+  end
   local need = tostring(reqCat):upper()
-  if need == "NEUTRAL" then return true end
+  if need == "NEUTRAL" then
+    return true
+  end
   local slot = (hand == "mainHand") and 16 or 17
   local itemID = GetInventoryItemID("player", slot)
-  if not itemID then return false end
+  if not itemID then
+    return false
+  end
   local classID, subClassID, equipLoc = GetInstantInfo(itemID)
-  if not classID or not subClassID or not equipLoc then return false end
-  if equipLoc == "INVTYPE_SHIELD" or equipLoc == "INVTYPE_HOLDABLE" then return false end
-  if classID ~= WEAPON_CLASS then return false end
+  if not classID or not subClassID or not equipLoc then
+    return false
+  end
+  if equipLoc == "INVTYPE_SHIELD" or equipLoc == "INVTYPE_HOLDABLE" then
+    return false
+  end
+  if classID ~= WEAPON_CLASS then
+    return false
+  end
   if IsFistSubclass(subClassID) then
     return (need == "BLADED" or need == "BLUNT")
   end
@@ -187,5 +241,4 @@ function ns.WeaponEnchants_MatchesCategory(hand, reqCat)
   end
 
   return false
-
 end

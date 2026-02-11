@@ -5,9 +5,15 @@
 local addonName, ns = ...
 
 local function HasUsablePet()
-  if not UnitExists("pet") then return false end
-  if UnitIsDeadOrGhost and UnitIsDeadOrGhost("pet") then return false end
-  if not UnitIsVisible("pet") then return false end
+  if not UnitExists("pet") then
+    return false
+  end
+  if UnitIsDeadOrGhost and UnitIsDeadOrGhost("pet") then
+    return false
+  end
+  if not UnitIsVisible("pet") then
+    return false
+  end
   return true
 end
 

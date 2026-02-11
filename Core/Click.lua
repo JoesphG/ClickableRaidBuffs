@@ -7,17 +7,25 @@ local addonName, ns = ...
 ns.RenderFrames = ns.RenderFrames or {}
 
 local function ClickThroughOverlays()
-  if ns.Overlay and ns.Overlay.EnableMouse then ns.Overlay:EnableMouse(false) end
-  if ns.Hover   and ns.Hover.EnableMouse   then ns.Hover:EnableMouse(false)   end
+  if ns.Overlay and ns.Overlay.EnableMouse then
+    ns.Overlay:EnableMouse(false)
+  end
+  if ns.Hover and ns.Hover.EnableMouse then
+    ns.Hover:EnableMouse(false)
+  end
 end
 
 local function EntryWantsSelfCast(e)
-  if not e then return false end
+  if not e then
+    return false
+  end
   return (e.target == "player") or (e.castOn == "player") or e.selfCast or e.forceSelf
 end
 
 local function InjectPlayerIntoMacroText(macrotext)
-  if not macrotext or macrotext == "" or macrotext:find("@player", 1, true) then return macrotext end
+  if not macrotext or macrotext == "" or macrotext:find("@player", 1, true) then
+    return macrotext
+  end
   local out = {}
   for line in string.gmatch(macrotext, "([^\n\r]*)") do
     if line ~= "" then
@@ -32,21 +40,29 @@ local function InjectPlayerIntoMacroText(macrotext)
 end
 
 local function ForceSelfCastOnButtons()
-  if InCombatLockdown() then return end
+  if InCombatLockdown() then
+    return
+  end
   for _, b in ipairs(ns.RenderFrames) do
     if b and b:IsShown() then
       local e = b._crb_entry
       local atype = (b.GetAttribute and b:GetAttribute("type")) or nil
       if EntryWantsSelfCast(e) then
         if atype == "spell" or atype == "item" then
-          if b:GetAttribute("unit") ~= "player" then b:SetAttribute("unit", "player") end
+          if b:GetAttribute("unit") ~= "player" then
+            b:SetAttribute("unit", "player")
+          end
         elseif atype == "macro" then
           local mt = b:GetAttribute("macrotext")
           local new = InjectPlayerIntoMacroText(mt)
-          if new and new ~= mt then b:SetAttribute("macrotext", new) end
+          if new and new ~= mt then
+            b:SetAttribute("macrotext", new)
+          end
         end
       else
-        if b.GetAttribute and b:GetAttribute("unit") ~= nil then b:SetAttribute("unit", nil) end
+        if b.GetAttribute and b:GetAttribute("unit") ~= nil then
+          b:SetAttribute("unit", nil)
+        end
       end
     end
   end
@@ -55,7 +71,9 @@ end
 do
   local wrapped
   local function EnsureHook()
-    if wrapped then return end
+    if wrapped then
+      return
+    end
     if type(ns.RenderAll) == "function" then
       local orig = ns.RenderAll
       ns.RenderAll = function(...)
@@ -69,7 +87,7 @@ do
   end
   EnsureHook()
   C_Timer.After(0.05, EnsureHook)
-  C_Timer.After(0.5,  EnsureHook)
+  C_Timer.After(0.5, EnsureHook)
 end
 
 local f = CreateFrame("Frame")

@@ -8,15 +8,14 @@ local Glow = LibStub("LibCustomGlow-1.0")
 
 local RANK_ATLAS_MAP = {
   -- Standard profession tiers
-  [1]   = { atlas = "Professions-Icon-Quality-Tier1",    knob = "rank1" },
-  [2]   = { atlas = "Professions-Icon-Quality-Tier2",    knob = "rank2" },
-  [3]   = { atlas = "Professions-Icon-Quality-Tier3",    knob = "rank3" },
+  [1] = { atlas = "Professions-Icon-Quality-Tier1", knob = "rank1" },
+  [2] = { atlas = "Professions-Icon-Quality-Tier2", knob = "rank2" },
+  [3] = { atlas = "Professions-Icon-Quality-Tier3", knob = "rank3" },
 
   -- 12.x profession tier variants
   [121] = { atlas = "Professions-Icon-Quality-12-Tier1", knob = "rank1" },
   [122] = { atlas = "Professions-Icon-Quality-12-Tier2", knob = "rank2" },
 }
-
 
 local NS = ns
 ns.RenderFrames = ns.RenderFrames or {}
@@ -25,14 +24,15 @@ ns.RenderIndexByKey = ns.RenderIndexByKey or {}
 _G.clickableRaidBuffCache = _G.clickableRaidBuffCache or {}
 local C = _G.clickableRaidBuffCache
 
-C.rankOverlayKnobs = C.rankOverlayKnobs or {
-  spec   = { scale = 0.52, x = 5,  y = -5, alpha = 1 },
-  rank1  = { scale = 0.52, xMul = 0.05, yMul = -0.08, alpha = 1 },
-  rank2  = { scale = 0.52, xMul = 0.16, yMul = -0.09, alpha = 1 },
-  rank3  = { scale = 0.52, xMul = 0.16, yMul = -0.16, alpha = 1 },
-  hearty = { scale = 0.52, xMul = 0.13, yMul = -0.20, alpha = 1 },
-  fleeting = { scale = 0.42, xMul = 0.1, yMul = -0.0, alpha = 0.8 },
-}
+C.rankOverlayKnobs = C.rankOverlayKnobs
+  or {
+    spec = { scale = 0.52, x = 5, y = -5, alpha = 1 },
+    rank1 = { scale = 0.52, xMul = 0.05, yMul = -0.08, alpha = 1 },
+    rank2 = { scale = 0.52, xMul = 0.16, yMul = -0.09, alpha = 1 },
+    rank3 = { scale = 0.52, xMul = 0.16, yMul = -0.16, alpha = 1 },
+    hearty = { scale = 0.52, xMul = 0.13, yMul = -0.20, alpha = 1 },
+    fleeting = { scale = 0.42, xMul = 0.1, yMul = -0.0, alpha = 0.8 },
+  }
 
 local function entryKey(cat, entry)
   if cat == "MAIN_HAND" then
@@ -43,8 +43,10 @@ local function entryKey(cat, entry)
 
   if entry.isFixed and entry.spellID then
     local suf = ""
-    local b1  = (type(entry.buffID) == "table") and entry.buffID[1] or entry.buffID
-    if b1 then suf = ":b" .. tostring(b1) end
+    local b1 = (type(entry.buffID) == "table") and entry.buffID[1] or entry.buffID
+    if b1 then
+      suf = ":b" .. tostring(b1)
+    end
     return cat .. ":spell:" .. tostring(entry.spellID) .. ":fixed" .. suf
   end
 
@@ -54,8 +56,10 @@ local function entryKey(cat, entry)
 
   if entry.spellID then
     local suf = ""
-    local b1  = (type(entry.buffID) == "table") and entry.buffID[1] or entry.buffID
-    if b1 then suf = ":b" .. tostring(b1) end
+    local b1 = (type(entry.buffID) == "table") and entry.buffID[1] or entry.buffID
+    if b1 then
+      suf = ":b" .. tostring(b1)
+    end
     return cat .. ":spell:" .. tostring(entry.spellID) .. suf
   end
 
@@ -63,8 +67,10 @@ local function entryKey(cat, entry)
 end
 
 local function sameRGBA(a, b)
-  if not a or not b then return false end
-  return a[1]==b[1] and a[2]==b[2] and a[3]==b[3] and (a[4] or 1)==(b[4] or 1)
+  if not a or not b then
+    return false
+  end
+  return a[1] == b[1] and a[2] == b[2] and a[3] == b[3] and (a[4] or 1) == (b[4] or 1)
 end
 
 local function ensureGlow(btn, shouldEnable, color, size)
@@ -81,7 +87,7 @@ local function ensureGlow(btn, shouldEnable, color, size)
   local N = 8
   local frequency = 0.25
   local length = (10 / 50) * size
-  local th     = ( 1.6 / 50) * size
+  local th = (1.6 / 50) * size
 
   if btn._crb_glow_enabled then
     if not sameRGBA(btn._crb_glow_rgba, rgba) or btn._crb_glow_size ~= size then
@@ -119,20 +125,34 @@ local function setButtonActionIfChanged(btn, actionType, value1)
       btn:SetAttribute("type", nil)
     end
     btn._crb_action_type = actionType
-    btn._crb_action_v1   = value1
+    btn._crb_action_v1 = value1
   end
 end
 
 local function knobOffsets(ks, size, defX, defY)
-  if not ks then return defX, defY end
+  if not ks then
+    return defX, defY
+  end
   local x = ks.x
   local y = ks.y
-  if x == nil and ks.xMul then x = ks.xMul * size end
-  if y == nil and ks.yMul then y = ks.yMul * size end
-  if x == nil and ks.offsetX ~= nil then x = ks.offsetX end
-  if y == nil and ks.offsetY ~= nil then y = ks.offsetY end
-  if x == nil then x = defX end
-  if y == nil then y = defY end
+  if x == nil and ks.xMul then
+    x = ks.xMul * size
+  end
+  if y == nil and ks.yMul then
+    y = ks.yMul * size
+  end
+  if x == nil and ks.offsetX ~= nil then
+    x = ks.offsetX
+  end
+  if y == nil and ks.offsetY ~= nil then
+    y = ks.offsetY
+  end
+  if x == nil then
+    x = defX
+  end
+  if y == nil then
+    y = defY
+  end
   return x, y
 end
 
@@ -148,9 +168,15 @@ local function GetRaidBuffOrderIndex(spellID)
       local tbl = classID and _G.ClickableRaidData[classID]
       if tbl then
         local keys = {}
-        for k in pairs(tbl) do if type(k)=="number" then keys[#keys+1]=k end end
+        for k in pairs(tbl) do
+          if type(k) == "number" then
+            keys[#keys + 1] = k
+          end
+        end
         table.sort(keys)
-        for i, k in ipairs(keys) do _raidBuffOrderMap[k] = i end
+        for i, k in ipairs(keys) do
+          _raidBuffOrderMap[k] = i
+        end
       end
     end
   end
@@ -161,33 +187,49 @@ local function SortItems(items, catPriority)
   table.sort(items, function(a, b)
     local ai = catPriority[a.category] or 999
     local bi = catPriority[b.category] or 999
-    if ai ~= bi then return ai < bi end
+    if ai ~= bi then
+      return ai < bi
+    end
 
     if a.category == "PETS" and b.category == "PETS" then
       local ah = tonumber(a.orderHint) or 1e9
       local bh = tonumber(b.orderHint) or 1e9
-      if ah ~= bh then return ah < bh end
+      if ah ~= bh then
+        return ah < bh
+      end
       local as = a.spellID or a.itemID or 0
       local bs = b.spellID or b.itemID or 0
-      if as ~= bs then return as < bs end
+      if as ~= bs then
+        return as < bs
+      end
       local af = (a.isFixed and 1 or 0)
       local bf = (b.isFixed and 1 or 0)
-      if af ~= bf then return af < bf end
+      if af ~= bf then
+        return af < bf
+      end
       return false
     end
 
     if a.category == "RAID_BUFFS" and b.category == "RAID_BUFFS" then
       local oa = GetRaidBuffOrderIndex(a.spellID or 0)
       local ob = GetRaidBuffOrderIndex(b.spellID or 0)
-      if oa ~= ob then return oa < ob end
+      if oa ~= ob then
+        return oa < ob
+      end
       local as = a.spellID or 0
       local bs = b.spellID or 0
       if as == bs then
         local sa = a.orderHint or 0
         local sb = b.orderHint or 0
-        if sa ~= sb then return sa < sb end
-        if (a.isFixed and not b.isFixed) then return false end
-        if (b.isFixed and not a.isFixed) then return true end
+        if sa ~= sb then
+          return sa < sb
+        end
+        if a.isFixed and not b.isFixed then
+          return false
+        end
+        if b.isFixed and not a.isFixed then
+          return true
+        end
         return false
       end
       return as < bs
@@ -209,12 +251,21 @@ function ns.HideAllRenderedIcons()
         b._crb_glow_enabled = false
         b._crb_glow_rgba = nil
       end
-      if ns.ClearCooldownVisual then ns.ClearCooldownVisual(b) end
+      if ns.ClearCooldownVisual then
+        ns.ClearCooldownVisual(b)
+      end
       b._crb_key = nil
       b._crb_entry = nil
-      if b.timerText       then b.timerText:SetText(""); b.timerText:Hide() end
-      if b.rankOverlay     then b.rankOverlay:Hide() end
-      if b.fleetingOverlay then b.fleetingOverlay:Hide() end
+      if b.timerText then
+        b.timerText:SetText("")
+        b.timerText:Hide()
+      end
+      if b.rankOverlay then
+        b.rankOverlay:Hide()
+      end
+      if b.fleetingOverlay then
+        b.fleetingOverlay:Hide()
+      end
       b:Hide()
     end
   end
@@ -237,7 +288,6 @@ function ns.CombatRestoreIcons()
   end
 end
 
-
 local _combatFrame = CreateFrame("Frame")
 _combatFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 _combatFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -254,15 +304,21 @@ end)
 local function ResolveFontPath(name)
   if ns.Options and ns.Options.GetFontPathByName then
     local p = ns.Options.GetFontPathByName(name)
-    if p then return p end
+    if p then
+      return p
+    end
   end
   local fallback = GameFontNormal and select(1, GameFontNormal:GetFont())
   return fallback or "Fonts\\FRIZQT__.TTF"
 end
 
 function ns.RenderAll()
-  if ns._combat_suspended or ns.InCombatSuppressed then return end
-  if InCombatLockdown() then return end
+  if ns._combat_suspended or ns.InCombatSuppressed then
+    return
+  end
+  if InCombatLockdown() then
+    return
+  end
 
   local db = ns.GetDB() or {}
   local displayable = _G.clickableRaidBuffCache and _G.clickableRaidBuffCache.displayable or {}
@@ -270,16 +326,25 @@ function ns.RenderAll()
   local eatingActive = false
   do
     local eat = displayable.EATING
-    if eat then for _, _ in pairs(eat) do eatingActive = true; break end end
+    if eat then
+      for _, _ in pairs(eat) do
+        eatingActive = true
+        break
+      end
+    end
   end
 
   local orderedCats = ns.GetCategoryOrder and ns.GetCategoryOrder() or {}
   if #orderedCats == 0 then
-    for cat in pairs(displayable) do table.insert(orderedCats, cat) end
+    for cat in pairs(displayable) do
+      table.insert(orderedCats, cat)
+    end
     table.sort(orderedCats)
   end
   local catPriority = {}
-  for i, c in ipairs(orderedCats) do catPriority[c] = i end
+  for i, c in ipairs(orderedCats) do
+    catPriority[c] = i
+  end
 
   local items = {}
 
@@ -289,8 +354,12 @@ function ns.RenderAll()
       if catTable then
         for _, entry in pairs(catTable) do
           local visible = true
-          if entry.showAt then visible = (GetTime() >= entry.showAt) end
-          if entry.expireTime and entry.expireTime == math.huge then visible = false end
+          if entry.showAt then
+            visible = (GetTime() >= entry.showAt)
+          end
+          if entry.expireTime and entry.expireTime == math.huge then
+            visible = false
+          end
           if visible and ns.IsDisplayableExcluded and ns.IsDisplayableExcluded(cat, entry) then
             visible = false
           end
@@ -308,7 +377,7 @@ function ns.RenderAll()
     for i = 1, need do
       table.insert(items, {
         category = "DUMMY",
-        name = "Dummy"..i,
+        name = "Dummy" .. i,
         texture = "Interface\\AddOns\\ClickableRaidBuffs\\Media\\funkiggLogoIcon",
         _crb_dummy = true,
       })
@@ -320,15 +389,26 @@ function ns.RenderAll()
     ns.Overlay:Hide()
     for _, b in ipairs(ns.RenderFrames) do
       if b:IsShown() then
-        if b._crb_glow_enabled and Glow then Glow.PixelGlow_Stop(b) end
-        if ns.ClearCooldownVisual then ns.ClearCooldownVisual(b) end
+        if b._crb_glow_enabled and Glow then
+          Glow.PixelGlow_Stop(b)
+        end
+        if ns.ClearCooldownVisual then
+          ns.ClearCooldownVisual(b)
+        end
         b._crb_glow_enabled = false
         b._crb_glow_rgba = nil
         b._crb_key = nil
         b._crb_entry = nil
-        if b.timerText then b.timerText:SetText(""); b.timerText:Hide() end
-        if b.rankOverlay then b.rankOverlay:Hide() end
-        if b.fleetingOverlay then b.fleetingOverlay:Hide() end
+        if b.timerText then
+          b.timerText:SetText("")
+          b.timerText:Hide()
+        end
+        if b.rankOverlay then
+          b.rankOverlay:Hide()
+        end
+        if b.fleetingOverlay then
+          b.fleetingOverlay:Hide()
+        end
         b:Hide()
       end
     end
@@ -347,9 +427,15 @@ function ns.RenderAll()
         local tbl = classID and _G.ClickableRaidData[classID]
         if tbl then
           local keys = {}
-          for k in pairs(tbl) do if type(k)=="number" then keys[#keys+1]=k end end
+          for k in pairs(tbl) do
+            if type(k) == "number" then
+              keys[#keys + 1] = k
+            end
+          end
           table.sort(keys)
-          for i, k in ipairs(keys) do _raidBuffOrderMap[k] = i end
+          for i, k in ipairs(keys) do
+            _raidBuffOrderMap[k] = i
+          end
         end
       end
     end
@@ -360,31 +446,47 @@ function ns.RenderAll()
     table.sort(list, function(a, b)
       local ai = prio[a.category] or 999
       local bi = prio[b.category] or 999
-      if ai ~= bi then return ai < bi end
+      if ai ~= bi then
+        return ai < bi
+      end
       if a.category == "PETS" and b.category == "PETS" then
         local ah = tonumber(a.orderHint) or 1e9
         local bh = tonumber(b.orderHint) or 1e9
-        if ah ~= bh then return ah < bh end
+        if ah ~= bh then
+          return ah < bh
+        end
         local as = a.spellID or a.itemID or 0
         local bs = b.spellID or b.itemID or 0
-        if as ~= bs then return as < bs end
+        if as ~= bs then
+          return as < bs
+        end
         local af = (a.isFixed and 1 or 0)
         local bf = (b.isFixed and 1 or 0)
-        if af ~= bf then return af < bf end
+        if af ~= bf then
+          return af < bf
+        end
         return false
       end
       if a.category == "RAID_BUFFS" and b.category == "RAID_BUFFS" then
         local oa = GetRaidBuffOrderIndex(a.spellID or 0)
         local ob = GetRaidBuffOrderIndex(b.spellID or 0)
-        if oa ~= ob then return oa < ob end
+        if oa ~= ob then
+          return oa < ob
+        end
         local as = a.spellID or 0
         local bs = b.spellID or 0
         if as == bs then
           local sa = a.orderHint or 0
           local sb = b.orderHint or 0
-          if sa ~= sb then return sa < sb end
-          if (a.isFixed and not b.isFixed) then return false end
-          if (b.isFixed and not a.isFixed) then return true end
+          if sa ~= sb then
+            return sa < sb
+          end
+          if a.isFixed and not b.isFixed then
+            return false
+          end
+          if b.isFixed and not a.isFixed then
+            return true
+          end
           return false
         end
         return as < bs
@@ -397,69 +499,81 @@ function ns.RenderAll()
 
   SortItems(items, catPriority)
 
-  local size         = db.iconSize or 50
-  local spacingH     = math.floor(((db.hSpace or 9) / 50) * size + 0.5)
-  local spacingV     = math.floor(((db.vSpace or 9) / 50) * size + 0.5)
-  local style        = db.style or "HORIZONTAL"
-  local useMax       = (db.useMaxPerRow == true)
-  local perTierOpt   = math.max(1, db.maxPerRow or 7)
-  local alignKey     = db.alignment or "CENTER"
-  local growDown     = (db.growV or "DOWN") == "DOWN"
-  local growRight    = (db.growH == "RIGHT") or (db.gridLTR ~= false)
-  local hstep  = size + spacingH
-  local vstep  = size + spacingV
+  local size = db.iconSize or 50
+  local spacingH = math.floor(((db.hSpace or 9) / 50) * size + 0.5)
+  local spacingV = math.floor(((db.vSpace or 9) / 50) * size + 0.5)
+  local style = db.style or "HORIZONTAL"
+  local useMax = (db.useMaxPerRow == true)
+  local perTierOpt = math.max(1, db.maxPerRow or 7)
+  local alignKey = db.alignment or "CENTER"
+  local growDown = (db.growV or "DOWN") == "DOWN"
+  local growRight = (db.growH == "RIGHT") or (db.gridLTR ~= false)
+  local hstep = size + spacingH
+  local vstep = size + spacingV
   local parentW, parentH = 0, 0
   local coords = {}
-  local function place(i, x, y) coords[i] = { x=x, y=y } end
+  local function place(i, x, y)
+    coords[i] = { x = x, y = y }
+  end
 
   if style == "HORIZONTAL" then
     if not useMax then
       local n = #items
       local capacityCols = math.max(n, perTierOpt)
-      parentW = (capacityCols > 0) and (capacityCols*size + (capacityCols-1)*spacingH) or 0
+      parentW = (capacityCols > 0) and (capacityCols * size + (capacityCols - 1) * spacingH) or 0
       parentH = size
-      local baseLeftX = -parentW/2 + size/2
+      local baseLeftX = -parentW / 2 + size / 2
       local shiftX
-      if     alignKey == "LEFT"   then shiftX = 0
-      elseif alignKey == "RIGHT"  then shiftX = (capacityCols - n) * hstep
-      else   shiftX = ((capacityCols - n) * hstep) / 2 end
+      if alignKey == "LEFT" then
+        shiftX = 0
+      elseif alignKey == "RIGHT" then
+        shiftX = (capacityCols - n) * hstep
+      else
+        shiftX = ((capacityCols - n) * hstep) / 2
+      end
       if alignKey == "RIGHT" then
         for j = 0, n - 1 do
-          local x = baseLeftX + shiftX + ((n-1 - j)*hstep)
-          place(j+1, x, 0)
+          local x = baseLeftX + shiftX + ((n - 1 - j) * hstep)
+          place(j + 1, x, 0)
         end
       else
         for j = 0, n - 1 do
-          local x = baseLeftX + shiftX + (j*hstep)
-          place(j+1, x, 0)
+          local x = baseLeftX + shiftX + (j * hstep)
+          place(j + 1, x, 0)
         end
       end
     else
       local rows = math.ceil(#items / perTierOpt)
       local capacityCols = perTierOpt
-      parentW = (capacityCols > 0) and (capacityCols*size + (capacityCols-1)*spacingH) or 0
-      parentH = (rows > 0) and (rows*vstep - (vstep - size)) or 0
-      local baseLeftX = -parentW/2 + size/2
-      local topY      =  parentH/2 - size/2
-      local botY      = -parentH/2 + size/2
+      parentW = (capacityCols > 0) and (capacityCols * size + (capacityCols - 1) * spacingH) or 0
+      parentH = (rows > 0) and (rows * vstep - (vstep - size)) or 0
+      local baseLeftX = -parentW / 2 + size / 2
+      local topY = parentH / 2 - size / 2
+      local botY = -parentH / 2 + size / 2
       local idx = 1
       for r = 0, rows - 1 do
         local remain = #items - idx + 1
-        local take   = math.min(perTierOpt, remain)
+        local take = math.min(perTierOpt, remain)
         local shiftX
-        if     alignKey == "LEFT"   then shiftX = 0
-        elseif alignKey == "RIGHT"  then shiftX = (perTierOpt - take) * hstep
-        else   shiftX = ((perTierOpt - take) * hstep) / 2 end
-        local y = growDown and (topY - r*vstep) or (botY + r*vstep)
+        if alignKey == "LEFT" then
+          shiftX = 0
+        elseif alignKey == "RIGHT" then
+          shiftX = (perTierOpt - take) * hstep
+        else
+          shiftX = ((perTierOpt - take) * hstep) / 2
+        end
+        local y = growDown and (topY - r * vstep) or (botY + r * vstep)
         if alignKey == "RIGHT" then
           for j = 0, take - 1 do
-            local x = baseLeftX + shiftX + ((take-1 - j)*hstep)
-            place(idx, x, y) ; idx = idx + 1
+            local x = baseLeftX + shiftX + ((take - 1 - j) * hstep)
+            place(idx, x, y)
+            idx = idx + 1
           end
         else
           for j = 0, take - 1 do
-            local x = baseLeftX + shiftX + (j*hstep)
-            place(idx, x, y) ; idx = idx + 1
+            local x = baseLeftX + shiftX + (j * hstep)
+            place(idx, x, y)
+            idx = idx + 1
           end
         end
       end
@@ -469,35 +583,43 @@ function ns.RenderAll()
       local n = #items
       local capacityRows = math.max(n, perTierOpt)
       parentW = size
-      parentH = (capacityRows > 0) and (capacityRows*vstep - (vstep - size)) or 0
-      local topY      =  parentH/2 - size/2
+      parentH = (capacityRows > 0) and (capacityRows * vstep - (vstep - size)) or 0
+      local topY = parentH / 2 - size / 2
       local rowShiftY
-      if     alignKey == "LEFT"   then rowShiftY = 0
-      elseif alignKey == "RIGHT"  then rowShiftY = (capacityRows - n) * vstep
-      else   rowShiftY = ((capacityRows - n) * vstep) / 2 end
+      if alignKey == "LEFT" then
+        rowShiftY = 0
+      elseif alignKey == "RIGHT" then
+        rowShiftY = (capacityRows - n) * vstep
+      else
+        rowShiftY = ((capacityRows - n) * vstep) / 2
+      end
       for j = 0, n - 1 do
-        local y = topY - (rowShiftY + j*vstep)
-        place(j+1, 0, y)
+        local y = topY - (rowShiftY + j * vstep)
+        place(j + 1, 0, y)
       end
     else
-      local columns      = math.ceil(#items / perTierOpt)
+      local columns = math.ceil(#items / perTierOpt)
       local capacityRows = perTierOpt
-      parentW = (columns > 0)      and ((columns-1)*hstep + size)      or 0
-      parentH = (capacityRows > 0) and ((capacityRows-1)*vstep + size) or 0
+      parentW = (columns > 0) and ((columns - 1) * hstep + size) or 0
+      parentH = (capacityRows > 0) and ((capacityRows - 1) * vstep + size) or 0
       local colHalfSpan = (columns - 1) * hstep * 0.5
-      local rowCapTop   =  parentH/2 - size/2
+      local rowCapTop = parentH / 2 - size / 2
       local idx = 1
       for c = 0, columns - 1 do
         local colSlot = growRight and c or (columns - 1 - c)
         local x = -colHalfSpan + colSlot * hstep
         local remain = #items - idx + 1
-        local take   = math.min(perTierOpt, remain)
+        local take = math.min(perTierOpt, remain)
         local rowShiftY
-        if     alignKey == "LEFT"   then rowShiftY = 0
-        elseif alignKey == "RIGHT"  then rowShiftY = (capacityRows - take) * vstep
-        else   rowShiftY = ((capacityRows - take) * vstep) / 2 end
+        if alignKey == "LEFT" then
+          rowShiftY = 0
+        elseif alignKey == "RIGHT" then
+          rowShiftY = (capacityRows - take) * vstep
+        else
+          rowShiftY = ((capacityRows - take) * vstep) / 2
+        end
         for j = 0, take - 1 do
-          local y = rowCapTop - (rowShiftY + j*vstep)
+          local y = rowCapTop - (rowShiftY + j * vstep)
           place(idx, x, y)
           idx = idx + 1
         end
@@ -507,15 +629,19 @@ function ns.RenderAll()
 
   ns.RenderParent:SetSize(math.max(1, parentW), math.max(1, parentH))
   local pad = size * 2
-  ns.Overlay:ClearAllPoints(); ns.Overlay:SetPoint("CENTER", ns.RenderParent, "CENTER")
+  ns.Overlay:ClearAllPoints()
+  ns.Overlay:SetPoint("CENTER", ns.RenderParent, "CENTER")
   ns.Overlay:SetSize(parentW + pad, parentH + pad)
-  ns.Hover:ClearAllPoints();   ns.Hover:SetPoint("CENTER", ns.RenderParent, "CENTER")
+  ns.Hover:ClearAllPoints()
+  ns.Hover:SetPoint("CENTER", ns.RenderParent, "CENTER")
   ns.Hover:SetSize(parentW + pad, parentH + pad)
 
   local function ResolveFontPath(name)
     if ns.Options and ns.Options.GetFontPathByName then
       local p = ns.Options.GetFontPathByName(name)
-      if p then return p end
+      if p then
+        return p
+      end
     end
     local fallback = GameFontNormal and select(1, GameFontNormal:GetFont())
     return fallback or "Fonts\\FRIZQT__.TTF"
@@ -525,12 +651,14 @@ function ns.RenderAll()
   local centerOutline = (db.centerOutline ~= false) and "OUTLINE" or ""
 
   local used = {}
-  local general = db.glowColor or { r=0.95, g=0.95, b=0.32, a=1 }
-  local special = db.specialGlowColor or { r=0.00, g=0.913725, b=1.00, a=1 }
+  local general = db.glowColor or { r = 0.95, g = 0.95, b = 0.32, a = 1 }
+  local special = db.specialGlowColor or { r = 0.00, g = 0.913725, b = 1.00, a = 1 }
 
   local function sameRGBA(a, b)
-    if not a or not b then return false end
-    return a[1]==b[1] and a[2]==b[2] and a[3]==b[3] and (a[4] or 1)==(b[4] or 1)
+    if not a or not b then
+      return false
+    end
+    return a[1] == b[1] and a[2] == b[2] and a[3] == b[3] and (a[4] or 1) == (b[4] or 1)
   end
 
   local function ensureGlow(btn, shouldEnable, color, size)
@@ -543,12 +671,14 @@ function ns.RenderAll()
       end
       return
     end
-    if not Glow then return end
+    if not Glow then
+      return
+    end
     local rgba = { color.r, color.g, color.b, color.a or 1 }
     local N = 8
     local frequency = 0.25
     local length = (10 / 50) * size
-    local th     = ( 1.6 / 50) * size
+    local th = (1.6 / 50) * size
     if btn._crb_glow_enabled then
       if not sameRGBA(btn._crb_glow_rgba, rgba) or btn._crb_glow_size ~= size then
         Glow.PixelGlow_Stop(btn)
@@ -585,24 +715,38 @@ function ns.RenderAll()
         btn:SetAttribute("type", nil)
       end
       btn._crb_action_type = actionType
-      btn._crb_action_v1   = value1
+      btn._crb_action_v1 = value1
     end
   end
 
   local function knobOffsets(ks, size, defX, defY)
-    if not ks then return defX, defY end
+    if not ks then
+      return defX, defY
+    end
     local x = ks.x
     local y = ks.y
-    if x == nil and ks.xMul then x = ks.xMul * size end
-    if y == nil and ks.yMul then y = ks.yMul * size end
-    if x == nil and ks.offsetX ~= nil then x = ks.offsetX end
-    if y == nil and ks.offsetY ~= nil then y = ks.offsetY end
-    if x == nil then x = defX end
-    if y == nil then y = defY end
+    if x == nil and ks.xMul then
+      x = ks.xMul * size
+    end
+    if y == nil and ks.yMul then
+      y = ks.yMul * size
+    end
+    if x == nil and ks.offsetX ~= nil then
+      x = ks.offsetX
+    end
+    if y == nil and ks.offsetY ~= nil then
+      y = ks.offsetY
+    end
+    if x == nil then
+      x = defX
+    end
+    if y == nil then
+      y = defY
+    end
     return x, y
   end
 
-  local ctc = db.centerTextColor or {r=1,g=1,b=1,a=1}
+  local ctc = db.centerTextColor or { r = 1, g = 1, b = 1, a = 1 }
 
   local function entryKey(cat, entry)
     if cat == "MAIN_HAND" then
@@ -612,8 +756,10 @@ function ns.RenderAll()
     end
     if entry.isFixed and entry.spellID then
       local suf = ""
-      local b1  = (type(entry.buffID) == "table") and entry.buffID[1] or entry.buffID
-      if b1 then suf = ":b" .. tostring(b1) end
+      local b1 = (type(entry.buffID) == "table") and entry.buffID[1] or entry.buffID
+      if b1 then
+        suf = ":b" .. tostring(b1)
+      end
       return cat .. ":spell:" .. tostring(entry.spellID) .. ":fixed" .. suf
     end
     if entry.itemID then
@@ -621,8 +767,10 @@ function ns.RenderAll()
     end
     if entry.spellID then
       local suf = ""
-      local b1  = (type(entry.buffID) == "table") and entry.buffID[1] or entry.buffID
-      if b1 then suf = ":b" .. tostring(b1) end
+      local b1 = (type(entry.buffID) == "table") and entry.buffID[1] or entry.buffID
+      if b1 then
+        suf = ":b" .. tostring(b1)
+      end
       return cat .. ":spell:" .. tostring(entry.spellID) .. suf
     end
     return cat .. ":name:" .. tostring(entry.name or "")
@@ -635,7 +783,10 @@ function ns.RenderAll()
     if not (btn and btn:IsShown()) then
       for i = 1, #ns.RenderFrames do
         local b = ns.RenderFrames[i]
-        if not b:IsShown() then btn = b; break end
+        if not b:IsShown() then
+          btn = b
+          break
+        end
       end
       if not btn then
         local index = #ns.RenderFrames + 1
@@ -662,36 +813,59 @@ function ns.RenderAll()
 
         btn.topText = btn:CreateFontString(nil, "OVERLAY")
         btn.topText:SetPoint("BOTTOM", btn, "TOP", 0, 0)
-        ns.UpdateFontString(btn.topText, "", db.fontName or "Fonts\\FRIZQT__.TTF",
-            db.topSize or 14, db.topOutline ~= false, db.topTextColor or {r=1,g=1,b=1,a=1})
+        ns.UpdateFontString(
+          btn.topText,
+          "",
+          db.fontName or "Fonts\\FRIZQT__.TTF",
+          db.topSize or 14,
+          db.topOutline ~= false,
+          db.topTextColor or { r = 1, g = 1, b = 1, a = 1 }
+        )
 
         btn.bottomText = btn:CreateFontString(nil, "OVERLAY")
         btn.bottomText:SetPoint("TOP", btn, "BOTTOM", 0, -5)
-        ns.UpdateFontString(btn.bottomText, "", db.fontName or "Fonts\\FRIZQT__.TTF",
-            db.bottomSize or 14, db.bottomOutline ~= false, db.bottomTextColor or {r=1,g=1,b=1,a=1})
+        ns.UpdateFontString(
+          btn.bottomText,
+          "",
+          db.fontName or "Fonts\\FRIZQT__.TTF",
+          db.bottomSize or 14,
+          db.bottomOutline ~= false,
+          db.bottomTextColor or { r = 1, g = 1, b = 1, a = 1 }
+        )
 
         btn.centerText = btn.overlayFrame:CreateFontString(nil, "OVERLAY")
         btn.centerText:SetPoint("CENTER", btn, "CENTER", 0, 0)
         btn.centerText:SetFont(centerFontPath, centerSize, centerOutline)
         btn.centerText:SetTextColor(ctc.r, ctc.g, ctc.b, ctc.a or 1)
-        btn._crb_center_font_path  = centerFontPath
-        btn._crb_center_font_size  = centerSize
-        btn._crb_center_outline    = centerOutline
+        btn._crb_center_font_path = centerFontPath
+        btn._crb_center_font_size = centerSize
+        btn._crb_center_outline = centerOutline
 
         btn.cornerText = btn:CreateFontString(nil, "OVERLAY")
         btn.cornerText:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
-        ns.UpdateFontString(btn.cornerText, "", db.fontName or "Fonts\\FRIZQT__.TTF",
-            db.cornerSize or db.bottomSize or 14, db.cornerOutline ~= false,
-            db.cornerTextColor or db.bottomTextColor or {r=1,g=1,b=1,a=1})
+        ns.UpdateFontString(
+          btn.cornerText,
+          "",
+          db.fontName or "Fonts\\FRIZQT__.TTF",
+          db.cornerSize or db.bottomSize or 14,
+          db.cornerOutline ~= false,
+          db.cornerTextColor or db.bottomTextColor or { r = 1, g = 1, b = 1, a = 1 }
+        )
 
         btn.timerText = btn:CreateFontString(nil, "OVERLAY")
         btn.timerText:SetPoint("TOP", btn.bottomText, "BOTTOM", 0, 0)
-        ns.UpdateFontString(btn.timerText, "", db.fontName or "Fonts\\FRIZQT__.TTF",
-            db.bottomSize or 14, db.bottomOutline ~= false, db.bottomTextColor or {r=1,g=1,b=1,a=1})
+        ns.UpdateFontString(
+          btn.timerText,
+          "",
+          db.fontName or "Fonts\\FRIZQT__.TTF",
+          db.bottomSize or 14,
+          db.bottomOutline ~= false,
+          db.bottomTextColor or { r = 1, g = 1, b = 1, a = 1 }
+        )
         btn.timerText:Hide()
 
         btn:SetScript("OnEnter", function(self)
-          local d  = (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB or {}
+          local d = (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB or {}
           local tt = (d.tooltips and d.tooltips.enabled ~= false)
           local entryX = self._crb_entry
 
@@ -701,7 +875,9 @@ function ns.RenderAll()
           end
 
           if not tt then
-            if IsShiftKeyDown() and ns.Overlay then ns.Overlay:Show() end
+            if IsShiftKeyDown() and ns.Overlay then
+              ns.Overlay:Show()
+            end
             return
           end
 
@@ -725,9 +901,10 @@ function ns.RenderAll()
             GameTooltip:Show()
           end
 
-          if IsShiftKeyDown() and ns.Overlay then ns.Overlay:Show() end
+          if IsShiftKeyDown() and ns.Overlay then
+            ns.Overlay:Show()
+          end
         end)
-
 
         btn:SetScript("OnLeave", function(self)
           GameTooltip:Hide()
@@ -741,8 +918,6 @@ function ns.RenderAll()
             ns.Overlay:Hide()
           end
         end)
-
-
 
         ns.RenderFrames[index] = btn
       end
@@ -759,20 +934,26 @@ function ns.RenderAll()
     local p = coords[idx]
     btn2:SetPoint("CENTER", ns.RenderParent, "CENTER", p.x, p.y)
 
-    if btn2._crb_center_font_size ~= centerSize or
-       btn2._crb_center_font_path ~= centerFontPath or
-       btn2._crb_center_outline   ~= centerOutline then
+    if
+      btn2._crb_center_font_size ~= centerSize
+      or btn2._crb_center_font_path ~= centerFontPath
+      or btn2._crb_center_outline ~= centerOutline
+    then
       btn2.centerText:SetFont(centerFontPath, centerSize, centerOutline)
       btn2._crb_center_font_size = centerSize
       btn2._crb_center_font_path = centerFontPath
-      btn2._crb_center_outline   = centerOutline
+      btn2._crb_center_outline = centerOutline
     end
-    local ctcX = db.centerTextColor or {r=1,g=1,b=1,a=1}
-    if not btn2._crb_center_color or
-       btn2._crb_center_color.r ~= ctcX.r or btn2._crb_center_color.g ~= ctcX.g or
-       btn2._crb_center_color.b ~= ctcX.b or (btn2._crb_center_color.a or 1) ~= (ctcX.a or 1) then
+    local ctcX = db.centerTextColor or { r = 1, g = 1, b = 1, a = 1 }
+    if
+      not btn2._crb_center_color
+      or btn2._crb_center_color.r ~= ctcX.r
+      or btn2._crb_center_color.g ~= ctcX.g
+      or btn2._crb_center_color.b ~= ctcX.b
+      or (btn2._crb_center_color.a or 1) ~= (ctcX.a or 1)
+    then
       btn2.centerText:SetTextColor(ctcX.r, ctcX.g, ctcX.b, ctcX.a or 1)
-      btn2._crb_center_color = {r=ctcX.r,g=ctcX.g,b=ctcX.b,a=ctcX.a}
+      btn2._crb_center_color = { r = ctcX.r, g = ctcX.g, b = ctcX.b, a = ctcX.a }
     end
 
     local tex
@@ -799,22 +980,19 @@ function ns.RenderAll()
       if entry.specAtlas then
         overlayAtlas = entry.specAtlas
         knobKey = "spec"
-
       elseif entry.rank and RANK_ATLAS_MAP[entry.rank] then
         local r = RANK_ATLAS_MAP[entry.rank]
         overlayAtlas = r.atlas
-        knobKey      = r.knob
-
+        knobKey = r.knob
       elseif entry.hearty then
         overlayAtlas = "Soulbinds_Tree_Conduit_Icon_Utility"
         knobKey = "hearty"
       end
 
-
       if overlayAtlas then
         local ks = C.rankOverlayKnobs and C.rankOverlayKnobs[knobKey]
         btn2.rankOverlay:SetAtlas(overlayAtlas, true)
-        local s  = (ks and ks.scale) or 0.52
+        local s = (ks and ks.scale) or 0.52
         btn2.rankOverlay:SetSize(size * s, size * s)
         btn2.rankOverlay:ClearAllPoints()
         local ox, oy = knobOffsets(ks, size, 5, -5)
@@ -841,10 +1019,15 @@ function ns.RenderAll()
     end
 
     local color
-    if entry.category=="FOOD" and entry.hearty then      color = special
-    elseif entry.category=="FLASK" and entry.fleeting then color = special
-    elseif entry.glow == "special" then color = special
-    else color = general end
+    if entry.category == "FOOD" and entry.hearty then
+      color = special
+    elseif entry.category == "FLASK" and entry.fleeting then
+      color = special
+    elseif entry.glow == "special" then
+      color = special
+    else
+      color = general
+    end
     ensureGlow(btn2, (db.glowEnabled ~= false), color, size)
 
     do
@@ -876,7 +1059,7 @@ function ns.RenderAll()
 
     do
       local txtBottom = entry.btmLbl
-      if (not txtBottom or txtBottom == "") then
+      if not txtBottom or txtBottom == "" then
         local val = ""
         if entry.count ~= 1 or type(entry.macro) ~= "string" then
           val = ""
@@ -889,8 +1072,16 @@ function ns.RenderAll()
             if name then
               name = tostring(name)
               local lower = string.lower(name)
-              if not (lower == "target" or lower == "player" or lower == "focus" or lower == "mouseover"
-                      or lower:match("^party%d+$") or lower:match("^raid%d+$")) then
+              if
+                not (
+                  lower == "target"
+                  or lower == "player"
+                  or lower == "focus"
+                  or lower == "mouseover"
+                  or lower:match("^party%d+$")
+                  or lower:match("^raid%d+$")
+                )
+              then
                 val = name
               end
             end
@@ -906,23 +1097,36 @@ function ns.RenderAll()
 
     do
       local cornerVal = entry.qty and tostring(entry.qty) or ""
-      if entry.category == "MAIN_HAND" then cornerVal = "MH"
-      elseif entry.category == "OFF_HAND" then cornerVal = "OH" end
+      if entry.category == "MAIN_HAND" then
+        cornerVal = "MH"
+      elseif entry.category == "OFF_HAND" then
+        cornerVal = "OH"
+      end
       if btn2._crb_cornerText ~= cornerVal then
         btn2.cornerText:SetText(cornerVal, "OUTLINE")
         btn2._crb_cornerText = cornerVal
       end
     end
 
-    if ns.RefreshCooldownForButton then ns.RefreshCooldownForButton(btn2) end
-    if ns.RefreshSpellCooldownForButton then ns.RefreshSpellCooldownForButton(btn2) end
+    if ns.RefreshCooldownForButton then
+      ns.RefreshCooldownForButton(btn2)
+    end
+    if ns.RefreshSpellCooldownForButton then
+      ns.RefreshSpellCooldownForButton(btn2)
+    end
 
     if entry.category == "EATING" then
-      if ns.ApplyEatingCooldown then ns.ApplyEatingCooldown(btn2, entry) end
+      if ns.ApplyEatingCooldown then
+        ns.ApplyEatingCooldown(btn2, entry)
+      end
     elseif entry.cooldownStart and entry.cooldownDuration and entry.cooldownDuration > 0 then
-      if ns.ApplyItemCooldown then ns.ApplyItemCooldown(btn2, entry) end
+      if ns.ApplyItemCooldown then
+        ns.ApplyItemCooldown(btn2, entry)
+      end
     else
-      if ns.ClearCooldownVisual then ns.ClearCooldownVisual(btn2) end
+      if ns.ClearCooldownVisual then
+        ns.ClearCooldownVisual(btn2)
+      end
     end
 
     if entry.macro then
@@ -936,7 +1140,9 @@ function ns.RenderAll()
       setButtonActionIfChanged(btn2, nil, nil)
     end
 
-    if not btn2:IsShown() then btn2:Show() end
+    if not btn2:IsShown() then
+      btn2:Show()
+    end
   end
 
   for key, btn in pairs(ns.RenderIndexByKey) do
@@ -946,12 +1152,21 @@ function ns.RenderAll()
         btn._crb_glow_enabled = false
         btn._crb_glow_rgba = nil
       end
-      if ns.ClearCooldownVisual then ns.ClearCooldownVisual(btn) end
+      if ns.ClearCooldownVisual then
+        ns.ClearCooldownVisual(btn)
+      end
       btn._crb_key = nil
       btn._crb_entry = nil
-      if btn.timerText then btn.timerText:SetText(""); btn.timerText:Hide() end
-      if btn.rankOverlay then btn.rankOverlay:Hide() end
-      if btn.fleetingOverlay then btn.fleetingOverlay:Hide() end
+      if btn.timerText then
+        btn.timerText:SetText("")
+        btn.timerText:Hide()
+      end
+      if btn.rankOverlay then
+        btn.rankOverlay:Hide()
+      end
+      if btn.fleetingOverlay then
+        btn.fleetingOverlay:Hide()
+      end
       btn:Hide()
       ns.RenderIndexByKey[key] = nil
     end

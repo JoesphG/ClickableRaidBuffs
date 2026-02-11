@@ -31,16 +31,26 @@ local function RuneData()
 end
 
 local function passesGates(gates)
-  if not gates or #gates == 0 then return true end
+  if not gates or #gates == 0 then
+    return true
+  end
   for i = 1, #gates do
     local g = gates[i]
     if g == "instance" then
-      if not IsInInstance() then return false end
+      if not IsInInstance() then
+        return false
+      end
     elseif g == "rested" then
-      if IsResting() then return false end
+      if IsResting() then
+        return false
+      end
     elseif g == "group" then
-      if ns.PassesGroupGate and not ns.PassesGroupGate() then return false end
-      if not (IsInGroup() or IsInRaid()) then return false end
+      if ns.PassesGroupGate and not ns.PassesGroupGate() then
+        return false
+      end
+      if not (IsInGroup() or IsInRaid()) then
+        return false
+      end
     end
   end
   return true
@@ -58,7 +68,9 @@ local function GetExpireForIDs(ids)
   local i = 1
   while true do
     local a = AuraByIndex and AuraByIndex("player", i, "HELPFUL")
-    if not a then break end
+    if not a then
+      break
+    end
     if a.spellId and ids then
       for j = 1, #ids do
         if a.spellId == ids[j] then
@@ -76,7 +88,9 @@ end
 
 local _buffSet, _buffUnion
 local function ensureRuneBuffLookups()
-  if _buffSet then return end
+  if _buffSet then
+    return
+  end
   local runes = RuneData()
   local set, list = {}, {}
   for _, data in pairs(runes) do
@@ -86,7 +100,7 @@ local function ensureRuneBuffLookups()
         local id = ids[i]
         if id and not set[id] then
           set[id] = true
-          list[#list+1] = id
+          list[#list + 1] = id
         end
       end
     end
@@ -98,7 +112,9 @@ end
 local function rebuildAugmentRune()
   if mythicPlusDisableMode and mythicPlusDisableMode() then
     clickableRaidBuffCache.displayable.AUGMENT_RUNE = {}
-    if ns.RenderAll then ns.RenderAll() end
+    if ns.RenderAll then
+      ns.RenderAll()
+    end
     return
   end
 
@@ -107,42 +123,50 @@ local function rebuildAugmentRune()
   local disp = clickableRaidBuffCache.displayable
   disp.AUGMENT_RUNE = {}
 
-  local runes   = RuneData()
-  local now     = GetTime()
+  local runes = RuneData()
+  local now = GetTime()
   local threshS = itemThresholdSeconds()
 
   for itemID, data in pairs(runes) do
     repeat
-      if not data then break end
-      if not passesGates(data.gates) then break end
+      if not data then
+        break
+      end
+      if not passesGates(data.gates) then
+        break
+      end
       local qty = getCount(itemID)
-      if qty <= 0 then break end
+      if qty <= 0 then
+        break
+      end
 
       local expire = GetExpireForIDs(data.buffID)
 
-      local entry  = ns.copyItemData and ns.copyItemData(data) or {}
+      local entry = ns.copyItemData and ns.copyItemData(data) or {}
       entry.category = "AUGMENT_RUNE"
-      entry.itemID   = itemID
-      entry.qty      = data.qty
+      entry.itemID = itemID
+      entry.qty = data.qty
       entry.quantity = (data.qty == false) and nil or qty
-      if data.qty == false then entry.centerText = "" end
+      if data.qty == false then
+        entry.centerText = ""
+      end
 
       if expire and expire ~= math.huge then
         local remaining = expire - now
         if remaining > 0 and remaining <= threshS then
           entry.expireTime = expire
-          entry.showAt     = nil
+          entry.showAt = nil
           entry._buffTimer = true
           entry._buffUntil = expire
         else
           entry.expireTime = expire
-          entry.showAt     = math.max(0, expire - threshS)
+          entry.showAt = math.max(0, expire - threshS)
           entry._buffTimer = nil
           entry._buffUntil = nil
         end
       else
         entry.expireTime = nil
-        entry.showAt     = nil
+        entry.showAt = nil
         entry._buffTimer = nil
         entry._buffUntil = nil
       end
@@ -156,16 +180,24 @@ local function rebuildAugmentRune()
     ns._runeLastAnyExpire = anyExpire and true or false
   end
 
-  if ns.RenderAll then ns.RenderAll() end
-  if ns.Timer_RecomputeSchedule then ns.Timer_RecomputeSchedule() end
+  if ns.RenderAll then
+    ns.RenderAll()
+  end
+  if ns.Timer_RecomputeSchedule then
+    ns.Timer_RecomputeSchedule()
+  end
 end
 
 local function AugmentRune_OnPlayerAura(unit, updateInfo)
-  if unit ~= "player" then return end
+  if unit ~= "player" then
+    return
+  end
   ensureRuneBuffLookups()
 
   if not updateInfo or updateInfo.isFullUpdate then
-    if ns.UpdateAugmentRunes then ns.UpdateAugmentRunes() end
+    if ns.UpdateAugmentRunes then
+      ns.UpdateAugmentRunes()
+    end
     return
   end
 
@@ -177,7 +209,9 @@ local function AugmentRune_OnPlayerAura(unit, updateInfo)
       local a = added[i]
       local id = a and a.spellId
       if id and set[id] then
-        if ns.UpdateAugmentRunes then ns.UpdateAugmentRunes() end
+        if ns.UpdateAugmentRunes then
+          ns.UpdateAugmentRunes()
+        end
         return
       end
     end
@@ -189,7 +223,9 @@ local function AugmentRune_OnPlayerAura(unit, updateInfo)
       local info = AuraByInstance("player", updated[i])
       local id = info and info.spellId
       if id and set[id] then
-        if ns.UpdateAugmentRunes then ns.UpdateAugmentRunes() end
+        if ns.UpdateAugmentRunes then
+          ns.UpdateAugmentRunes()
+        end
         return
       end
     end
@@ -200,7 +236,9 @@ local function AugmentRune_OnPlayerAura(unit, updateInfo)
     local anyExpire = GetExpireForIDs(_buffUnion)
     local hasNow = anyExpire and true or false
     if hasNow ~= ns._runeLastAnyExpire then
-      if ns.UpdateAugmentRunes then ns.UpdateAugmentRunes() end
+      if ns.UpdateAugmentRunes then
+        ns.UpdateAugmentRunes()
+      end
       return
     end
   end

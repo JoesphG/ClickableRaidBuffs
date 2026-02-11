@@ -22,10 +22,18 @@ function ns.ExecutionLocked()
   if C_ChallengeMode and C_ChallengeMode.IsChallengeModeActive and C_ChallengeMode.IsChallengeModeActive() then
     return true
   end
-  if InCombatLockdown and InCombatLockdown() then return true end
-  if ns._inCombat then return true end
-  if ns._inEncounter then return true end
-  if ns._isDead then return true end
+  if InCombatLockdown and InCombatLockdown() then
+    return true
+  end
+  if ns._inCombat then
+    return true
+  end
+  if ns._inEncounter then
+    return true
+  end
+  if ns._isDead then
+    return true
+  end
   return false
 end
 
@@ -51,6 +59,8 @@ local function recordViolation(name)
   end
 end
 
+ns.MidnightRecordViolation = recordViolation
+
 local function wrapFunction(fn, name)
   return function(...)
     if ns.MIDNIGHT_LIMP_MODE and ns.ExecutionLocked() then
@@ -62,10 +72,10 @@ local function wrapFunction(fn, name)
 end
 
 local DO_NOT_WRAP = {
-  MidnightBootstrap    = true,
-  ExecutionLocked      = true,
-  MidnightShowError    = true,
-  CombatClearIcons     = true,
+  MidnightBootstrap = true,
+  ExecutionLocked = true,
+  MidnightShowError = true,
+  CombatClearIcons = true,
   HideAllRenderedIcons = true,
 }
 
@@ -87,8 +97,12 @@ end
 local function ForceReassessIfUnlocked()
   local locked = ns.ExecutionLocked()
   if _wasLocked and not locked then
-    if ns.RequestRebuild then ns.RequestRebuild() end
-    if ns.RenderAll then ns.RenderAll() end
+    if ns.RequestRebuild then
+      ns.RequestRebuild()
+    end
+    if ns.RenderAll then
+      ns.RenderAll()
+    end
   end
   _wasLocked = locked
 end
@@ -103,7 +117,9 @@ combatFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 combatFrame:SetScript("OnEvent", function(_, event)
   if event == "PLAYER_REGEN_DISABLED" or event == "CHALLENGE_MODE_START" then
-    if realCombatClear then realCombatClear() end
+    if realCombatClear then
+      realCombatClear()
+    end
     _wasLocked = true
     return
   end
@@ -114,7 +130,9 @@ end)
 local reportFrame
 
 local function ForceShowErrorUI()
-  if InCombatLockdown and InCombatLockdown() then return end
+  if InCombatLockdown and InCombatLockdown() then
+    return
+  end
   if not next(ns._midnightEvents) then
     print("|cFF00ccffCRB:|r No Midnight errors recorded.")
     return
@@ -148,10 +166,10 @@ local function ForceShowErrorUI()
 
   local lines = { "Addon: ClickableRaidBuffs", "" }
   for _, e in pairs(ns._midnightEvents) do
-    lines[#lines+1] = ("%s (%d×)"):format(e.name, e.count)
-    lines[#lines+1] = "First seen: " .. e.firstSeen
-    lines[#lines+1] = e.stack
-    lines[#lines+1] = string.rep("-", 50)
+    lines[#lines + 1] = ("%s (%dï¿½)"):format(e.name, e.count)
+    lines[#lines + 1] = "First seen: " .. e.firstSeen
+    lines[#lines + 1] = e.stack
+    lines[#lines + 1] = string.rep("-", 50)
   end
 
   editBox:SetText(table.concat(lines, "\n"))

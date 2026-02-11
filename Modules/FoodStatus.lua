@@ -62,27 +62,41 @@ local function EnsureEatingEntry()
   clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
   local cat = clickableRaidBuffCache.displayable["EATING"]
   if not cat then
-    cat = {}; clickableRaidBuffCache.displayable["EATING"] = cat
+    cat = {}
+    clickableRaidBuffCache.displayable["EATING"] = cat
   end
   local entry = cat["EATING"]
   if not entry then
-    entry = { category="EATING", icon=EATING_ICON, itemID=nil, centerText="", cooldownStart=nil, cooldownDuration=nil }
+    entry = {
+      category = "EATING",
+      icon = EATING_ICON,
+      itemID = nil,
+      centerText = "",
+      cooldownStart = nil,
+      cooldownDuration = nil,
+    }
     cat["EATING"] = entry
   end
   return entry
 end
 
 local function ClearEatingEntry()
-  if not clickableRaidBuffCache or not clickableRaidBuffCache.displayable then return end
+  if not clickableRaidBuffCache or not clickableRaidBuffCache.displayable then
+    return
+  end
   local cat = clickableRaidBuffCache.displayable["EATING"]
-  if cat then cat["EATING"] = nil end
+  if cat then
+    cat["EATING"] = nil
+  end
 end
 
 local function ScanPlayerEatingAura()
   local now = GetTime()
-  for i=1, 40 do
+  for i = 1, 40 do
     local aura = AuraByIndex and AuraByIndex("player", i, "HELPFUL")
-    if not aura then break end
+    if not aura then
+      break
+    end
     if aura.name and EATING_NAMES[aura.name] then
       local exp = aura.expirationTime or 0
       local dur = aura.duration or 0
@@ -98,9 +112,11 @@ end
 
 local function HasWellFedOverThreshold(thresh)
   local now = GetTime()
-  for i=1, 40 do
+  for i = 1, 40 do
     local aura = AuraByIndex and AuraByIndex("player", i, "HELPFUL")
-    if not aura then break end
+    if not aura then
+      break
+    end
     if aura.name and WELLFED_NAMES[aura.name] then
       local exp = aura.expirationTime
       if exp and exp > now and (exp - now) > thresh then
@@ -112,7 +128,9 @@ local function HasWellFedOverThreshold(thresh)
 end
 
 function ns.RecomputeEatingState()
-  if ns._inCombat then return end
+  if ns._inCombat then
+    return
+  end
   local found, aura, exp, dur, start, instID = ScanPlayerEatingAura()
   local suppress = false
   if found then
@@ -124,24 +142,42 @@ function ns.RecomputeEatingState()
     eatingActive = true
     lastInstanceID = instID
     local e = EnsureEatingEntry()
-    e.cooldownStart    = start
+    e.cooldownStart = start
     e.cooldownDuration = dur
-    e.centerText       = ""
-    if ns.PushRender then ns.PushRender() else if ns.RenderAll then ns.RenderAll() end end
-    if ns.Timer_RecomputeSchedule then ns.Timer_RecomputeSchedule() end
+    e.centerText = ""
+    if ns.PushRender then
+      ns.PushRender()
+    else
+      if ns.RenderAll then
+        ns.RenderAll()
+      end
+    end
+    if ns.Timer_RecomputeSchedule then
+      ns.Timer_RecomputeSchedule()
+    end
   else
     if eatingActive then
       eatingActive = false
       lastInstanceID = nil
       ClearEatingEntry()
-      if ns.PushRender then ns.PushRender() else if ns.RenderAll then ns.RenderAll() end end
-      if ns.Timer_RecomputeSchedule then ns.Timer_RecomputeSchedule() end
+      if ns.PushRender then
+        ns.PushRender()
+      else
+        if ns.RenderAll then
+          ns.RenderAll()
+        end
+      end
+      if ns.Timer_RecomputeSchedule then
+        ns.Timer_RecomputeSchedule()
+      end
     end
   end
 end
 
 local function OnUnitAura(unit, updateInfo)
-  if unit ~= "player" then return end
+  if unit ~= "player" then
+    return
+  end
 
   if not updateInfo or updateInfo.isFullUpdate then
     ns.RecomputeEatingState()
@@ -190,5 +226,7 @@ end
 
 function ns.FoodStatus_OnUnitAura(unit, updateInfo)
   OnUnitAura(unit, updateInfo)
-  if ns.Timer_RecomputeSchedule then ns.Timer_RecomputeSchedule() end
+  if ns.Timer_RecomputeSchedule then
+    ns.Timer_RecomputeSchedule()
+  end
 end

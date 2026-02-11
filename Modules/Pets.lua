@@ -9,14 +9,26 @@ clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
 local HUNTER_CLASSID = 3
 local HUNTER_DISABLE_PETS_SPELL = 1223323
 
-local function InCombat() return InCombatLockdown() end
+local function InCombat()
+  return InCombatLockdown()
+end
 
-local function DB() return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {} end
-local function HPDB() local d = DB(); d.hunterPets = d.hunterPets or {}; return d.hunterPets end
+local function DB()
+  return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
+end
+local function HPDB()
+  local d = DB()
+  d.hunterPets = d.hunterPets or {}
+  return d.hunterPets
+end
 
 local function KnowSpell(id)
-  if not id then return false end
-  if IsPlayerSpell then return IsPlayerSpell(id) end
+  if not id then
+    return false
+  end
+  if IsPlayerSpell then
+    return IsPlayerSpell(id)
+  end
   return IsSpellKnown and IsSpellKnown(id) or false
 end
 
@@ -26,98 +38,150 @@ local function ensureDisplayCat(cat)
 end
 
 local function clearDisplayCat(cat)
-  if clickableRaidBuffCache.displayable[cat] then wipe(clickableRaidBuffCache.displayable[cat]) end
+  if clickableRaidBuffCache.displayable[cat] then
+    wipe(clickableRaidBuffCache.displayable[cat])
+  end
 end
 
 local function HasUsablePet()
-  if not UnitExists("pet") then return false end
-  if UnitIsDeadOrGhost and UnitIsDeadOrGhost("pet") then return false end
-  if not UnitIsVisible("pet") then return false end
+  if not UnitExists("pet") then
+    return false
+  end
+  if UnitIsDeadOrGhost and UnitIsDeadOrGhost("pet") then
+    return false
+  end
+  if not UnitIsVisible("pet") then
+    return false
+  end
   return true
 end
 
 local function PlayerClassID()
   return (clickableRaidBuffCache.playerInfo and clickableRaidBuffCache.playerInfo.playerClassId)
-         or (type(getPlayerClass)=="function" and getPlayerClass())
+    or (type(getPlayerClass) == "function" and getPlayerClass())
 end
 
 local CALLPET_NATURAL_SLOT = {
-  [883]   = 1,
+  [883] = 1,
   [83242] = 2,
   [83243] = 3,
   [83244] = 4,
   [83245] = 5,
 }
-local function callpetNaturalSlotForSpell(sid) return CALLPET_NATURAL_SLOT[sid] end
+local function callpetNaturalSlotForSpell(sid)
+  return CALLPET_NATURAL_SLOT[sid]
+end
 
 local function hunterSlotHasPet(slotIndex)
-  if not slotIndex then return false end
+  if not slotIndex then
+    return false
+  end
   local info = C_StableInfo and C_StableInfo.GetStablePetInfo and C_StableInfo.GetStablePetInfo(slotIndex)
-  if not info then return false end
-  local n   = info.name or info.petName or info.customName
+  if not info then
+    return false
+  end
+  local n = info.name or info.petName or info.customName
   local cid = info.creatureID or info.displayID or info.speciesID
   return (n and n ~= "") or (cid and cid ~= 0)
 end
 
 local function atlasForHunterSpec(specID)
   local hp = HPDB()
-  if hp.displayTalentsSymbol == false then return nil end
-  if specID == 79 then return "cunning-icon-small"  end
-  if specID == 74 then return "ferocity-icon-small" end
-  if specID == 81 then return "tenacity-icon-small" end
+  if hp.displayTalentsSymbol == false then
+    return nil
+  end
+  if specID == 79 then
+    return "cunning-icon-small"
+  end
+  if specID == 74 then
+    return "ferocity-icon-small"
+  end
+  if specID == 81 then
+    return "tenacity-icon-small"
+  end
   return nil
 end
 
 local function abilityIconForSpec(specID)
-  if specID == 79 then return 348567 end
-  if specID == 74 then return 136224 end
-  if specID == 81 then return 571585 end
+  if specID == 79 then
+    return 348567
+  end
+  if specID == 74 then
+    return 136224
+  end
+  if specID == 81 then
+    return 571585
+  end
   return nil
 end
 
 local function applySpellCooldownFields(entry, spellID)
+  local IsSecret = ns.Compat and ns.Compat.IsSecret
   local info = C_Spell and C_Spell.GetSpellCooldown and C_Spell.GetSpellCooldown(spellID)
   local start = info and info.startTime or 0
   local duration = info and info.duration or 0
   local enabled = info and info.isEnabled
+  if IsSecret and (IsSecret(start) or IsSecret(duration) or IsSecret(enabled)) then
+    entry.cooldownStart = nil
+    entry.cooldownDuration = nil
+    return
+  end
   if enabled and start > 0 and duration and duration >= 1.5 then
-    entry.cooldownStart    = start
+    entry.cooldownStart = start
     entry.cooldownDuration = duration
   else
-    entry.cooldownStart    = nil
+    entry.cooldownStart = nil
     entry.cooldownDuration = nil
   end
 end
 
 local function IsExcludedPets(id)
-  if type(ns.IsExcluded) == "function" then return ns.IsExcluded(id, "PETS") end
+  if type(ns.IsExcluded) == "function" then
+    return ns.IsExcluded(id, "PETS")
+  end
   return false
 end
 
 local function IsMMWithoutUnbreakableBond()
-  if PlayerClassID() ~= HUNTER_CLASSID then return false end
-  if not GetSpecialization or not GetSpecializationInfo then return false end
+  if PlayerClassID() ~= HUNTER_CLASSID then
+    return false
+  end
+  if not GetSpecialization or not GetSpecializationInfo then
+    return false
+  end
   local spec = GetSpecialization()
-  if not spec then return false end
+  if not spec then
+    return false
+  end
   local specID = select(1, GetSpecializationInfo(spec))
-  if specID ~= 254 then return false end
+  if specID ~= 254 then
+    return false
+  end
   return KnowSpell(HUNTER_DISABLE_PETS_SPELL)
 end
 
 local function buildPets()
-  if InCombat() then return end
+  if InCombat() then
+    return
+  end
 
   local classID = PlayerClassID()
   local tbl = ClickableRaidData and ClickableRaidData["PETS"]
-  if not tbl then clearDisplayCat("PETS"); return end
-  if HasUsablePet() then clearDisplayCat("PETS"); return end
+  if not tbl then
+    clearDisplayCat("PETS")
+    return
+  end
+  if HasUsablePet() then
+    clearDisplayCat("PETS")
+    return
+  end
 
   local out = ensureDisplayCat("PETS")
   wipe(out)
 
   local hp = HPDB()
 
-  -- Group ignore: only for Call Pet 1–5 (NOT Revive Pet)
+  -- Group ignore: only for Call Pet 1ï¿½5 (NOT Revive Pet)
   local ignoreHunterGroup = false
   if type(ns.IsExcluded) == "function" then
     ignoreHunterGroup = ns.IsExcluded(-7001, "PETS") and true or false
@@ -151,7 +215,7 @@ local function buildPets()
       if classID == HUNTER_CLASSID then
         local realSlot = callpetNaturalSlotForSpell(sid)
         if realSlot then
-          -- Call Pet 1–5: suppressed by group ignore (-7001) and by MM-without-talent
+          -- Call Pet 1ï¿½5: suppressed by group ignore (-7001) and by MM-without-talent
           if hunterSlotHasPet(realSlot) and not ignoreHunterGroup and not mmWithoutUnbreakable then
             local e = ns.copyItemData(row)
             e.category = "PETS"
@@ -181,16 +245,18 @@ local function buildPets()
             else
               e.specAtlas = nil
               e.rankAtlas = nil
-              e.icon      = nil
+              e.icon = nil
               e.hoverIcon = nil
             end
 
             local info = C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(sid)
-            e.macro     = "/use " .. (info and info.name or "")
-            e.spellID   = sid
+            e.macro = "/use " .. (info and info.name or "")
+            e.spellID = sid
 
             local displayOrder = realSlot
-            if hp.reverseOrder == true then displayOrder = 6 - realSlot end
+            if hp.reverseOrder == true then
+              displayOrder = 6 - realSlot
+            end
             e.orderHint = displayOrder
 
             applySpellCooldownFields(e, sid)
@@ -202,8 +268,8 @@ local function buildPets()
             local e = ns.copyItemData(row)
             e.category = "PETS"
             local info = C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(sid)
-            e.macro     = "/use " .. (info and info.name or "Revive Pet")
-            e.spellID   = sid
+            e.macro = "/use " .. (info and info.name or "Revive Pet")
+            e.spellID = sid
             e.orderHint = 99
             applySpellCooldownFields(e, sid)
             out[sid] = e
@@ -214,8 +280,8 @@ local function buildPets()
           local e = ns.copyItemData(row)
           e.category = "PETS"
           local info = C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(sid)
-          e.macro     = "/use " .. (info and info.name or "")
-          e.spellID   = sid
+          e.macro = "/use " .. (info and info.name or "")
+          e.spellID = sid
           e.orderHint = sid
           e.hoverIcon = nil
           applySpellCooldownFields(e, sid)
@@ -226,22 +292,53 @@ local function buildPets()
   end
 end
 
-
-
-
-
 function ns.Pets_Rebuild()
-  if InCombat() then return end
+  if InCombat() then
+    return
+  end
   buildPets()
-  if ns.RequestRebuild then ns.RequestRebuild() end
-  if ns.RenderAll then ns.RenderAll() end
+  if ns.RequestRebuild then
+    ns.RequestRebuild()
+  end
+  if ns.RenderAll then
+    ns.RenderAll()
+  end
 end
 
-function ns.Pets_OnPEW() ns.Pets_Rebuild(); return true end
-function ns.Pets_OnSpellsChanged() ns.Pets_Rebuild(); return true end
-function ns.Pets_OnPetStableUpdate() ns.Pets_Rebuild(); return true end
-function ns.Pets_OnUnitPet(unit) if unit ~= "player" then return false end ns.Pets_Rebuild(); return true end
-function ns.Pets_OnSpellUpdateCooldown() if InCombat() then return false end ns.Pets_Rebuild(); return true end
-function ns.Pets_OnRegenEnabled() ns.Pets_Rebuild(); return true end
-function ns.Pets_OnRegenDisabled() return false end
-function ns.Pets_OnMountDisplayChanged() ns.Pets_Rebuild(); return true end
+function ns.Pets_OnPEW()
+  ns.Pets_Rebuild()
+  return true
+end
+function ns.Pets_OnSpellsChanged()
+  ns.Pets_Rebuild()
+  return true
+end
+function ns.Pets_OnPetStableUpdate()
+  ns.Pets_Rebuild()
+  return true
+end
+function ns.Pets_OnUnitPet(unit)
+  if unit ~= "player" then
+    return false
+  end
+  ns.Pets_Rebuild()
+  return true
+end
+function ns.Pets_OnSpellUpdateCooldown()
+  if InCombat() then
+    return false
+  end
+  ns.Pets_Rebuild()
+  return true
+end
+function ns.Pets_OnRegenEnabled()
+  ns.Pets_Rebuild()
+  return true
+end
+function ns.Pets_OnRegenDisabled()
+  return false
+end
+function ns.Pets_OnMountDisplayChanged()
+  ns.Pets_Rebuild()
+  return true
+end

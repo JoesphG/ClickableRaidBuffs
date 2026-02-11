@@ -9,17 +9,27 @@ clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
 
 local CAT = "CASTABLE_WEAPON_ENCHANTS"
 
-local function DB() return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {} end
-local function InCombat() return InCombatLockdown() end
-local function IsDeadOrGhost() return UnitIsDeadOrGhost("player") end
+local function DB()
+  return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
+end
+local function InCombat()
+  return InCombatLockdown()
+end
+local function IsDeadOrGhost()
+  return UnitIsDeadOrGhost("player")
+end
 
 local function DebugOn()
   local d = DB()
-  return (ns and ns.DEBUG_CWE) or (clickableRaidBuffCache and clickableRaidBuffCache.debugCWE) or (d and (d.debugCWE or d.debugAll or d.debug))
+  return (ns and ns.DEBUG_CWE)
+    or (clickableRaidBuffCache and clickableRaidBuffCache.debugCWE)
+    or (d and (d.debugCWE or d.debugAll or d.debug))
 end
 
 local function Log(fmt, ...)
-  if not DebugOn() then return end
+  if not DebugOn() then
+    return
+  end
   local msg = "[CWE] " .. string.format(fmt, ...)
   if DEFAULT_CHAT_FRAME and DEFAULT_CHAT_FRAME.AddMessage then
     DEFAULT_CHAT_FRAME:AddMessage(msg)
@@ -46,7 +56,9 @@ local function ensureCat()
 end
 
 local function clearCat()
-  if clickableRaidBuffCache.displayable[CAT] then wipe(clickableRaidBuffCache.displayable[CAT]) end
+  if clickableRaidBuffCache.displayable[CAT] then
+    wipe(clickableRaidBuffCache.displayable[CAT])
+  end
   Log("Cleared category displayables")
 end
 
@@ -63,7 +75,9 @@ end
 
 local function passesGates(row)
   local g = row and row.gates
-  if not g then return true end
+  if not g then
+    return true
+  end
   for i = 1, #g do
     local gate = g[i]
     if gate == "rested" and IsResting() then
@@ -94,7 +108,7 @@ local function SlotEnchantRemaining(slotid)
 end
 
 local WEAPON_CLASS = (Enum and Enum.ItemClass and Enum.ItemClass.Weapon) or LE_ITEM_CLASS_WEAPON or 2
-local ARMOR_CLASS  = (Enum and Enum.ItemClass and Enum.ItemClass.Armor)  or LE_ITEM_CLASS_ARMOR  or 4
+local ARMOR_CLASS = (Enum and Enum.ItemClass and Enum.ItemClass.Armor) or LE_ITEM_CLASS_ARMOR or 4
 local ARMOR_SHIELD = (Enum and Enum.ItemArmorSubclass and Enum.ItemArmorSubclass.Shield) or LE_ITEM_ARMOR_SHIELD or 6
 
 local function SlotMatchesType(slotid, wepType)
@@ -106,17 +120,32 @@ local function SlotMatchesType(slotid, wepType)
   local classID, subClassID = select(6, C_Item.GetItemInfoInstant(itemID))
   if wepType == "shield" then
     local ok = (classID == ARMOR_CLASS) and (subClassID == ARMOR_SHIELD)
-    Log("Slot %s type=shield item=%s class=%s sub=%s ok=%s", tostring(slotid), tostring(itemID), tostring(classID), tostring(subClassID), tostring(ok))
+    Log(
+      "Slot %s type=shield item=%s class=%s sub=%s ok=%s",
+      tostring(slotid),
+      tostring(itemID),
+      tostring(classID),
+      tostring(subClassID),
+      tostring(ok)
+    )
     return ok
   else
     local ok = (classID == WEAPON_CLASS)
-    Log("Slot %s type=weapon item=%s class=%s ok=%s", tostring(slotid), tostring(itemID), tostring(classID), tostring(ok))
+    Log(
+      "Slot %s type=weapon item=%s class=%s ok=%s",
+      tostring(slotid),
+      tostring(itemID),
+      tostring(classID),
+      tostring(ok)
+    )
     return ok
   end
 end
 
 local function EffectiveSlotForRow(row)
-  if not row then return nil end
+  if not row then
+    return nil
+  end
   if row.spellID == 318038 then
     local spec = GetSpecialization and GetSpecialization()
     local s = (spec == 2) and 17 or 16
@@ -130,14 +159,18 @@ end
 local function Build(fromRender)
   if InCombat() or IsDeadOrGhost() then
     clearCat()
-    if not fromRender and ns.RenderAll and not InCombat() then ns.RenderAll() end
+    if not fromRender and ns.RenderAll and not InCombat() then
+      ns.RenderAll()
+    end
     return
   end
 
   local tbl = ClickableRaidData and ClickableRaidData[CAT]
   if not tbl then
     clearCat()
-    if not fromRender and ns.RenderAll and not InCombat() then ns.RenderAll() end
+    if not fromRender and ns.RenderAll and not InCombat() then
+      ns.RenderAll()
+    end
     return
   end
 
@@ -147,7 +180,9 @@ local function Build(fromRender)
   local tSec = spellThresholdSecs()
 
   local function effectiveSlotForRow(row)
-    if not row then return nil end
+    if not row then
+      return nil
+    end
     if row.spellID == 318038 then
       local spec = GetSpecialization and GetSpecialization()
       return (spec == 2) and 17 or 16
@@ -157,30 +192,48 @@ local function Build(fromRender)
 
   local function safeCopy(row)
     local e = (ns.copyItemData and ns.copyItemData(row)) or {}
-    for k, v in pairs(row) do if e[k] == nil then e[k] = v end end
+    for k, v in pairs(row) do
+      if e[k] == nil then
+        e[k] = v
+      end
+    end
     return e
   end
 
   for _, row in pairs(tbl) do
     repeat
-      if type(row) ~= "table" or not row.spellID then break end
+      if type(row) ~= "table" or not row.spellID then
+        break
+      end
 
       local slotid = effectiveSlotForRow(row)
-      if slotid ~= 16 and slotid ~= 17 then break end
+      if slotid ~= 16 and slotid ~= 17 then
+        break
+      end
 
-      if not knowSpell(row.spellID) then break end
-      if not passesGates(row) then break end
-      if not SlotMatchesType(slotid, row.wepType) then break end
+      if not knowSpell(row.spellID) then
+        break
+      end
+      if not passesGates(row) then
+        break
+      end
+      if not SlotMatchesType(slotid, row.wepType) then
+        break
+      end
 
       local rem = SlotEnchantRemaining(slotid)
       local show = (rem == nil) or (rem and rem <= tSec)
-      if not show then break end
+      if not show then
+        break
+      end
 
       local e = safeCopy(row)
       e.category = CAT
-      e.isItem  = false
+      e.isItem = false
       e.spellID = row.spellID
-      e.icon    = e.icon or (C_Spell and C_Spell.GetSpellInfo and (C_Spell.GetSpellInfo(row.spellID) or {}).iconID) or e.icon
+      e.icon = e.icon
+        or (C_Spell and C_Spell.GetSpellInfo and (C_Spell.GetSpellInfo(row.spellID) or {}).iconID)
+        or e.icon
 
       local info = C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(row.spellID) or nil
       e.macro = "/use " .. ((info and info.name) or row.name or "")
@@ -196,7 +249,9 @@ local function Build(fromRender)
     until true
   end
 
-  if not fromRender and ns.RenderAll and not InCombat() then ns.RenderAll() end
+  if not fromRender and ns.RenderAll and not InCombat() then
+    ns.RenderAll()
+  end
 end
 
 function ns.CastableWeaponEnchants_Rebuild()
@@ -205,19 +260,32 @@ function ns.CastableWeaponEnchants_Rebuild()
 end
 
 local function EnsureOrderHook()
-  if ns._cwe_order_wrapped then return end
-  if type(ns.GetCategoryOrder) ~= "function" then return end
+  if ns._cwe_order_wrapped then
+    return
+  end
+  if type(ns.GetCategoryOrder) ~= "function" then
+    return
+  end
   local orig = ns.GetCategoryOrder
   ns.GetCategoryOrder = function(...)
     local list = orig(...) or {}
     local have = false
-    for i = 1, #list do if list[i] == CAT then have = true; break end end
-    if have then return list end
+    for i = 1, #list do
+      if list[i] == CAT then
+        have = true
+        break
+      end
+    end
+    if have then
+      return list
+    end
     local disp = _G.clickableRaidBuffCache and _G.clickableRaidBuffCache.displayable
     if disp and disp[CAT] and next(disp[CAT]) then
       local out = {}
-      for i = 1, #list do out[i] = list[i] end
-      out[#out+1] = CAT
+      for i = 1, #list do
+        out[i] = list[i]
+      end
+      out[#out + 1] = CAT
       Log("Order hook appended category")
       return out
     end
@@ -228,7 +296,9 @@ local function EnsureOrderHook()
 end
 
 local function EnsureRenderHook()
-  if ns._cwe_render_wrapped then return end
+  if ns._cwe_render_wrapped then
+    return
+  end
   if type(ns.RenderAll) == "function" then
     local orig = ns.RenderAll
     ns.RenderAll = function(...)

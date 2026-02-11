@@ -49,17 +49,23 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
+**v7.0.4**
+
+- Updated for Retail 12.0.1: removed legacy spell APIs and standardized C_Spell usage  
+- Added guards for secret aura/cooldown values to prevent errors in restricted contexts  
+- General stability and maintenance updates  
+
+
+=======================================================================================================================
+                                                HISTORICAL PATCH NOTES
+=======================================================================================================================
+
 **v7.0.3**
 
 - Fixed (most) errors that could occur during active Mythic Keystone runs  
 - Fixed delayed callbacks executing during restricted states in Mythic Keystone dungeons  
 - Fixed icons not reliably refreshing after entering or exiting instanced content  
 - Improved handling of deferred updates suppressed during Challenge Mode  
-
-
-=======================================================================================================================
-                                                HISTORICAL PATCH NOTES
-=======================================================================================================================
 
 **v7.0.2**
 

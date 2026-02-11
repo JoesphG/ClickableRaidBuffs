@@ -9,15 +9,23 @@ clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
 
 local englishFaction, _ = UnitFactionGroup("player")
 local ttmID = nil
-if englishFaction == "Alliance" then ttmID = 280 elseif englishFaction == "Horde" then ttmID = 284 end
+if englishFaction == "Alliance" then
+  ttmID = 280
+elseif englishFaction == "Horde" then
+  ttmID = 284
+end
 
 local CAT = "DURABILITY"
 local REPAIR_ICON_ID = 136241
 local PREFERRED_MOUNT_IDS = { ns and ns.SelectedMount, 1039, 460, 2237, ttmID }
 local chosenMountID = nil
 
-local function DB() return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {} end
-local function InCombat() return InCombatLockdown() end
+local function DB()
+  return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
+end
+local function InCombat()
+  return InCombatLockdown()
+end
 
 local function IsDeadOrGhost()
   return UnitIsDeadOrGhost("player")
@@ -26,14 +34,20 @@ end
 local function getDurabilityThreshold()
   local db = DB()
   local t = db.durabilityThreshold or db.durabilityPercent or db.durability or 20
-  if t < 0 then t = 0 end
-  if t > 100 then t = 100 end
+  if t < 0 then
+    t = 0
+  end
+  if t > 100 then
+    t = 100
+  end
   return t
 end
 
 local function refreshChosenMount()
   chosenMountID = nil
-  if not C_MountJournal or not C_MountJournal.GetMountInfoByID then return end
+  if not C_MountJournal or not C_MountJournal.GetMountInfoByID then
+    return
+  end
   PREFERRED_MOUNT_IDS[1] = ns and ns.SelectedMount
   for _, id in ipairs(PREFERRED_MOUNT_IDS) do
     if id then
@@ -93,29 +107,32 @@ local function Build()
     if chosenMountID then
       macro = "/run C_MountJournal.SummonByID(" .. tostring(chosenMountID) .. ")"
     else
-      macro = "/run local id=460 if C_MountJournal.GetMountInfoByID and select(11, C_MountJournal.GetMountInfoByID(id)) then C_MountJournal.SummonByID(id) end"
+      macro =
+        "/run local id=460 if C_MountJournal.GetMountInfoByID and select(11, C_MountJournal.GetMountInfoByID(id)) then C_MountJournal.SummonByID(id) end"
     end
 
     local e = {
-      id        = -9101,
-      isItem    = true,
-      category  = CAT,
-      name      = DURABILITY,
-      spellID   = nil,
-      itemID    = nil,
-      icon      = REPAIR_ICON_ID,
-      topLbl    = "",
-      btmLbl    = MINIMAP_TRACKING_REPAIR,
-      macro     = macro,
+      id = -9101,
+      isItem = true,
+      category = CAT,
+      name = DURABILITY,
+      spellID = nil,
+      itemID = nil,
+      icon = REPAIR_ICON_ID,
+      topLbl = "",
+      btmLbl = MINIMAP_TRACKING_REPAIR,
+      macro = macro,
       orderHint = 1,
-      quantity  = pct,
+      quantity = pct,
     }
     out["repair"] = e
   end
 end
 
 local function AppendPercentAfterRender()
-  if not ns.RenderFrames then return end
+  if not ns.RenderFrames then
+    return
+  end
   for _, btn in ipairs(ns.RenderFrames) do
     if btn:IsShown() and btn._crb_entry and btn._crb_entry.category == CAT then
       if not btn._crb_center_from_cd then
@@ -131,7 +148,9 @@ local function AppendPercentAfterRender()
 end
 
 local function EnsureRenderHook()
-  if ns._durability_wrapped then return end
+  if ns._durability_wrapped then
+    return
+  end
   if type(ns.RenderAll) == "function" then
     local orig = ns.RenderAll
     ns.RenderAll = function(...)
@@ -149,7 +168,9 @@ C_Timer.After(0.5, EnsureRenderHook)
 
 function ns.Durability_Rebuild()
   Build()
-  if ns.RenderAll and not InCombat() then ns.RenderAll() end
+  if ns.RenderAll and not InCombat() then
+    ns.RenderAll()
+  end
 end
 
 function ns.Durability_RefreshChosenMount()
@@ -159,7 +180,8 @@ function ns.Durability_RefreshChosenMount()
 end
 
 local function initSelectedFromDB()
-  local d = DB(); d.mounts = d.mounts or {}
+  local d = DB()
+  d.mounts = d.mounts or {}
   local sel = d.mounts.selectedMount
   if type(sel) == "number" then
     ns.SelectedMount = sel
@@ -171,7 +193,8 @@ end
 initSelectedFromDB()
 
 function ns.Durability_SetSelectedMount(id)
-  local d = DB(); d.mounts = d.mounts or {}
+  local d = DB()
+  d.mounts = d.mounts or {}
   d.mounts.selectedMount = tonumber(id) or nil
   ns.SelectedMount = d.mounts.selectedMount
   refreshChosenMount()

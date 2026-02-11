@@ -7,21 +7,27 @@ local addonName, ns = ...
 ns._GateHandlers = ns._GateHandlers or {}
 
 function ns.RegisterGate(name, fn)
-  if type(name) ~= "string" or type(fn) ~= "function" then return false end
+  if type(name) ~= "string" or type(fn) ~= "function" then
+    return false
+  end
   ns._GateHandlers[name] = fn
   return true
 end
 
 function ns.PassesGates(data, playerLevel, inInstance, rested)
-  if not data then return true end
+  if not data then
+    return true
+  end
 
   local g = data.gates
   local hasEvenRested, hasEvenDead = false, false
   if g and #g > 0 then
     for i = 1, #g do
       local name = g[i]
-      if name == "evenRested" then hasEvenRested = true
-      elseif name == "evenDead" then hasEvenDead = true
+      if name == "evenRested" then
+        hasEvenRested = true
+      elseif name == "evenDead" then
+        hasEvenDead = true
       end
     end
   end

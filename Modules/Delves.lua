@@ -12,7 +12,9 @@ local DIFF_DELVE = 208
 
 local function InInstanceDiff()
   local inInst = select(1, IsInInstance())
-  if not inInst then return false end
+  if not inInst then
+    return false
+  end
   local _, _, difficultyID = GetInstanceInfo()
   return true, difficultyID
 end
@@ -24,38 +26,56 @@ ns._delves_origRenderAll = ns._delves_origRenderAll
 
 local function isConsumableAugmentRuneByID(id)
   local data = _G.ClickableRaidData and _G.ClickableRaidData.AUGMENT_RUNE
-  if type(data) ~= "table" then return false end
+  if type(data) ~= "table" then
+    return false
+  end
   local rec = data[id]
-  if type(rec) ~= "table" then return false end
-  if rec.consumable ~= nil then return rec.consumable and true or false end
+  if type(rec) ~= "table" then
+    return false
+  end
+  if rec.consumable ~= nil then
+    return rec.consumable and true or false
+  end
   return false
 end
 
 local function isConsumableRuneEntry(entry, key)
   if type(entry) == "table" then
-    if entry.consumable ~= nil then return entry.consumable and true or false end
+    if entry.consumable ~= nil then
+      return entry.consumable and true or false
+    end
     local id = tonumber(entry.itemID or entry.spellID or key)
-    if id then return isConsumableAugmentRuneByID(id) end
+    if id then
+      return isConsumableAugmentRuneByID(id)
+    end
   else
     local id = tonumber(entry or key)
-    if id then return isConsumableAugmentRuneByID(id) end
+    if id then
+      return isConsumableAugmentRuneByID(id)
+    end
   end
   return false
 end
 
 local function filterAugmentRunes(tbl)
-  if type(tbl) ~= "table" then return {} end
+  if type(tbl) ~= "table" then
+    return {}
+  end
   local isArray = tbl[1] ~= nil
   if isArray then
     local out = {}
     for i, v in ipairs(tbl) do
-      if not isConsumableRuneEntry(v, i) then out[#out+1] = v end
+      if not isConsumableRuneEntry(v, i) then
+        out[#out + 1] = v
+      end
     end
     return out
   else
     local out = {}
     for k, v in pairs(tbl) do
-      if not isConsumableRuneEntry(v, k) then out[k] = v end
+      if not isConsumableRuneEntry(v, k) then
+        out[k] = v
+      end
     end
     return out
   end
@@ -71,15 +91,23 @@ end
 
 function ns.Delves_DisableConsumablesActive()
   local inInst, difficultyID = InInstanceDiff()
-  if not inInst then return false end
-  if difficultyID ~= DIFF_DELVE then return false end
+  if not inInst then
+    return false
+  end
+  if difficultyID ~= DIFF_DELVE then
+    return false
+  end
   local d = DB()
   return d.delvesDisableConsumables and true or false
 end
 
 local function EnsureHookRenderAll()
-  if ns._delves_renderHooked then return end
-  if type(ns.RenderAll) ~= "function" then return end
+  if ns._delves_renderHooked then
+    return
+  end
+  if type(ns.RenderAll) ~= "function" then
+    return
+  end
   ns._delves_origRenderAll = ns.RenderAll
   ns.RenderAll = function(...)
     if ns.Delves_DisableConsumablesActive and ns.Delves_DisableConsumablesActive() then
@@ -99,15 +127,23 @@ local function recompute()
     ns._delves_lastKey = key
     if disableNow then
       SuppressConsumables()
-      if ns.RenderAll then ns.RenderAll() end
+      if ns.RenderAll then
+        ns.RenderAll()
+      end
     else
-      if ns.RequestRebuild then ns.RequestRebuild() end
-      if ns.RenderAll then ns.RenderAll() end
+      if ns.RequestRebuild then
+        ns.RequestRebuild()
+      end
+      if ns.RenderAll then
+        ns.RenderAll()
+      end
     end
   else
     if disableNow then
       SuppressConsumables()
-      if ns.RenderAll then ns.RenderAll() end
+      if ns.RenderAll then
+        ns.RenderAll()
+      end
     end
   end
 end

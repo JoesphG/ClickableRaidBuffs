@@ -6,7 +6,9 @@ local addonName, ns = ...
 ns = ns or {}
 _G[addonName] = ns
 
-local function nowPrecise() return GetTimePreciseSec() end
+local function nowPrecise()
+  return GetTimePreciseSec()
+end
 
 local function scaledFont(btn, base)
   local db = ns.GetDB()
@@ -30,26 +32,36 @@ local function fmt_center_eating(seconds)
 end
 
 local function ensureCooldown(btn)
-  if btn.cooldown then return btn.cooldown end
+  if btn.cooldown then
+    return btn.cooldown
+  end
   local cd = CreateFrame("Cooldown", nil, btn, "CooldownFrameTemplate")
   cd:ClearAllPoints()
-  cd:SetPoint("TOPLEFT",     btn, "TOPLEFT",     1, -1)
-  cd:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -1,  1)
+  cd:SetPoint("TOPLEFT", btn, "TOPLEFT", 1, -1)
+  cd:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -1, 1)
   cd:SetDrawBling(false)
   cd:SetDrawEdge(true)
   cd:SetReverse(false)
   cd:SetHideCountdownNumbers(true)
   cd:SetFrameLevel(btn:GetFrameLevel() + 1)
-  if cd.SetEdgeTexture then cd:SetEdgeTexture("Interface\\Cooldown\\edge") end
-  if cd.SetUseCircularEdge then cd:SetUseCircularEdge(true) end
-  if cd.SetEdgeColor then cd:SetEdgeColor(1, 0.9, 0.1, 1) end
+  if cd.SetEdgeTexture then
+    cd:SetEdgeTexture("Interface\\Cooldown\\edge")
+  end
+  if cd.SetUseCircularEdge then
+    cd:SetUseCircularEdge(true)
+  end
+  if cd.SetEdgeColor then
+    cd:SetEdgeColor(1, 0.9, 0.1, 1)
+  end
   cd:Hide()
   btn.cooldown = cd
   return cd
 end
 
 local function setSwipeVisuals(cd)
-  if cd.SetSwipeColor then cd:SetSwipeColor(1, 1, 1, 0.7) end
+  if cd.SetSwipeColor then
+    cd:SetSwipeColor(1, 1, 1, 0.7)
+  end
 end
 
 local function desaturateOn(btn)
@@ -67,10 +79,14 @@ local function desaturateOff(btn)
 end
 
 local function setCenter(btn, text)
-  if not (btn and btn.centerText) then return end
+  if not (btn and btn.centerText) then
+    return
+  end
   local fs = btn.centerText
   local db = (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
-  if fs.SetDrawLayer then fs:SetDrawLayer("OVERLAY", 7) end
+  if fs.SetDrawLayer then
+    fs:SetDrawLayer("OVERLAY", 7)
+  end
   ns.UpdateFontString(
     fs,
     text or "",
@@ -82,23 +98,29 @@ local function setCenter(btn, text)
 end
 
 function ns.ApplyItemCooldown(btn, entry)
-  if not (btn and entry) then return end
-  local start   = entry.cooldownStart
-  local duration= entry.cooldownDuration
-  if not (start and duration and duration > 0) then return end
+  if not (btn and entry) then
+    return
+  end
+  local start = entry.cooldownStart
+  local duration = entry.cooldownDuration
+  if not (start and duration and duration > 0) then
+    return
+  end
   local cd = ensureCooldown(btn)
   setSwipeVisuals(cd)
   if btn._crb_swipe_start ~= start or btn._crb_swipe_dur ~= duration then
     cd:SetCooldown(start, duration)
     btn._crb_swipe_start = start
-    btn._crb_swipe_dur   = duration
+    btn._crb_swipe_dur = duration
     cd:Show()
   else
-    if not cd:IsShown() then cd:Show() end
+    if not cd:IsShown() then
+      cd:Show()
+    end
   end
   desaturateOn(btn)
   btn._crb_cd_start = start
-  btn._crb_cd_dur   = duration
+  btn._crb_cd_dur = duration
   btn._crb_center_from_cd = true
   if btn.centerText and btn.centerText.SetDrawLayer then
     btn.centerText:SetDrawLayer("OVERLAY", 7)
@@ -106,22 +128,28 @@ function ns.ApplyItemCooldown(btn, entry)
 end
 
 function ns.ClearCooldownVisual(btn)
-  if not btn then return end
+  if not btn then
+    return
+  end
 
-  if btn.cooldown then btn.cooldown:Hide() end
+  if btn.cooldown then
+    btn.cooldown:Hide()
+  end
   local wasFromCD = btn._crb_center_from_cd == true
 
-  btn._crb_swipe_start     = nil
-  btn._crb_swipe_dur       = nil
-  btn._crb_cd_start        = nil
-  btn._crb_cd_dur          = nil
-  btn._crb_cd_last_string  = nil
-  btn._crb_center_from_cd  = nil
+  btn._crb_swipe_start = nil
+  btn._crb_swipe_dur = nil
+  btn._crb_cd_start = nil
+  btn._crb_cd_dur = nil
+  btn._crb_cd_last_string = nil
+  btn._crb_center_from_cd = nil
 
   desaturateOff(btn)
 
   local entry = btn._crb_entry
-  if not btn.centerText then return end
+  if not btn.centerText then
+    return
+  end
 
   if entry and entry.qty == false then
     btn.centerText:SetText("")
@@ -131,7 +159,8 @@ function ns.ClearCooldownVisual(btn)
   if wasFromCD and entry and entry.centerText ~= nil then
     local db = (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
     ns.UpdateFontString(
-      btn.centerText, tostring(entry.centerText),
+      btn.centerText,
+      tostring(entry.centerText),
       db.fontName or "Fonts\\FRIZQT__.TTF",
       db.timerSize or 28,
       db.timerOutline ~= false,
@@ -141,9 +170,11 @@ function ns.ClearCooldownVisual(btn)
 end
 
 function ns.CooldownTick(btn)
-  if not (btn and btn._crb_cd_start and btn._crb_cd_dur) then return end
+  if not (btn and btn._crb_cd_start and btn._crb_cd_dur) then
+    return
+  end
   local endAt = btn._crb_cd_start + btn._crb_cd_dur
-  local rem   = endAt - GetTimePreciseSec()
+  local rem = endAt - GetTimePreciseSec()
   if rem > 0 then
     local text
     if btn._crb_entry and btn._crb_entry.category == "EATING" then
@@ -162,11 +193,14 @@ function ns.CooldownTick(btn)
       local fs = btn.centerText
       if fs then
         local db = (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
-        ns.UpdateFontString(fs, text,
+        ns.UpdateFontString(
+          fs,
+          text,
           db.fontName or "Fonts\\FRIZQT__.TTF",
           db.timerSize or 28,
           db.timerOutline ~= false,
-          db.timerTextColor or { r=1,g=1,b=1,a=1 })
+          db.timerTextColor or { r = 1, g = 1, b = 1, a = 1 }
+        )
       end
       btn._crb_cd_last_string = text
     end
@@ -176,12 +210,16 @@ function ns.CooldownTick(btn)
 end
 
 function ns.RefreshCooldownForButton(btn)
-  if not (btn and btn._crb_entry) then return end
+  if not (btn and btn._crb_entry) then
+    return
+  end
   local e = btn._crb_entry
-  if not e.itemID then return end
+  if not e.itemID then
+    return
+  end
   local start, duration, enable = C_Container.GetItemCooldown(e.itemID)
   if enable == 1 and duration and duration >= 1.5 and start and start > 0 then
-    e.cooldownStart    = start
+    e.cooldownStart = start
     e.cooldownDuration = duration
     ns.ApplyItemCooldown(btn, e)
   else
@@ -191,15 +229,25 @@ function ns.RefreshCooldownForButton(btn)
 end
 
 function ns.RefreshSpellCooldownForButton(btn)
-  if not (btn and btn._crb_entry) then return end
+  if not (btn and btn._crb_entry) then
+    return
+  end
   local e = btn._crb_entry
-  if not e.spellID then return end
+  if not e.spellID then
+    return
+  end
+  local IsSecret = ns.Compat and ns.Compat.IsSecret
   local info = C_Spell.GetSpellCooldown(e.spellID)
-  local start   = info and info.startTime or 0
-  local duration= info and info.duration  or 0
+  local start = info and info.startTime or 0
+  local duration = info and info.duration or 0
   local enabled = info and info.isEnabled
+  if IsSecret and (IsSecret(start) or IsSecret(duration) or IsSecret(enabled)) then
+    e.cooldownStart, e.cooldownDuration = nil, nil
+    ns.ClearCooldownVisual(btn)
+    return
+  end
   if enabled and start > 0 and duration and duration >= 1.5 then
-    e.cooldownStart    = start
+    e.cooldownStart = start
     e.cooldownDuration = duration
     ns.ApplyItemCooldown(btn, e)
   else
@@ -210,7 +258,9 @@ end
 
 function ns.Cooldown_RefreshAll()
   local frames = ns.RenderFrames
-  if not frames then return end
+  if not frames then
+    return
+  end
 
   for _, btn in ipairs(frames) do
     if btn:IsShown() then
@@ -236,7 +286,9 @@ function ns.Cooldown_RefreshAll()
 end
 
 local function HookRefreshFonts()
-  if ns._crb_rf_wrapped then return end
+  if ns._crb_rf_wrapped then
+    return
+  end
   if type(ns.RefreshFonts) == "function" then
     local orig = ns.RefreshFonts
     ns.RefreshFonts = function(...)
