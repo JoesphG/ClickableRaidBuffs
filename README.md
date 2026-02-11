@@ -21,7 +21,6 @@ ClickableRaidBuffs is a World of Warcraft addon that scans player and raid state
 ## Support
 For support and downloads, see the links in `CHANGELOG.txt`.
 
-## Release Notes (v7.0.7)
-- Added Holy Paladin beacon support (Beacon of Light / Beacon of Faith)
-- Beacon icons now suppress correctly when either beacon is active
+## Release Notes (v7.0.8)
+- Fixed an intermittent issue where raid buff icons could fail to reappear after combat when a party or raid member lost a buff
 - General stability and maintenance updates

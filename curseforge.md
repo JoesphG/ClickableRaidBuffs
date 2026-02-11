@@ -1,8 +1,7 @@
-# ClickableRaidBuffs v7.0.7 (Retail 12.0.1)
+# ClickableRaidBuffs v7.0.8 (Retail 12.0.1)
 
 ## Changelog
-- Added Holy Paladin beacon support (Beacon of Light / Beacon of Faith)
-- Beacon icons now suppress correctly when either beacon is active
+- Fixed an intermittent issue where raid buff icons could fail to reappear after combat when a party or raid member lost a buff
 - General stability and maintenance updates
 
 ## Game Version

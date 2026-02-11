@@ -20,6 +20,8 @@ local _updateArmed = false
 local _renderPending = false
 local _renderDelay = 0.05
 local _updateDelay = 0.02
+local _lockedRetryArmed = false
+local _lockedRetryDelay = 0.10
 
 function ns.MarkBagsDirty(bagID)
   _flags.bagsDirty = true
@@ -141,6 +143,26 @@ local function _applyConsumableSuppressionIfActive()
 end
 
 local function _runOnce()
+  local function _hasPendingWork()
+    if _flags.bagsDirty or _flags.rosterDirty or _flags.enchantsDirty or _flags.optionsDirty or _flags.gatesDirty then
+      return true
+    end
+    return next(_aurasDirty) ~= nil
+  end
+
+  local function _armLockedRetry()
+    if _lockedRetryArmed then
+      return
+    end
+    _lockedRetryArmed = true
+    C_Timer.After(_lockedRetryDelay, function()
+      _lockedRetryArmed = false
+      if _hasPendingWork() then
+        ns.PokeUpdateBus()
+      end
+    end)
+  end
+
   if
     ns
     and (
@@ -151,6 +173,7 @@ local function _runOnce()
     )
   then
     _updateArmed = false
+    _armLockedRetry()
     return
   end
 

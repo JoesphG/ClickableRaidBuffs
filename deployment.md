@@ -46,6 +46,12 @@ CurseForge will package the tag and automatically set the file type based on the
 Create the GitHub release from `RELEASE_NOTES.md`:
 - `gh release create <tag> --title "<tag>" --notes-file RELEASE_NOTES.md`
 
+## Discord Auto-Post (GitHub Actions)
+- Workflow: `.github/workflows/discord-release-notes.yml`
+- Trigger: GitHub release `published`
+- Required secret: `DISCORD_WEBHOOK_URL` (Discord channel webhook URL)
+- Behavior: posts the release title, tag, URL, and body (from `RELEASE_NOTES.md`) to Discord automatically.
+
 ## Packaging Exclusions (End-User Clean)
 Ensure these **do not** ship to CurseForge. Use `.pkgmeta` or `pkgmeta.yaml` if needed:
 - Development configs: `.luarc.json`, `.stylua.toml`, `Makefile`

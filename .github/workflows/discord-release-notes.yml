@@ -1,0 +1,39 @@
+name: Post Release Notes to Discord
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  post-discord:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post release notes
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+
+          TAG="$(jq -r '.release.tag_name' "$GITHUB_EVENT_PATH")"
+          NAME="$(jq -r '.release.name // .release.tag_name' "$GITHUB_EVENT_PATH")"
+          URL="$(jq -r '.release.html_url' "$GITHUB_EVENT_PATH")"
+          BODY="$(jq -r '.release.body // "No release notes provided."' "$GITHUB_EVENT_PATH")"
+
+          HEADER="**ClickableRaidBuffs ${NAME}**"$'\n'"Tag: \`${TAG}\`"$'\n'"${URL}"$'\n\n'
+          CONTENT="${HEADER}${BODY}"
+
+          # Discord message hard limit is 2000 characters.
+          MAX_LEN=1990
+          if [ "${#CONTENT}" -gt "$MAX_LEN" ]; then
+            CONTENT="${CONTENT:0:$((MAX_LEN-20))}"$'\n\n'"(truncated)"
+          fi
+
+          PAYLOAD="$(jq -n --arg content "$CONTENT" '{content: $content}')"
+
+          curl -sS -X POST \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            "$DISCORD_WEBHOOK_URL"
