@@ -6,3 +6,5 @@ ignore:
   - RELEASE_NOTES.md
   - curseforge.md
   - .github
+  - context.md
+  - AGENTS.md
