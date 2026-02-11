@@ -66,6 +66,30 @@ local RAID_WARRIOR = {
 -- Paladin (2)
 -- =========================
 local RAID_PALADIN = {
+  [53563] = {
+    name = "Beacon of Light",
+    spellID = 53563,
+    buffID = { 53563, 156910 },
+    check = "raid",
+    target = "",
+    topLbl = "",
+    btmLbl = STATUS_TEXT_TARGET,
+    count = 1,
+    nameMode = true,
+    gates = { "instance", "rested", "group", "mineOnly" },
+  },
+  [156910] = {
+    name = "Beacon of Faith",
+    spellID = 156910,
+    buffID = { 53563, 156910 },
+    check = "raid",
+    target = "",
+    topLbl = "",
+    btmLbl = STATUS_TEXT_TARGET,
+    count = 1,
+    nameMode = true,
+    gates = { "instance", "rested", "group", "mineOnly" },
+  },
   [32223] = {
     name = "Crusader Aura",
     spellID = 32223,
@@ -379,7 +403,7 @@ local byClass = {
 
 local orderByClass = {
   [1] = { 6673, 317920, 386208, 386164 },
-  [2] = { 32223, 465, 317920 },
+  [2] = { 53563, 156910, 32223, 465, 317920 },
   [5] = { 21562, 232698 },
   [7] = { 462854 },
   [8] = { 1459, 205022 },

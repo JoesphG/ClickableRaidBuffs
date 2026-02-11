@@ -49,11 +49,10 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
-**v7.0.6**
+**v7.0.7**
 
-- Fixed icons not restoring after resurrection (no reload needed)  
-- Added eating aura ID 452319 for correct food timer/icon updates  
-- Added Wago packaging workflow and deployment process docs  
+- Added Holy Paladin beacon support (Beacon of Light / Beacon of Faith)  
+- Beacon icons now suppress correctly when either beacon is active  
 - General stability and maintenance updates  
 
 
@@ -67,6 +66,12 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
 - Fixed delayed callbacks executing during restricted states in Mythic Keystone dungeons  
 - Fixed icons not reliably refreshing after entering or exiting instanced content  
 - Improved handling of deferred updates suppressed during Challenge Mode  
+
+**v7.0.6**
+
+- Fixed icons not restoring after resurrection (no reload needed)  
+- Added eating aura ID 452319 for correct food timer/icon updates  
+- General stability and maintenance updates  
 
 **v7.0.5**
 

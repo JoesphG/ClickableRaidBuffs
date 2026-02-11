@@ -21,8 +21,7 @@ ClickableRaidBuffs is a World of Warcraft addon that scans player and raid state
 ## Support
 For support and downloads, see the links in `CHANGELOG.txt`.
 
-## Release Notes (v7.0.6)
-- Fixed icons not restoring after resurrection (no reload needed)
-- Added eating aura ID 452319 for correct food timer/icon updates
-- Added Wago packaging workflow and deployment process docs
+## Release Notes (v7.0.7)
+- Added Holy Paladin beacon support (Beacon of Light / Beacon of Faith)
+- Beacon icons now suppress correctly when either beacon is active
 - General stability and maintenance updates
