@@ -37,7 +37,11 @@ end
 
 local function SafeCloseOptions()
   if ns.OptionsFrame and ns.OptionsFrame:IsShown() then
-    SettingsPanel:Hide()
+    if ns.CloseOptions then
+      ns.CloseOptions()
+    else
+      ns.OptionsFrame:Hide()
+    end
   end
 end
 
@@ -168,12 +172,10 @@ SlashCmdList["CLICKABLERAIDBUFFS"] = function(msg)
       print("|cFF00ccffCRB:|r Profile import UI is not available.")
     end
   elseif msg == "" then
-    if ns.OpenOptions then
-      if ns.OptionsFrame and ns.OptionsFrame:IsShown() then
-        ns.OptionsFrame:Hide()
-      else
-        ns.OpenOptions()
-      end
+    if ns.ToggleOptions then
+      ns.ToggleOptions()
+    elseif ns.OpenOptions then
+      ns.OpenOptions()
     end
   else
     print("|cFF00ccffCRB:|r Commands:")

@@ -26,6 +26,13 @@ local D = {
   iconSize = 50,
   hSpace = 10,
   vSpace = 45,
+  optionsWindow = {
+    width = 940,
+    height = 720,
+    point = "CENTER",
+    x = 0,
+    y = 0,
+  },
 }
 
 O.DEFAULTS = D

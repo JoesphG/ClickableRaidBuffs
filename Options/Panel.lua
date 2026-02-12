@@ -63,50 +63,169 @@ function O.RegisterSection(builder)
   end
 end
 
-local panel = CreateFrame("Frame", addonName .. "OptionsPanel", UIParent)
+local panel = CreateFrame("Frame", addonName .. "OptionsPanel", UIParent, "BackdropTemplate")
 panel.name = "Clickable Raid Buffs"
+ns.OptionsFrame = panel
+panel:SetFrameStrata("DIALOG")
+panel:SetToplevel(true)
+panel:SetClampedToScreen(true)
+panel:EnableMouse(true)
+panel:SetMovable(true)
+panel:SetResizable(true)
+panel:SetMinResize(820, 620)
+panel:SetBackdrop({
+  bgFile = "Interface\\Buttons\\WHITE8x8",
+  edgeFile = "Interface\\Buttons\\WHITE8x8",
+  edgeSize = 1,
+  insets = { left = 1, right = 1, top = 1, bottom = 1 },
+})
+panel:SetBackdropColor(0.03, 0.04, 0.06, 0.98)
+panel:SetBackdropBorderColor(0.23, 0.26, 0.34, 1)
+panel:Hide()
+if type(UISpecialFrames) == "table" then
+  table.insert(UISpecialFrames, panel:GetName())
+end
 
-local category, categoryID
+local function GetWindowState()
+  local db = (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB
+  db = type(db) == "table" and db or {}
+  db.optionsWindow = type(db.optionsWindow) == "table" and db.optionsWindow or {}
+  local wnd = db.optionsWindow
+  local defaults = (O.DEFAULTS and O.DEFAULTS.optionsWindow) or {}
+  wnd.width = tonumber(wnd.width) or defaults.width or 940
+  wnd.height = tonumber(wnd.height) or defaults.height or 720
+  wnd.point = tostring(wnd.point or defaults.point or "CENTER")
+  wnd.x = tonumber(wnd.x) or defaults.x or 0
+  wnd.y = tonumber(wnd.y) or defaults.y or 0
+  return wnd
+end
+
+local function SaveWindowState()
+  local db = (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB
+  if type(db) ~= "table" then
+    return
+  end
+  db.optionsWindow = db.optionsWindow or {}
+  local wnd = db.optionsWindow
+  local point, _, _, x, y = panel:GetPoint(1)
+  wnd.point = point or "CENTER"
+  wnd.x = tonumber(x) or 0
+  wnd.y = tonumber(y) or 0
+  wnd.width = math.floor((panel:GetWidth() or 940) + 0.5)
+  wnd.height = math.floor((panel:GetHeight() or 720) + 0.5)
+end
+
+do
+  local wnd = GetWindowState()
+  panel:SetSize(wnd.width, wnd.height)
+  panel:ClearAllPoints()
+  panel:SetPoint(wnd.point, UIParent, wnd.point, wnd.x, wnd.y)
+end
+
+panel:SetScript("OnHide", SaveWindowState)
+
+local closeBtn = CreateFrame("Button", nil, panel, "UIPanelCloseButton")
+closeBtn:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -4, -4)
+
+local dragHandle = CreateFrame("Frame", nil, panel)
+dragHandle:SetPoint("TOPLEFT", panel, "TOPLEFT", 8, -8)
+dragHandle:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -34, -8)
+dragHandle:SetHeight(28)
+dragHandle:EnableMouse(true)
+dragHandle:RegisterForDrag("LeftButton")
+dragHandle:SetScript("OnDragStart", function()
+  panel:StartMoving()
+end)
+dragHandle:SetScript("OnDragStop", function()
+  panel:StopMovingOrSizing()
+  SaveWindowState()
+end)
+
+local windowTitle = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
+windowTitle:SetPoint("LEFT", dragHandle, "LEFT", 6, 0)
+windowTitle:SetText("Clickable Raid Buffs")
+
+local resizeGrip = CreateFrame("Button", nil, panel)
+resizeGrip:SetSize(16, 16)
+resizeGrip:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -4, 4)
+resizeGrip:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+resizeGrip:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+resizeGrip:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+resizeGrip:SetScript("OnMouseDown", function()
+  panel:StartSizing("BOTTOMRIGHT")
+end)
+resizeGrip:SetScript("OnMouseUp", function()
+  panel:StopMovingOrSizing()
+  SaveWindowState()
+end)
+
+local settingsCategory
+local settingsProxy = CreateFrame("Frame", addonName .. "OptionsSettingsProxy", UIParent)
+settingsProxy.name = panel.name
+settingsProxy:SetScript("OnShow", function(self)
+  if self._built then
+    return
+  end
+  self._built = true
+
+  local title = self:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+  title:SetPoint("TOPLEFT", 16, -16)
+  title:SetText("Clickable Raid Buffs")
+
+  local desc = self:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+  desc:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -10)
+  desc:SetWidth(540)
+  desc:SetJustifyH("LEFT")
+  desc:SetText("CRB now uses a dedicated resizable options window. Click below or type /crb to open it.")
+
+  local openBtn = CreateFrame("Button", nil, self, "UIPanelButtonTemplate")
+  openBtn:SetSize(220, 24)
+  openBtn:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -12)
+  openBtn:SetText("Open Clickable Raid Buffs Options")
+  openBtn:SetScript("OnClick", function()
+    if ns and ns.OpenOptions then
+      ns.OpenOptions()
+    end
+  end)
+end)
+
+if Settings and Settings.RegisterCanvasLayoutCategory then
+  settingsCategory = Settings.RegisterCanvasLayoutCategory(settingsProxy, settingsProxy.name)
+  Settings.RegisterAddOnCategory(settingsCategory)
+end
+
 ns.OpenOptions = function()
   if InCombatLockdown and InCombatLockdown() then
     UIErrorsFrame:AddMessage("Cannot open Clickable Raid Buffs options in combat.", 1, 0.2, 0.2, 1)
     return
   end
-  if Settings and Settings.OpenToCategory then
-    if not categoryID and Settings.RegisterCanvasLayoutCategory then
-      category = Settings.RegisterCanvasLayoutCategory(panel, panel.name)
-      Settings.RegisterAddOnCategory(category)
-      categoryID = category and category.ID or nil
-    end
-    if categoryID then
-      if ns.SyncOptions then
-        ns.SyncOptions()
-      end
-      Settings.OpenToCategory(categoryID)
-      return
-    end
+  panel:Show()
+  panel:Raise()
+  if ns.SyncOptions then
+    ns.SyncOptions()
   end
-  if InterfaceOptionsFrame_OpenToCategory then
-    if ns.SyncOptions then
-      ns.SyncOptions()
-    end
-    InterfaceOptionsFrame_OpenToCategory(panel)
-    InterfaceOptionsFrame_OpenToCategory(panel)
+end
+
+ns.CloseOptions = function()
+  if panel and panel:IsShown() then
+    panel:Hide()
+  end
+end
+
+ns.ToggleOptions = function()
+  if panel and panel:IsShown() then
+    ns.CloseOptions()
+  else
+    ns.OpenOptions()
   end
 end
 O.OpenOptions = ns.OpenOptions
 
-if Settings and Settings.RegisterCanvasLayoutCategory then
-  category = Settings.RegisterCanvasLayoutCategory(panel, panel.name)
-  Settings.RegisterAddOnCategory(category)
-  categoryID = category and category.ID or nil
-end
-
 local combatHider = CreateFrame("Frame")
 combatHider:RegisterEvent("PLAYER_REGEN_DISABLED")
 combatHider:SetScript("OnEvent", function()
-  if panel:IsShown() then
-    HideUIPanel(panel)
+  if panel and panel:IsShown() then
+    ns.CloseOptions()
   end
 end)
 
@@ -255,6 +374,7 @@ local function Build()
   pagesHolder:SetBackdropBorderColor(0.20, 0.22, 0.28, 1)
 
   local pages, tabs, current = {}, {}, 0
+  local totalTabsForLayout = 0
 
   local function ShowPage(i)
     if i == current or not pages[i] then
@@ -359,6 +479,35 @@ local function Build()
     page:Hide()
   end
 
+  local function RelayoutTabs()
+    if #tabs == 0 then
+      return
+    end
+    local total = tabsBar:GetWidth() or 480
+    local count = math.max(1, totalTabsForLayout or #tabs)
+    local gaps = TAB_CFG.gap * (count - 1)
+    local each = (total - gaps) / count
+    local w = math.max(80, math.floor(each + 0.5))
+    for i = 1, #tabs do
+      local tab = tabs[i]
+      if tab then
+        tab:SetHeight(TAB_CFG.h)
+        tab:SetWidth(w)
+        tab:ClearAllPoints()
+        if i == 1 then
+          tab:SetPoint("LEFT", tabsBar, "LEFT", 0, 0)
+        else
+          tab:SetPoint("LEFT", tabs[i - 1], "RIGHT", TAB_CFG.gap, 0)
+        end
+      end
+    end
+    if tabs[count] then
+      local used = (w + TAB_CFG.gap) * (count - 1)
+      local lastW = math.max(80, total - used)
+      tabs[count]:SetWidth(lastW)
+    end
+  end
+
   local collected = {}
   for i = 2, #O._sections do
     local builder = O._sections[i]
@@ -377,9 +526,12 @@ local function Build()
   end
   ApplyTabOrder(collected)
   local totalTabs = math.max(1, #collected)
+  totalTabsForLayout = totalTabs
   for _, info in ipairs(collected) do
     AddPage(info.title, info.build, totalTabs)
   end
+  RelayoutTabs()
+  panel._relayoutTabs = RelayoutTabs
 
   if #pages > 0 then
     ShowPage(1)
@@ -387,3 +539,11 @@ local function Build()
 end
 
 panel:SetScript("OnShow", Build)
+panel:HookScript("OnSizeChanged", function(_, width, height)
+  if width and height and width > 0 and height > 0 then
+    SaveWindowState()
+  end
+  if panel._relayoutTabs then
+    panel._relayoutTabs()
+  end
+end)

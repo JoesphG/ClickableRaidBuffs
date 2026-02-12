@@ -23,8 +23,8 @@ local miniButton = LDB:NewDataObject("ClickableRaidBuffs", {
     end
 
     if btn == "LeftButton" then
-      if ns and ns.OptionsFrame and ns.OptionsFrame:IsShown() then
-        ns.OptionsFrame:Hide()
+      if ns and ns.ToggleOptions then
+        ns.ToggleOptions()
       elseif ns and ns.OpenOptions then
         ns.OpenOptions()
       elseif SlashCmdList and SlashCmdList["CLICKABLERAIDBUFFS"] then
