@@ -72,7 +72,11 @@ panel:SetClampedToScreen(true)
 panel:EnableMouse(true)
 panel:SetMovable(true)
 panel:SetResizable(true)
-panel:SetMinResize(820, 620)
+if panel.SetResizeBounds then
+  panel:SetResizeBounds(820, 620)
+elseif panel.SetMinResize then
+  panel:SetMinResize(820, 620)
+end
 panel:SetBackdrop({
   bgFile = "Interface\\Buttons\\WHITE8x8",
   edgeFile = "Interface\\Buttons\\WHITE8x8",
@@ -192,6 +196,8 @@ end)
 if Settings and Settings.RegisterCanvasLayoutCategory then
   settingsCategory = Settings.RegisterCanvasLayoutCategory(settingsProxy, settingsProxy.name)
   Settings.RegisterAddOnCategory(settingsCategory)
+elseif InterfaceOptions_AddCategory then
+  InterfaceOptions_AddCategory(settingsProxy)
 end
 
 ns.OpenOptions = function()
