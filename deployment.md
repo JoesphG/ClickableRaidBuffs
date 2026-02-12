@@ -1,6 +1,7 @@
 # Deployment Process (CurseForge + GitHub)
 
-This repo uses the CurseForge webhook packaging flow. Follow this checklist for every release.
+This repo uses the CurseForge webhook packaging flow.
+This process is mandatory and must be followed for every release.
 
 ## Release Type
 Each deployment must be tagged as **Alpha**, **Beta**, or **Release** via the tag name:
@@ -12,13 +13,14 @@ CurseForge will package the tag and automatically set the file type based on the
 
 ## Pre-Release Checklist
 1. Ensure `ClickableRaidBuffs.toc` version matches the tag (e.g., `7.0.6`).
-2. Update release notes in all locations:
-   - `CHANGELOG.txt`
-   - `README.md`
-   - `RELEASE_NOTES.md`
-   - `curseforge.md`
-   - **Guideline**: release notes must be user-facing and functional only. Exclude backend/dev workflow details.
-3. Run formatting and checks:
+2. Update release documentation:
+   - `CHANGELOG.txt` (running history; add new release entry and keep prior history)
+   - `RELEASE_NOTES.md` (current tag only; fully replace with notes for the tag being released)
+   - **Guideline**: notes must be user-facing and functional only. Exclude backend/dev workflow details.
+3. Release-notes gate (required):
+   - Verify `RELEASE_NOTES.md` reflects the exact tag/version being created.
+   - Do not create or push a release tag until this is confirmed.
+4. Run formatting and checks:
    - `make fmt`
    - `make check` (LLS warnings are acceptable if reviewed)
    - `make release-check` (version sync + concise release-note policy checks)
@@ -34,6 +36,8 @@ CurseForge will package the tag and automatically set the file type based on the
 - Set `WAGO_API_TOKEN` in GitHub repo secrets before tagging.
 
 ## Tag + Push Flow
+Do this only after every pre-release checklist item is complete.
+
 1. Commit changes.
 2. Create tag:
    - Release: `git tag -a v7.0.6 -m "v7.0.6"`
@@ -57,7 +61,7 @@ Create the GitHub release from `RELEASE_NOTES.md`:
 Ensure these **do not** ship to CurseForge. Use `.pkgmeta` or `pkgmeta.yaml` if needed:
 - Development configs: `.luarc.json`, `.stylua.toml`, `Makefile`
 - Tooling: `Tools/`
-- Release staging files: `RELEASE_NOTES.md`, `curseforge.md`
+- Release staging files: `RELEASE_NOTES.md`
 - VCS/CI: `.git/`, `.github/`
 - OS junk: `*:Zone.Identifier`
 
@@ -70,7 +74,6 @@ ignore:
   - .stylua.toml
   - Makefile
   - RELEASE_NOTES.md
-  - curseforge.md
   - .github
 ```
 

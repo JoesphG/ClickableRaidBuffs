@@ -20,8 +20,6 @@ require_file() {
 
 require_file "ClickableRaidBuffs.toc"
 require_file "RELEASE_NOTES.md"
-require_file "README.md"
-require_file "curseforge.md"
 require_file "CHANGELOG.txt"
 
 VERSION="$(sed -n 's/^## Version:[[:space:]]*//p' ClickableRaidBuffs.toc | head -n1 | tr -d '\r' | xargs)"
@@ -33,18 +31,15 @@ echo "release-check: version from .toc = ${VERSION}"
 grep -q "^# ClickableRaidBuffs ${TAG} Release Notes$" RELEASE_NOTES.md \
   || fail "RELEASE_NOTES.md title must be '# ClickableRaidBuffs ${TAG} Release Notes'"
 
-grep -q "^## Release Notes (${TAG})$" README.md \
-  || fail "README.md missing '## Release Notes (${TAG})' heading"
-
-grep -q "^# ClickableRaidBuffs ${TAG} (Retail 12.0.1)$" curseforge.md \
-  || fail "curseforge.md heading does not match ${TAG}"
-
 CHANGELOG_CUR="$(awk '
   BEGIN { in_current = 0 }
   /CURRENT PATCH NOTES/ { in_current = 1; next }
-  in_current && /^\*\*v[0-9]+\.[0-9]+\.[0-9]+/ { gsub(/\*\*/, "", $0); print $0; exit }
+  in_current && /^\*\*v?[0-9]+\.[0-9]+\.[0-9]+/ { gsub(/\*\*/, "", $0); print $0; exit }
 ' CHANGELOG.txt)"
 [[ -n "$CHANGELOG_CUR" ]] || fail "could not parse current patch version from CHANGELOG.txt"
+if [[ "$CHANGELOG_CUR" != v* ]]; then
+  CHANGELOG_CUR="v${CHANGELOG_CUR}"
+fi
 [[ "$CHANGELOG_CUR" == "$TAG" ]] || fail "CHANGELOG current patch is '${CHANGELOG_CUR}', expected '${TAG}'"
 
 RN_BODY="$(tail -n +2 RELEASE_NOTES.md)"

@@ -49,21 +49,98 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
-**Unreleased**
+**v7.1.6**
 
-- Merged pending fixes from the `ClickableRaidBuffs_7.1.5` baseline
 - Removed an extraneous line in `Options/Panel.lua` that could trigger a startup error
-- Retained the Profile tab import box focus fix so pasted import strings work reliably
-- Removed `curseforge.md` and updated docs ownership (`CHANGELOG.txt` = running history, `RELEASE_NOTES.md` = current tag only)
-
+- Profile tab import box focus fix so pasted import strings work reliably
+- Improved bag scan helper for consumables to be lighter weight and more reliable
+- Updated docs
 
 =======================================================================================================================
                                                 HISTORICAL PATCH NOTES
 =======================================================================================================================
 
+
+**v7.1.5**
+
+- Fixed an issue that caused certain libraries not to load
+- Fixed an Removed an extraneous line of code that was triggering an error
+
+
 **v7.1.4**
 
 - Fixed Profile tab import box focus so pasted import strings work reliably
+
+
+**v7.1.3**
+
+- Blizzard options panel styling
+- Updated Profile tab import flow
+- Fixed Paladin beacon tracking so Beacon of Light and Beacon of Faith are tracked independently
+
+
+**v7.1.1**
+
+- Fixed an options panel startup error on clients where SetMinResize is unavailable
+- Restored options access from both the minimap button and Blizzard AddOns/Settings entry after options panel init failures
+- Added a compatibility fallback for Blizzard Interface Options category registration
+- Improved Info tab layout by moving control checkboxes to a dedicated footer below the text area
+- Reduced oversized Info tab text to fit cleanly in the panel without overlap
+- General stability and UI maintenance updates
+
+
+**v7.1.0**
+
+- Added profile import/export so you can share and apply full addon configurations between players and characters
+- Added a new Profiles options tab with export, copy, import preview, and two import modes (replace all or merge)
+- Added validation and safety for imports (schema/version checks, sanitization, checksum verification, and automatic pre-import backup)
+- Added new slash command support for profile flows: /crb export and /crb import
+- Fixed raid trinket reminders (including So'leah's Secret Technique) not showing or refreshing correctly in some apply/falloff scenarios
+- Fixed raid/party rebuff icons sometimes not returning out of combat (self and group cases)
+- Hardened gate handling so gate errors/secret values no longer suppress rebuff visibility updates
+- General stability and maintenance updates
+
+
+**v7.0.10**
+
+- Fixed raid/party rebuff icons sometimes not returning out of combat (self and group cases)
+- Hardened gate handling so gate errors/secret values no longer suppress rebuff visibility updates
+- General stability and maintenance updates
+
+
+**v7.0.9**
+
+- Fixed an issue where raid/party rebuff icons could stay hidden out of combat when targets moved into range
+- General stability and maintenance updates
+
+
+**v7.0.8**
+
+- Fixed an intermittent issue where raid buff icons could fail to reappear after combat when a party or raid member lost a buff
+- General stability and maintenance updates
+
+
+**v7.0.7**
+
+- Added Holy Paladin beacon support (Beacon of Light / Beacon of Faith)
+- Beacon icons now suppress correctly when either beacon is active
+- General stability and maintenance updates
+
+
+**v7.0.6**
+
+- Fixed icons not restoring after resurrection (no reload needed)
+- Added eating aura ID 452319 for correct food timer/icon updates
+- Added deployment workflow automation
+- General stability and maintenance updates
+
+
+**v7.0.5**
+
+Added Frost Mage Water Elemental support in the Pets module
+General stability and maintenance updates
+Fixed icons not restoring after resurrection (no reload needed)
+
 
 **v7.0.3**
 
@@ -72,22 +149,26 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
 - Fixed icons not reliably refreshing after entering or exiting instanced content  
 - Improved handling of deferred updates suppressed during Challenge Mode  
 
+
 **v7.0.6**
 
 - Fixed icons not restoring after resurrection (no reload needed)  
 - Added eating aura ID 452319 for correct food timer/icon updates  
 - General stability and maintenance updates  
 
+
 **v7.0.5**
 
 - Added Frost Mage Water Elemental support in the Pets module  
 - General stability and maintenance updates  
+
 
 **v7.0.4**
 
 - Updated for Retail 12.0.1: removed legacy spell APIs and standardized C_Spell usage  
 - Added guards for secret aura/cooldown values to prevent errors in restricted contexts  
 - General stability and maintenance updates  
+
 
 **v7.0.2**
 
@@ -112,6 +193,7 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
 - Removed Recuperate, which relied on pre-12.0 API
 - General updates and maintenance to ensure continued stability
 - Consumables for Midnight will be added in a future release
+
 
 
 **v6.2.5**  
