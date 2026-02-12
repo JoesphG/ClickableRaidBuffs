@@ -82,7 +82,7 @@ StaticPopupDialogs["CRB_PROFILE_IMPORT_CONFIRM"] = StaticPopupDialogs["CRB_PROFI
   }
 
 O.RegisterSection(function(AddSection)
-  AddSection("Profiles", function(content, Row)
+  AddSection("Profile", function(content, Row)
     local rowTop = Row(42)
     local title = rowTop:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
     title:SetPoint("LEFT", rowTop, "LEFT", 0, 0)
@@ -120,9 +120,8 @@ O.RegisterSection(function(AddSection)
     importBtnRow:SetPoint("TOPRIGHT", rowImport, "TOPRIGHT", 0, -22)
     importBtnRow:SetHeight(28)
 
-    local bImportReplace = MakeBlueGreyButton(importBtnRow, "Import All", 0)
-    local bImportMerge = MakeBlueGreyButton(importBtnRow, "Import Merge", 118)
-    local bClear = MakeBlueGreyButton(importBtnRow, "Clear", 236)
+    local bImport = MakeBlueGreyButton(importBtnRow, "Import", 0)
+    local bClear = MakeBlueGreyButton(importBtnRow, "Clear", 118)
 
     local importBox = CreateFrame("Frame", nil, rowImport, "BackdropTemplate")
     importBox:SetPoint("TOPLEFT", rowImport, "TOPLEFT", 0, -54)
@@ -177,7 +176,7 @@ O.RegisterSection(function(AddSection)
     info:SetJustifyH("LEFT")
     info:SetJustifyV("TOP")
     info:SetFont(FontPath(), 12, "")
-    info:SetText("Paste a profile string, then choose Import All or Import Merge.")
+    info:SetText("Paste a profile string, then choose Import.")
 
     local function getText()
       return importEdit:GetText() or ""
@@ -203,7 +202,7 @@ O.RegisterSection(function(AddSection)
     local function preview()
       local raw = getText()
       if raw == "" then
-        info:SetText("Paste a profile string, then choose Import All or Import Merge.")
+        info:SetText("Paste a profile string, then choose Import.")
         return nil
       end
       if not ns.Profile_ImportPreview then
@@ -226,30 +225,24 @@ O.RegisterSection(function(AddSection)
       return p
     end
 
-    local function doImport(mode)
+    local function doImport()
       local p = preview()
       if not p then
         return
       end
       local raw = getText()
-      local summary = ("Import profile (%s)?\nChanged keys: %d\nDropped keys: %d"):format(
-        mode == "merge" and "Merge" or "Replace",
-        p.changes or 0,
-        p.dropped or 0
-      )
+      local summary = ("Import profile?\nChanged keys: %d\nDropped keys: %d"):format(p.changes or 0, p.dropped or 0)
       StaticPopup_Show("CRB_PROFILE_IMPORT_CONFIRM", summary, nil, {
         run = function()
           local r, err = nil, nil
           if ns.Profile_Import then
-            r, err = ns.Profile_Import(raw, mode)
+            r, err = ns.Profile_Import(raw)
           end
           if not r then
             info:SetText("Import failed: " .. tostring(err or "unknown"))
             return
           end
-          info:SetText(
-            ("Import complete (%s). Changed keys: %d, dropped keys: %d"):format(mode, r.changes or 0, r.dropped or 0)
-          )
+          info:SetText(("Import complete. Changed keys: %d, dropped keys: %d"):format(r.changes or 0, r.dropped or 0))
         end,
       })
     end
@@ -284,12 +277,8 @@ O.RegisterSection(function(AddSection)
       info:SetText("Profile string selected. Press Ctrl+C to copy.")
     end)
 
-    bImportReplace:SetScript("OnClick", function()
-      doImport("replace")
-    end)
-
-    bImportMerge:SetScript("OnClick", function()
-      doImport("merge")
+    bImport:SetScript("OnClick", function()
+      doImport()
     end)
 
     bClear:SetScript("OnClick", function()

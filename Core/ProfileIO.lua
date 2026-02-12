@@ -313,24 +313,6 @@ local function applyReplace(profile)
   _G.ClickableRaidBuffsDB = copyTable(profile, nil, 0)
 end
 
-local function mergeInto(dst, src)
-  for k, v in pairs(src) do
-    if type(v) == "table" then
-      if type(dst[k]) ~= "table" then
-        dst[k] = {}
-      end
-      mergeInto(dst[k], v)
-    else
-      dst[k] = v
-    end
-  end
-end
-
-local function applyMerge(profile)
-  local d = DB()
-  mergeInto(d, profile)
-end
-
 function ns.Profile_Export()
   local profile = copyTable(DB(), nil, 0)
   local profileRaw = serialize(profile) or "{}"
@@ -393,20 +375,14 @@ function ns.Profile_ImportPreview(rawText)
   }
 end
 
-function ns.Profile_Import(rawText, mode)
+function ns.Profile_Import(rawText)
   local preview, err = ns.Profile_ImportPreview(rawText)
   if not preview then
     return nil, err
   end
-  mode = (mode == "merge") and "merge" or "replace"
 
   _G.ClickableRaidBuffsDB_BackupLastImport = copyTable(DB(), nil, 0)
-
-  if mode == "replace" then
-    applyReplace(preview.profile)
-  else
-    applyMerge(preview.profile)
-  end
+  applyReplace(preview.profile)
 
   if ns.Exclusions and ns.Exclusions.MarkDirty then
     ns.Exclusions.MarkDirty()
@@ -424,7 +400,7 @@ function ns.Profile_Import(rawText, mode)
   end
 
   return {
-    mode = mode,
+    mode = "replace",
     changes = preview.changes,
     dropped = preview.dropped,
     schemaVersion = preview.schemaVersion,

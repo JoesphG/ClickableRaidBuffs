@@ -183,16 +183,30 @@ settingsProxy:SetScript("OnShow", function(self)
   logo:SetPoint("TOP", title, "BOTTOM", 0, -14)
   logo:SetTexture("Interface\\AddOns\\ClickableRaidBuffs\\Media\\funkiggLogo")
 
+  local shortcutLine = self:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+  shortcutLine:SetPoint("TOP", logo, "BOTTOM", 0, -10)
+  shortcutLine:SetWidth(760)
+  shortcutLine:SetJustifyH("CENTER")
+  shortcutLine:SetFontObject("GameFontNormalHuge")
+  shortcutLine:SetText("|cff00e5ff/crb      /buff      /funki|r")
+
   local desc = self:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-  desc:SetPoint("TOP", logo, "BOTTOM", 0, -14)
-  desc:SetWidth(760)
-  desc:SetJustifyH("CENTER")
+  desc:SetWidth(620)
+  desc:SetPoint("CENTER", self, "CENTER", 0, -78)
+  desc:SetJustifyH("LEFT")
   desc:SetFontObject("GameFontNormalLarge")
-  desc:SetText("Use short cut /crb /buff /funki to access options menu or click the Options button.")
+  desc:SetText(
+    "Commands:\n"
+      .. "  |cff00e5ff/crb /buff /funki|r |cffffa500unlock|r  -  Toggle icon lock\n"
+      .. "  |cff00e5ff/crb /buff /funki|r |cffffa500lock|r  -  Toggle icon lock\n"
+      .. "  |cff00e5ff/crb /buff /funki|r |cffffa500minimap|r  -  Toggle minimap icon\n"
+      .. "  |cff00e5ff/crb /buff /funki|r |cffffa500reset|r  -  Reset all settings to default and reload UI\n"
+      .. "  |cff00e5ff/crb /buff /funki|r |cffffa500debug|r  -  Print hidden raid buff reasons"
+  )
 
   local openBtn = CreateFrame("Button", nil, self, "BackdropTemplate")
   openBtn:SetSize(220, 42)
-  openBtn:SetPoint("TOP", desc, "BOTTOM", 0, -16)
+  openBtn:SetPoint("TOP", desc, "BOTTOM", 0, -18)
   openBtn:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1 })
   openBtn:SetBackdropColor(0.15, 0.20, 0.29, 1)
   openBtn:SetBackdropBorderColor(0.30, 0.45, 0.66, 1)
@@ -594,3 +608,4 @@ panel:HookScript("OnSizeChanged", function(_, width, height)
     panel._relayoutTabs()
   end
 end)
+  desc:SetJustifyH("LEFT")

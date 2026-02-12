@@ -184,8 +184,8 @@ SlashCmdList["CLICKABLERAIDBUFFS"] = function(msg)
     print("  /crb minimap   - Toggle showing the minimap button")
     print("  /crb reset     - Reset settings to default and reload UI")
     print("  /crb debug     - Print hidden raid buff gate/visibility reasons")
-    print("  /crb export    - Open Profiles tab and export profile string")
-    print("  /crb import    - Open Profiles tab for profile import")
+    print("  /crb export    - Open Profile tab and export profile string")
+    print("  /crb import    - Open Profile tab for profile import")
     print("  /crb           - Open/close the options panel")
   end
 end

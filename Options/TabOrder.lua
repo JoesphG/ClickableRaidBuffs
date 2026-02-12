@@ -13,5 +13,5 @@ O.TAB_ORDER = {
   "Buffs",
   "Alerts",
   "Customize",
-  "Profiles",
+  "Profile",
 }
