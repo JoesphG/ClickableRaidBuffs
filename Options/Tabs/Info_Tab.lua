@@ -114,7 +114,7 @@ O.RegisterSection(function(AddSection)
 
     local unlockCB = CreateFrame("CheckButton", nil, inner, "BackdropTemplate")
     unlockCB:SetSize(20, 20)
-    unlockCB:SetPoint("BOTTOMLEFT", inner, "BOTTOMLEFT", 5, 5)
+    unlockCB:SetPoint("BOTTOMLEFT", inner, "BOTTOMLEFT", 8, 28)
     PaintBackdrop(unlockCB, { 0.05, 0.06, 0.08, 1 }, { 0.22, 0.24, 0.30, 1 })
 
     local tick = unlockCB:CreateTexture(nil, "ARTWORK")
@@ -125,7 +125,7 @@ O.RegisterSection(function(AddSection)
     unlockCB._tick = tick
 
     local lab = inner:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    lab:SetPoint("LEFT", unlockCB, "RIGHT", 8, 0)
+    lab:SetPoint("LEFT", unlockCB, "RIGHT", 10, 0)
     lab:SetText("Unlock")
     lab:SetFont(THEME.fontPath(), THEME.sizeLabel(), "")
 
@@ -148,7 +148,7 @@ O.RegisterSection(function(AddSection)
 
     local hideCB = CreateFrame("CheckButton", nil, inner, "BackdropTemplate")
     hideCB:SetSize(20, 20)
-    hideCB:SetPoint("LEFT", lab, "RIGHT", 16, 0)
+    hideCB:SetPoint("TOPLEFT", unlockCB, "BOTTOMLEFT", 0, -8)
     PaintBackdrop(hideCB, { 0.05, 0.06, 0.08, 1 }, { 0.22, 0.24, 0.30, 1 })
 
     local ver = contentFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
@@ -166,7 +166,7 @@ O.RegisterSection(function(AddSection)
     hideCB._tick = hideTick
 
     local hideLab = inner:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    hideLab:SetPoint("LEFT", hideCB, "RIGHT", 8, 0)
+    hideLab:SetPoint("LEFT", hideCB, "RIGHT", 10, 0)
     hideLab:SetText("Hide Minimap Button")
     hideLab:SetFont(THEME.fontPath(), THEME.sizeLabel(), "")
 
