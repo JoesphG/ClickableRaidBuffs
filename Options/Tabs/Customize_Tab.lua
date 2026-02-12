@@ -279,6 +279,74 @@ local function BuildTooltipsPanel(parent)
   return holder
 end
 
+local function RefreshExpansionFilters()
+  if ns and ns.ApplyExpansionMetadata then
+    ns.ApplyExpansionMetadata()
+  end
+  if type(_G.scanAllBags) == "function" then
+    _G.scanAllBags()
+  end
+  if ns and ns.UpdateAugmentRunes then
+    ns.UpdateAugmentRunes()
+  end
+  if ns and ns.RequestRebuild then
+    ns.RequestRebuild()
+  end
+  if ns and ns.RenderAll then
+    ns.RenderAll()
+  end
+end
+
+local function BuildExpansionsPanel(parent)
+  local holder = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+  holder:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10)
+  holder:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", -10, 10)
+
+  local desc = holder:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+  desc:SetFont(THEME.fontPath(), THEME.sizeLabel(), "")
+  desc:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, -4)
+  desc:SetPoint("TOPRIGHT", holder, "TOPRIGHT", -8, -4)
+  desc:SetJustifyH("LEFT")
+  desc:SetJustifyV("TOP")
+  desc:SetText(
+    "Choose which expansions are active for consumables and augment runes. "
+      .. "Disabling an expansion hides those entries from reminders and the Ignore list."
+  )
+
+  local d = DB()
+  d.expansions = d.expansions or {}
+  if d.expansions[10] == nil then
+    d.expansions[10] = true
+  end
+  if d.expansions[11] == nil then
+    d.expansions[11] = true
+  end
+
+  local cbTWW, labTWW = NewCheckbox(holder, "The War Within", d.expansions[10] ~= false, function(_, v)
+    if ns.SetExpansionEnabled then
+      ns.SetExpansionEnabled(10, v)
+    else
+      d.expansions[10] = v and true or false
+    end
+    RefreshExpansionFilters()
+  end)
+  cbTWW:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -12)
+  labTWW:SetPoint("LEFT", cbTWW, "RIGHT", 8, 0)
+
+  local cbMid, labMid = NewCheckbox(holder, "Midnight", d.expansions[11] ~= false, function(_, v)
+    if ns.SetExpansionEnabled then
+      ns.SetExpansionEnabled(11, v)
+    else
+      d.expansions[11] = v and true or false
+    end
+    RefreshExpansionFilters()
+  end)
+  cbMid:SetPoint("TOPLEFT", cbTWW, "BOTTOMLEFT", 0, -12)
+  labMid:SetPoint("LEFT", cbMid, "RIGHT", 8, 0)
+
+  return holder
+end
+
 local function BuildDelvesPanel(parent)
   local holder = CreateFrame("Frame", nil, parent, "BackdropTemplate")
   holder:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10)
@@ -404,6 +472,10 @@ O.RegisterSection(function(AddSection)
     mountsBtn:SetPoint("LEFT", delvesBtn, "RIGHT", THEME.tabGap, 0)
     mountsBtn:SetWidth(110)
 
+    local expansionsBtn = MakeMiniTab(tabRow, "Expansions")
+    expansionsBtn:SetPoint("LEFT", mountsBtn, "RIGHT", THEME.tabGap, 0)
+    expansionsBtn:SetWidth(100)
+
     local panels = {}
 
     local function showPanel(key)
@@ -432,6 +504,10 @@ O.RegisterSection(function(AddSection)
         panels.MOUNTS = panels.MOUNTS or BuildMountsPanel(inner)
         panels.MOUNTS:Show()
       end
+      if key == "EXPANSIONS" then
+        panels.EXPANSIONS = panels.EXPANSIONS or BuildExpansionsPanel(inner)
+        panels.EXPANSIONS:Show()
+      end
     end
 
     local function selectTab(which)
@@ -440,6 +516,7 @@ O.RegisterSection(function(AddSection)
       StyleTabNormal(tipsBtn)
       StyleTabNormal(delvesBtn)
       StyleTabNormal(mountsBtn)
+      StyleTabNormal(expansionsBtn)
       if which == "MYTHIC" then
         StyleTabSelected(mythicBtn)
       end
@@ -454,6 +531,9 @@ O.RegisterSection(function(AddSection)
       end
       if which == "MOUNTS" then
         StyleTabSelected(mountsBtn)
+      end
+      if which == "EXPANSIONS" then
+        StyleTabSelected(expansionsBtn)
       end
       showPanel(which)
     end
@@ -472,6 +552,9 @@ O.RegisterSection(function(AddSection)
     end)
     mountsBtn:SetScript("OnClick", function()
       selectTab("MOUNTS")
+    end)
+    expansionsBtn:SetScript("OnClick", function()
+      selectTab("EXPANSIONS")
     end)
 
     card:SetScript("OnShow", function()

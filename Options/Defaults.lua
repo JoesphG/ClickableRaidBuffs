@@ -33,6 +33,10 @@ local D = {
     x = 0,
     y = 0,
   },
+  expansions = {
+    [10] = true, -- TWW
+    [11] = true, -- Midnight
+  },
 }
 
 O.DEFAULTS = D

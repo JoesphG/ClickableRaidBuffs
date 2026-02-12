@@ -39,6 +39,7 @@ Core\RosterWatch.lua
 Core\MinimapButton.lua
 Core\Mover.lua
 Core\Exclusions.lua
+Core\Expansion.lua
 Core\Click.lua
 Core\GateCheck.lua
 Core\ProfileIO.lua
