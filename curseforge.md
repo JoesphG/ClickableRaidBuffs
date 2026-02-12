@@ -1,7 +1,8 @@
-# ClickableRaidBuffs v7.0.9 (Retail 12.0.1)
+# ClickableRaidBuffs v7.0.10 (Retail 12.0.1)
 
 ## Changelog
-- Fixed an issue where raid/party rebuff icons could stay hidden out of combat when targets moved into range
+- Fixed raid/party rebuff icons sometimes not returning out of combat (self and group cases)
+- Hardened gate handling so gate errors/secret values no longer suppress rebuff visibility updates
 - General stability and maintenance updates
 
 ## Game Version

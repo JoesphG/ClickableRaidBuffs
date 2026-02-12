@@ -21,6 +21,7 @@ ClickableRaidBuffs is a World of Warcraft addon that scans player and raid state
 ## Support
 For support and downloads, see the links in `CHANGELOG.txt`.
 
-## Release Notes (v7.0.9)
-- Fixed an issue where raid/party rebuff icons could stay hidden out of combat when targets moved into range
+## Release Notes (v7.0.10)
+- Fixed raid/party rebuff icons sometimes not returning out of combat (self and group cases)
+- Hardened gate handling so gate errors/secret values no longer suppress rebuff visibility updates
 - General stability and maintenance updates
