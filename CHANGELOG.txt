@@ -49,11 +49,9 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
-**v7.1.3**
+**v7.1.4**
 
-- Blizzard options panel styling  
-- Updated Profile tab import flow  
-- Fixed Paladin beacon tracking so Beacon of Light and Beacon of Faith are tracked independently  
+- Fixed Profile tab import box focus so pasted import strings work reliably  
 
 
 =======================================================================================================================
