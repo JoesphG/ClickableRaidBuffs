@@ -149,6 +149,12 @@ SlashCmdList["CLICKABLERAIDBUFFS"] = function(msg)
     end
   elseif msg == "reset" then
     ns.ResetToDefaults()
+  elseif msg == "debug" then
+    if type(ns.DebugRaidBuffVisibility) == "function" then
+      ns.DebugRaidBuffVisibility()
+    else
+      print("|cFF00ccffCRB:|r Debug diagnostics are not available.")
+    end
   elseif msg == "" then
     if ns.OpenOptions then
       if ns.OptionsFrame and ns.OptionsFrame:IsShown() then
@@ -163,6 +169,7 @@ SlashCmdList["CLICKABLERAIDBUFFS"] = function(msg)
     print("  /crb lock      - Toggle lock/unlock the icon frame")
     print("  /crb minimap   - Toggle showing the minimap button")
     print("  /crb reset     - Reset settings to default and reload UI")
+    print("  /crb debug     - Print hidden raid buff gate/visibility reasons")
     print("  /crb           - Open/close the options panel")
   end
 end

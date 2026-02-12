@@ -23,6 +23,102 @@ local function BuildNameLookup(spellIDs)
   return next(t) and t or nil
 end
 
+function ns.BuildSpellIDSet(spellIDs)
+  local t = {}
+  if type(spellIDs) ~= "table" then
+    return t
+  end
+  for _, id in ipairs(spellIDs) do
+    if id then
+      t[id] = true
+    end
+  end
+  return t
+end
+
+function ns.BuildBuffNameSet(spellIDs)
+  local t = {}
+  if type(spellIDs) ~= "table" then
+    return t
+  end
+  for _, id in ipairs(spellIDs) do
+    local name = ns.GetLocalizedBuffName(id)
+    if name and type(name) == "string" then
+      t[name] = true
+    end
+  end
+  return t
+end
+
+function ns.GetGroupUnits(opts)
+  opts = opts or {}
+  local includePlayer = (opts.includePlayer ~= false)
+  local onlyExisting = (opts.onlyExisting == true)
+  local units = {}
+
+  if IsInRaid() then
+    for i = 1, GetNumGroupMembers() do
+      local u = "raid" .. i
+      if (not onlyExisting) or UnitExists(u) then
+        units[#units + 1] = u
+      end
+    end
+  elseif IsInGroup() then
+    for i = 1, GetNumSubgroupMembers() do
+      local u = "party" .. i
+      if (not onlyExisting) or UnitExists(u) then
+        units[#units + 1] = u
+      end
+    end
+  end
+
+  if includePlayer then
+    units[#units + 1] = "player"
+  end
+  return units
+end
+
+function ns.UnitHasAnyBuffByIDs(unit, ids)
+  if not unit or type(ids) ~= "table" then
+    return false
+  end
+  local idx = 1
+  while true do
+    local aura = C_UnitAuras.GetAuraDataByIndex(unit, idx, "HELPFUL")
+    if not aura then
+      break
+    end
+    local sid = aura.spellId
+    if type(sid) == "number" and ids[sid] then
+      return true
+    end
+    idx = idx + 1
+  end
+  return false
+end
+
+function ns.UnitHasAnyBuffByNames(unit, names)
+  if not unit or type(names) ~= "table" then
+    return false
+  end
+  local idx = 1
+  while true do
+    local aura = C_UnitAuras.GetAuraDataByIndex(unit, idx, "HELPFUL")
+    if not aura then
+      break
+    end
+    local name = aura.name
+    if name and type(name) == "string" and names[name] then
+      local sid = aura.spellId
+      if not (type(sid) == "number" and NAME_MODE_EXCLUDE[sid]) then
+        return true
+      end
+    end
+    idx = idx + 1
+  end
+  return false
+end
+
 function ns.GetPlayerBuffExpire(spellIDs, nameMode, infinite)
   local function safeExpiration(aura)
     if not aura then
@@ -89,25 +185,6 @@ function ns.GetPlayerBuffExpire(spellIDs, nameMode, infinite)
   return nil
 end
 
-local function GetGroupUnits()
-  local units = {}
-
-  if IsInRaid() then
-    for i = 1, GetNumGroupMembers() do
-      units[#units + 1] = "raid" .. i
-    end
-  elseif IsInGroup() then
-    for i = 1, GetNumGroupMembers() - 1 do
-      units[#units + 1] = "party" .. i
-    end
-    units[#units + 1] = "player"
-  else
-    units[#units + 1] = "player"
-  end
-
-  return units
-end
-
 function ns.GetRaidBuffExpire(spellIDs, nameMode, infinite)
   local spellLookup, nameLookup
   if nameMode then
@@ -116,14 +193,11 @@ function ns.GetRaidBuffExpire(spellIDs, nameMode, infinite)
       return nil
     end
   else
-    spellLookup = {}
-    for _, id in ipairs(spellIDs or {}) do
-      spellLookup[id] = true
-    end
+    spellLookup = ns.BuildSpellIDSet(spellIDs or {})
   end
 
   local earliest = nil
-  for _, unit in ipairs(GetGroupUnits()) do
+  for _, unit in ipairs(ns.GetGroupUnits({ includePlayer = true })) do
     local found = false
     local idx = 1
     while true do
@@ -180,18 +254,7 @@ end
 
 function ns.GetRaidBuffExpireMine(spellIDs, nameMode, infinite)
   local playerGUID = UnitGUID("player")
-  local units = {}
-
-  if IsInRaid() then
-    for i = 1, GetNumGroupMembers() do
-      units[#units + 1] = "raid" .. i
-    end
-  else
-    for i = 1, GetNumSubgroupMembers() do
-      units[#units + 1] = "party" .. i
-    end
-    units[#units + 1] = "player"
-  end
+  local units = ns.GetGroupUnits({ includePlayer = true })
 
   local spellLookup, nameLookup
   if nameMode then
@@ -200,10 +263,7 @@ function ns.GetRaidBuffExpireMine(spellIDs, nameMode, infinite)
       return nil
     end
   else
-    spellLookup = {}
-    for _, id in ipairs(spellIDs or {}) do
-      spellLookup[id] = true
-    end
+    spellLookup = ns.BuildSpellIDSet(spellIDs or {})
   end
 
   for _, unit in ipairs(units) do

@@ -40,41 +40,10 @@ local function IsUnitInSpellRange(spellID, unit)
 end
 
 local function UnitHasAnyBuffFromIDs(unit, ids)
-  if not ids or not unit then
-    return false
+  if ns.UnitHasAnyBuffByIDs then
+    return ns.UnitHasAnyBuffByIDs(unit, ids)
   end
-  local found = false
-  AuraUtil.ForEachAura(unit, "HELPFUL", nil, function(a)
-    if a and a.spellId and ids[a.spellId] then
-      found = true
-      return true
-    end
-  end, true)
-  return found
-end
-
-local function GetGroupUnits()
-  local out, n = {}, 0
-  if IsInRaid() then
-    for i = 1, GetNumGroupMembers() do
-      local u = "raid" .. i
-      if UnitExists(u) then
-        n = n + 1
-        out[n] = u
-      end
-    end
-  elseif IsInGroup() then
-    for i = 1, GetNumSubgroupMembers() do
-      local u = "party" .. i
-      if UnitExists(u) then
-        n = n + 1
-        out[n] = u
-      end
-    end
-  end
-  n = n + 1
-  out[n] = "player"
-  return out, n
+  return false
 end
 
 local function ResolveBuffIDsForData(data)
@@ -92,10 +61,14 @@ local function ResolveBuffIDsForData(data)
   end
   local ids = {}
   if type(list) == "table" then
-    for i = 1, #list do
-      local v = list[i]
-      if v then
-        ids[v] = true
+    if ns.BuildSpellIDSet then
+      ids = ns.BuildSpellIDSet(list)
+    else
+      for i = 1, #list do
+        local v = list[i]
+        if v then
+          ids[v] = true
+        end
       end
     end
   elseif type(list) == "number" then
@@ -149,7 +122,7 @@ local function TickRangeGate()
   local anySuppressionChanged = false
 
   if ns._rangeTracked and next(ns._rangeTracked) then
-    local units = GetGroupUnits()
+    local units = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or {}
     for spellID, entry in pairs(ns._rangeTracked) do
       local maxRange, spellName = GetSpellRange(spellID)
       local ids = entry.ids or {}
@@ -247,7 +220,7 @@ function ns.RangeGate_OnRosterOrSpellsChanged()
 
   local shouldRun = false
   if next(ns._rangeTracked) then
-    local units = GetGroupUnits()
+    local units = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or {}
     for spellID, entry in pairs(ns._rangeTracked) do
       local ids = entry.ids or {}
       if UnitHasAnyBuffFromIDs("player", ids) then
@@ -299,7 +272,7 @@ function ns.Gate_Range(ctx, data)
     return true
   end
 
-  local units = GetGroupUnits()
+  local units = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or {}
   local anyMissing = false
   local anyMissingInRange = false
 

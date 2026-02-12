@@ -19,7 +19,6 @@ jobs:
 
           TAG="$(jq -r '.release.tag_name' "$GITHUB_EVENT_PATH")"
           NAME="$(jq -r '.release.name // .release.tag_name' "$GITHUB_EVENT_PATH")"
-          URL="$(jq -r '.release.html_url' "$GITHUB_EVENT_PATH")"
           BODY="$(jq -r '.release.body // "No release notes provided."' "$GITHUB_EVENT_PATH")"
 
           SUMMARY_ONLY="$(
@@ -41,7 +40,7 @@ jobs:
             CHANGES="- See release page for details."
           fi
 
-          HEADER="**ClickableRaidBuffs ${NAME}**"$'\n'"Tag: \`${TAG}\`"$'\n'"${URL}"
+          HEADER="**ClickableRaidBuffs ${NAME}**"$'\n'"Tag: \`${TAG}\`"
           CONTENT="${HEADER}"$'\n\n'"**Changes**"$'\n'"${CHANGES}"
 
           # Discord message hard limit is 2000 characters.

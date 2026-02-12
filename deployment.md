@@ -21,6 +21,7 @@ CurseForge will package the tag and automatically set the file type based on the
 3. Run formatting and checks:
    - `make fmt`
    - `make check` (LLS warnings are acceptable if reviewed)
+   - `make release-check` (version sync + concise release-note policy checks)
 
 ## Packaging (CurseForge Webhook)
 - Push the tagged commit to GitHub; CurseForge will package automatically.

@@ -3,7 +3,7 @@ LUALS ?= lua-language-server
 
 CHECK_GLOB = --glob '**/*.lua' --glob '!Libs/**'
 
-.PHONY: check check-format check-luals fmt
+.PHONY: check check-format check-luals fmt release-check
 
 check: check-format check-luals
 
@@ -15,3 +15,6 @@ check-luals:
 
 fmt:
 	$(STYLUA) $(CHECK_GLOB) .
+
+release-check:
+	./Tools/release_check.sh

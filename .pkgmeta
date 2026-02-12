@@ -6,6 +6,8 @@ ignore:
   - RELEASE_NOTES.md
   - curseforge.md
   - .github
+  - .lls
+  - deployment.md
   - context.md
   - AGENTS.md
   - .DS_Store

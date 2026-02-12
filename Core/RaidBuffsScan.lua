@@ -47,6 +47,69 @@ local function IsRowKnown(data, rowKey)
   end
 end
 
+local function DebugGateEval(data, playerLevel, inInstance, rested)
+  local reasons = {}
+  local suppressed = false
+  if not data then
+    return true, reasons, suppressed
+  end
+
+  local gates = data.gates
+  local hasEvenRested, hasEvenDead = false, false
+  if gates and #gates > 0 then
+    for i = 1, #gates do
+      local name = gates[i]
+      if name == "evenRested" then
+        hasEvenRested = true
+      elseif name == "evenDead" then
+        hasEvenDead = true
+      end
+    end
+  end
+
+  local isDead = UnitIsDeadOrGhost and UnitIsDeadOrGhost("player") or false
+  if isDead and not hasEvenDead then
+    reasons[#reasons + 1] = "dead"
+    return false, reasons, suppressed
+  end
+
+  if rested == nil then
+    rested = IsResting and IsResting() or false
+  end
+  if rested and not hasEvenRested then
+    reasons[#reasons + 1] = "rested"
+    return false, reasons, suppressed
+  end
+
+  if data.minLevel and not (ns.Gate_Level and ns.Gate_Level(data.minLevel, playerLevel)) then
+    reasons[#reasons + 1] = "minLevel"
+    return false, reasons, suppressed
+  end
+
+  if not gates or #gates == 0 then
+    return true, reasons, suppressed
+  end
+
+  local ctx = { playerLevel = playerLevel, inInstance = inInstance, rested = rested }
+  for i = 1, #gates do
+    local name = gates[i]
+    if name ~= "evenRested" and name ~= "evenDead" then
+      if (name == "rested" and hasEvenRested) or (name == "alive" and hasEvenDead) then
+      else
+        local fn = ns._GateHandlers and ns._GateHandlers[name]
+        if fn and not fn(ctx, data) then
+          reasons[#reasons + 1] = name
+          if ctx.suppress then
+            suppressed = true
+          end
+        end
+      end
+    end
+  end
+
+  return (#reasons == 0), reasons, suppressed
+end
+
 function ns.RebuildRaidBuffWatch()
   ns._raidBuffWatch = { spellId = {}, name = {} }
 
@@ -79,6 +142,88 @@ function ns.RebuildRaidBuffWatch()
   end
 
   addTable(classBuffs)
+end
+
+function ns.DebugRaidBuffVisibility()
+  if InCombatLockdown and InCombatLockdown() then
+    print("|cFF00ccffCRB:|r /crb debug is unavailable during combat.")
+    return
+  end
+
+  if type(scanRaidBuffs) == "function" then
+    scanRaidBuffs()
+  end
+
+  local classID = clickableRaidBuffCache.playerInfo.playerClassId or getPlayerClass()
+  local classBuffs = classID and ClickableRaidData and ClickableRaidData[classID]
+  if not classBuffs then
+    print("|cFF00ccffCRB:|r No raid buff table found for your class.")
+    return
+  end
+
+  local playerLevel = clickableRaidBuffCache.playerInfo.playerLevel or UnitLevel("player") or 0
+  local inInstance = clickableRaidBuffCache.playerInfo.inInstance
+  local rested = clickableRaidBuffCache.playerInfo.restedXPArea
+  local disp = clickableRaidBuffCache.displayable and clickableRaidBuffCache.displayable.RAID_BUFFS or {}
+  local now = GetTime()
+
+  print("|cFF00ccffCRB Debug:|r Hidden raid buff reasons")
+  local hidden = 0
+
+  for rowKey, data in pairs(classBuffs) do
+    if data and data.type ~= "trinket" then
+      local checkID = data.isKnown ~= nil and data.isKnown or (data.spellID or rowKey)
+      if IsRowKnown(data, checkID) then
+        local reasons = {}
+        local ok, gateReasons, suppressed = DebugGateEval(data, playerLevel, inInstance, rested)
+        if not ok then
+          reasons[#reasons + 1] = "gate:" .. table.concat(gateReasons, "+")
+          if suppressed then
+            reasons[#reasons + 1] = "range-suppressed"
+          end
+        end
+
+        local entry = disp[rowKey]
+        if not entry then
+          local dup = false
+          for _, e in pairs(disp) do
+            if type(e) == "table" and e.spellID and data.spellID and e.spellID == data.spellID then
+              dup = true
+              break
+            end
+          end
+          if dup then
+            reasons[#reasons + 1] = "deduped-alt-variant"
+          else
+            reasons[#reasons + 1] = "not-in-displayable"
+          end
+        else
+          if entry.expireTime == math.huge then
+            reasons[#reasons + 1] = "already-covered"
+          end
+          if entry.showAt and now < entry.showAt then
+            reasons[#reasons + 1] = "below-threshold"
+          end
+          if ns.IsDisplayableExcluded and ns.IsDisplayableExcluded("RAID_BUFFS", entry) then
+            reasons[#reasons + 1] = "excluded"
+          end
+        end
+
+        if #reasons > 0 then
+          hidden = hidden + 1
+          local sid = data.spellID or rowKey
+          local name = data.name or (sid and C_Spell.GetSpellInfo(sid) or {}).name or tostring(sid)
+          print(("  - %s (%s): %s"):format(tostring(name), tostring(sid), table.concat(reasons, ", ")))
+        end
+      end
+    end
+  end
+
+  if hidden == 0 then
+    print("|cFF00ccffCRB:|r No hidden raid buff entries detected.")
+  else
+    print(("|cFF00ccffCRB:|r %d hidden raid buff entries listed."):format(hidden))
+  end
 end
 
 function ns.HandleRaidBuff_UNIT_AURA(unit, updateInfo)
@@ -210,25 +355,7 @@ function scanRaidBuffs()
     if not name then
       return nil
     end
-    local units = {}
-    if IsInRaid() then
-      for i = 1, GetNumGroupMembers() do
-        local u = "raid" .. i
-        if UnitExists(u) then
-          table.insert(units, u)
-        end
-      end
-    elseif IsInGroup() then
-      table.insert(units, "player")
-      for i = 1, GetNumSubgroupMembers() do
-        local u = "party" .. i
-        if UnitExists(u) then
-          table.insert(units, u)
-        end
-      end
-    else
-      table.insert(units, "player")
-    end
+    local units = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or { "player" }
     local have, total = 0, #units
     for _, u in ipairs(units) do
       local i = 1
@@ -257,25 +384,7 @@ function scanRaidBuffs()
       return 0, 0
     end
 
-    local units = {}
-    if IsInRaid() then
-      for i = 1, GetNumGroupMembers() do
-        local u = "raid" .. i
-        if UnitExists(u) then
-          table.insert(units, u)
-        end
-      end
-    elseif IsInGroup() then
-      table.insert(units, "player")
-      for i = 1, GetNumSubgroupMembers() do
-        local u = "party" .. i
-        if UnitExists(u) then
-          table.insert(units, u)
-        end
-      end
-    else
-      table.insert(units, "player")
-    end
+    local units = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or { "player" }
 
     local wantById
     local targetName
@@ -332,30 +441,10 @@ function scanRaidBuffs()
     entry.spellID = data.spellID or rowKey
 
     local function buildUnits()
-      local units = {}
       if data.check == "player" then
-        units[1] = "player"
-        return units
+        return { "player" }
       end
-      if IsInRaid() then
-        for i = 1, GetNumGroupMembers() do
-          local u = "raid" .. i
-          if UnitExists(u) then
-            units[#units + 1] = u
-          end
-        end
-      elseif IsInGroup() then
-        units[#units + 1] = "player"
-        for i = 1, GetNumSubgroupMembers() do
-          local u = "party" .. i
-          if UnitExists(u) then
-            units[#units + 1] = u
-          end
-        end
-      else
-        units[#units + 1] = "player"
-      end
-      return units
+      return (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or { "player" }
     end
 
     local function buildSets()
