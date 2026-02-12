@@ -211,11 +211,17 @@ local function _order_expandGroup(gid, out)
   end
 end
 local function _order_NormalizeOrder(saved, defaults)
+  local allowed = {}
+  if type(defaults) == "table" then
+    for i = 1, #defaults do
+      allowed[tostring(defaults[i])] = true
+    end
+  end
   local seen, out = {}, {}
   if type(saved) == "table" then
     for i = 1, #saved do
       local c = tostring(saved[i])
-      if not seen[c] then
+      if (next(allowed) == nil or allowed[c]) and not seen[c] then
         seen[c] = true
         out[#out + 1] = c
       end

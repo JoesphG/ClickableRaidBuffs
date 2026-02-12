@@ -21,6 +21,41 @@ local function FontPath()
   return "Fonts\\FRIZQT__.TTF"
 end
 
+local function MakeBlueGreyButton(parent, text, x)
+  local b = CreateFrame("Button", nil, parent, "BackdropTemplate")
+  b:SetSize(110, 28)
+  b:SetPoint("LEFT", parent, "LEFT", x, 0)
+  b:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1 })
+  b:SetBackdropColor(0.15, 0.20, 0.29, 1)
+  b:SetBackdropBorderColor(0.30, 0.45, 0.66, 1)
+  local fs = b:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+  fs:SetPoint("CENTER")
+  fs:SetFont(FontPath(), 12, "")
+  fs:SetText(text or "")
+  fs:SetTextColor(0.90, 0.95, 1.00, 1)
+  b._label = fs
+  b:SetScript("OnEnter", function(self)
+    self:SetBackdropColor(0.19, 0.28, 0.40, 1)
+  end)
+  b:SetScript("OnLeave", function(self)
+    self:SetBackdropColor(0.15, 0.20, 0.29, 1)
+  end)
+  b:SetScript("OnMouseDown", function(self)
+    self:SetBackdropColor(0.12, 0.17, 0.25, 1)
+  end)
+  b:SetScript("OnMouseUp", function(self)
+    if self:IsMouseOver() then
+      self:SetBackdropColor(0.19, 0.28, 0.40, 1)
+    else
+      self:SetBackdropColor(0.15, 0.20, 0.29, 1)
+    end
+  end)
+  function b:SetText(v)
+    self._label:SetText(v or "")
+  end
+  return b
+end
+
 local function BindEditWidth(edit, scroll)
   local function apply()
     local w = (scroll:GetWidth() or 560) - 28
@@ -54,15 +89,6 @@ O.RegisterSection(function(AddSection)
     title:SetFont(FontPath(), 16, "")
     title:SetText("Export or import Clickable Raid Buffs profile strings.")
 
-    local function MakeBtn(parent, text, x)
-      local b = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
-      b:SetSize(110, 28)
-      b:SetPoint("LEFT", parent, "LEFT", x, 0)
-      b:SetText(text)
-      b:GetFontString():SetFont(FontPath(), 12, "")
-      return b
-    end
-
     local function MakeTextArea(parent, topPad)
       local scroll = CreateFrame("ScrollFrame", nil, parent, "UIPanelScrollFrameTemplate")
       scroll:SetPoint("TOPLEFT", 8, -topPad)
@@ -84,52 +110,65 @@ O.RegisterSection(function(AddSection)
     end
 
     local rowImport = Row(170)
-    local importBox = CreateFrame("Frame", nil, rowImport, "BackdropTemplate")
-    importBox:SetPoint("TOPLEFT", rowImport, "TOPLEFT", 0, 0)
-    importBox:SetPoint("BOTTOMRIGHT", rowImport, "BOTTOMRIGHT", 0, 0)
-    PaintBackdrop(importBox, { 0.06, 0.07, 0.10, 1 }, { 0.20, 0.22, 0.28, 1 })
-
-    local importHeader = importBox:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    importHeader:SetPoint("TOPLEFT", importBox, "TOPLEFT", 8, -8)
+    local importHeader = rowImport:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    importHeader:SetPoint("TOPLEFT", rowImport, "TOPLEFT", 0, -2)
     importHeader:SetFont(FontPath(), 13, "")
     importHeader:SetText("Import")
 
-    local importBtnRow = CreateFrame("Frame", nil, importBox)
-    importBtnRow:SetPoint("TOPLEFT", importBox, "TOPLEFT", 8, -26)
-    importBtnRow:SetPoint("TOPRIGHT", importBox, "TOPRIGHT", -8, -26)
+    local importBtnRow = CreateFrame("Frame", nil, rowImport)
+    importBtnRow:SetPoint("TOPLEFT", rowImport, "TOPLEFT", 0, -22)
+    importBtnRow:SetPoint("TOPRIGHT", rowImport, "TOPRIGHT", 0, -22)
     importBtnRow:SetHeight(28)
 
-    local bImportReplace = MakeBtn(importBtnRow, "Import All", 0)
-    local bImportMerge = MakeBtn(importBtnRow, "Import Merge", 118)
-    local bClear = MakeBtn(importBtnRow, "Clear", 236)
+    local bImportReplace = MakeBlueGreyButton(importBtnRow, "Import All", 0)
+    local bImportMerge = MakeBlueGreyButton(importBtnRow, "Import Merge", 118)
+    local bClear = MakeBlueGreyButton(importBtnRow, "Clear", 236)
 
-    local importEdit, importScroll = MakeTextArea(importBox, 62)
+    local importBox = CreateFrame("Frame", nil, rowImport, "BackdropTemplate")
+    importBox:SetPoint("TOPLEFT", rowImport, "TOPLEFT", 0, -54)
+    importBox:SetPoint("BOTTOMRIGHT", rowImport, "BOTTOMRIGHT", 0, 0)
+    PaintBackdrop(importBox, { 0.06, 0.07, 0.10, 1 }, { 0.20, 0.22, 0.28, 1 })
+
+    local importEdit, importScroll = MakeTextArea(importBox, 8)
     BindEditWidth(importEdit, importScroll)
 
     local rowExport = Row(160)
-    local exportBox = CreateFrame("Frame", nil, rowExport, "BackdropTemplate")
-    exportBox:SetPoint("TOPLEFT", rowExport, "TOPLEFT", 0, 0)
-    exportBox:SetPoint("BOTTOMRIGHT", rowExport, "BOTTOMRIGHT", 0, 0)
-    PaintBackdrop(exportBox, { 0.06, 0.07, 0.10, 1 }, { 0.20, 0.22, 0.28, 1 })
-
-    local exportHeader = exportBox:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    exportHeader:SetPoint("TOPLEFT", exportBox, "TOPLEFT", 8, -8)
+    local exportHeader = rowExport:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    exportHeader:SetPoint("TOPLEFT", rowExport, "TOPLEFT", 0, -2)
     exportHeader:SetFont(FontPath(), 13, "")
     exportHeader:SetText("Export")
 
-    local exportBtnRow = CreateFrame("Frame", nil, exportBox)
-    exportBtnRow:SetPoint("TOPLEFT", exportBox, "TOPLEFT", 8, -26)
-    exportBtnRow:SetPoint("TOPRIGHT", exportBox, "TOPRIGHT", -8, -26)
+    local exportBtnRow = CreateFrame("Frame", nil, rowExport)
+    exportBtnRow:SetPoint("TOPLEFT", rowExport, "TOPLEFT", 0, -22)
+    exportBtnRow:SetPoint("TOPRIGHT", rowExport, "TOPRIGHT", 0, -22)
     exportBtnRow:SetHeight(28)
 
-    local bExport = MakeBtn(exportBtnRow, "Export", 0)
-    local bCopy = MakeBtn(exportBtnRow, "Copy", 118)
+    local bExport = MakeBlueGreyButton(exportBtnRow, "Export", 0)
+    local bCopy = MakeBlueGreyButton(exportBtnRow, "Select All", 118)
 
-    local exportEdit, exportScroll = MakeTextArea(exportBox, 62)
+    local exportBox = CreateFrame("Frame", nil, rowExport, "BackdropTemplate")
+    exportBox:SetPoint("TOPLEFT", rowExport, "TOPLEFT", 0, -54)
+    exportBox:SetPoint("BOTTOMRIGHT", rowExport, "BOTTOMRIGHT", 0, 0)
+    PaintBackdrop(exportBox, { 0.06, 0.07, 0.10, 1 }, { 0.20, 0.22, 0.28, 1 })
+
+    local exportEdit, exportScroll = MakeTextArea(exportBox, 8)
     BindEditWidth(exportEdit, exportScroll)
+    local exportValue = ""
+    local exportMutating = false
     exportEdit:SetText("")
-    exportEdit:SetEnabled(false)
     exportEdit:EnableMouse(true)
+    exportEdit:SetScript("OnEditFocusGained", function(self)
+      self:HighlightText()
+    end)
+    exportEdit:SetScript("OnTextChanged", function(self, userInput)
+      if exportMutating or not userInput then
+        return
+      end
+      exportMutating = true
+      self:SetText(exportValue or "")
+      self:HighlightText()
+      exportMutating = false
+    end)
 
     local rowInfo = Row(52)
     local info = rowInfo:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
@@ -152,12 +191,13 @@ O.RegisterSection(function(AddSection)
     end
 
     local function setExportText(v)
-      exportEdit:SetEnabled(true)
-      exportEdit:SetText(v or "")
+      exportValue = v or ""
+      exportMutating = true
+      exportEdit:SetText(exportValue)
       exportEdit:SetCursorPosition(0)
       exportScroll:SetVerticalScroll(0)
       exportEdit:HighlightText(0, 0)
-      exportEdit:SetEnabled(false)
+      exportMutating = false
     end
 
     local function preview()
@@ -225,21 +265,23 @@ O.RegisterSection(function(AddSection)
         return
       end
       setExportText(s)
-      exportEdit:SetEnabled(true)
       exportEdit:SetFocus()
       exportEdit:HighlightText()
-      exportEdit:SetEnabled(false)
       info:SetText(("Export ready. Length: %d"):format(#s))
     end
 
     bExport:SetScript("OnClick", runExport)
 
     bCopy:SetScript("OnClick", function()
-      exportEdit:SetEnabled(true)
+      if exportValue == "" then
+        runExport()
+        if exportValue == "" then
+          return
+        end
+      end
       exportEdit:SetFocus()
       exportEdit:HighlightText()
-      exportEdit:SetEnabled(false)
-      info:SetText("Profile string selected for copy.")
+      info:SetText("Profile string selected. Press Ctrl+C to copy.")
     end)
 
     bImportReplace:SetScript("OnClick", function()

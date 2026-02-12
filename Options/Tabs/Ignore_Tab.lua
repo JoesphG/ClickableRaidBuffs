@@ -581,7 +581,7 @@ local function collectTrinketRaidBuffs()
 end
 
 O.RegisterSection(function(AddSection)
-  AddSection("Ignore", function(content, Row)
+  AddSection("Buffs", function(content, Row)
     local row = Row(EXCLUSIONS_WINDOW_HEIGHT - 6)
 
     local card = CreateFrame("Frame", nil, row, "BackdropTemplate")

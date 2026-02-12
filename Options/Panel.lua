@@ -173,24 +173,56 @@ settingsProxy:SetScript("OnShow", function(self)
   self._built = true
 
   local title = self:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-  title:SetPoint("TOPLEFT", 16, -16)
-  title:SetText("Clickable Raid Buffs")
+  title:SetPoint("TOP", self, "TOP", 0, -22)
+  title:SetFontObject("GameFontNormalHuge")
+  title:SetText("|cff00ccffClickable Raid Buffs|r |cffff7d0Ffunki.gg|r")
+  title:SetJustifyH("CENTER")
+
+  local logo = self:CreateTexture(nil, "ARTWORK")
+  logo:SetSize(192, 192)
+  logo:SetPoint("TOP", title, "BOTTOM", 0, -14)
+  logo:SetTexture("Interface\\AddOns\\ClickableRaidBuffs\\Media\\funkiggLogo")
 
   local desc = self:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-  desc:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -10)
-  desc:SetWidth(540)
-  desc:SetJustifyH("LEFT")
-  desc:SetText("CRB now uses a dedicated resizable options window. Click below or type /crb to open it.")
+  desc:SetPoint("TOP", logo, "BOTTOM", 0, -14)
+  desc:SetWidth(760)
+  desc:SetJustifyH("CENTER")
+  desc:SetFontObject("GameFontNormalLarge")
+  desc:SetText("Use short cut /crb /buff /funki to access options menu or click the Options button.")
 
-  local openBtn = CreateFrame("Button", nil, self, "UIPanelButtonTemplate")
-  openBtn:SetSize(220, 24)
-  openBtn:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -12)
-  openBtn:SetText("Open Clickable Raid Buffs Options")
+  local openBtn = CreateFrame("Button", nil, self, "BackdropTemplate")
+  openBtn:SetSize(220, 42)
+  openBtn:SetPoint("TOP", desc, "BOTTOM", 0, -16)
+  openBtn:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1 })
+  openBtn:SetBackdropColor(0.15, 0.20, 0.29, 1)
+  openBtn:SetBackdropBorderColor(0.30, 0.45, 0.66, 1)
+  local openLabel = openBtn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+  openLabel:SetPoint("CENTER")
+  openLabel:SetText("Options")
+  openLabel:SetFontObject("GameFontNormalLarge")
+  openLabel:SetTextColor(0.90, 0.95, 1.00, 1)
+  openBtn:SetScript("OnEnter", function(btn)
+    btn:SetBackdropColor(0.19, 0.28, 0.40, 1)
+  end)
+  openBtn:SetScript("OnLeave", function(btn)
+    btn:SetBackdropColor(0.15, 0.20, 0.29, 1)
+  end)
+  openBtn:SetScript("OnMouseDown", function(btn)
+    btn:SetBackdropColor(0.12, 0.17, 0.25, 1)
+  end)
+  openBtn:SetScript("OnMouseUp", function(btn)
+    if btn:IsMouseOver() then
+      btn:SetBackdropColor(0.19, 0.28, 0.40, 1)
+    else
+      btn:SetBackdropColor(0.15, 0.20, 0.29, 1)
+    end
+  end)
   openBtn:SetScript("OnClick", function()
     if ns and ns.OpenOptions then
       ns.OpenOptions()
     end
   end)
+
 end)
 
 if Settings and Settings.RegisterCanvasLayoutCategory then
@@ -241,6 +273,7 @@ local TAB_CFG = {
   gap = 8,
   bg = { 0.10, 0.11, 0.15, 1 },
   border = { 0.22, 0.24, 0.30, 1 },
+  borderHover = { 0.35, 0.80, 1.00, 1 },
   bgSel = { 0.14, 0.16, 0.22, 1 },
   borderSel = { 0.20, 0.65, 1.00, 1 },
   text = { 0.85, 0.90, 1.00, 1 },
@@ -427,6 +460,14 @@ local function Build()
 
     b:SetScript("OnClick", function()
       ShowPage(index)
+    end)
+    b:SetScript("OnEnter", function(self)
+      if index ~= current then
+        self:SetBackdropBorderColor(unpack(TAB_CFG.borderHover))
+      end
+    end)
+    b:SetScript("OnLeave", function(self)
+      StyleTab(self, index == current)
     end)
     StyleTab(b, false)
     return b
