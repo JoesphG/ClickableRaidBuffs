@@ -4,6 +4,7 @@
 
 local addonName, ns = ...
 ns = ns or {}
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 local function DB()
   return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
@@ -18,8 +19,21 @@ local function GetSpellRange(spellID)
 end
 
 local function IsUnitInSpellRange(spellID, unit)
+  local function normalizeRangeFlag(v)
+    if IsSecret and IsSecret(v) then
+      return nil
+    end
+    if v == true then
+      return true
+    end
+    if v == false then
+      return false
+    end
+    return nil
+  end
+
   if C_Spell and C_Spell.IsSpellInRange then
-    local ret = C_Spell.IsSpellInRange(spellID, unit)
+    local ret = normalizeRangeFlag(C_Spell.IsSpellInRange(spellID, unit))
     if ret == true then
       return true
     end
@@ -29,7 +43,7 @@ local function IsUnitInSpellRange(spellID, unit)
   end
 
   if UnitInRange then
-    local ur = UnitInRange(unit)
+    local ur = normalizeRangeFlag(UnitInRange(unit))
     if ur == true then
       return true
     end
