@@ -21,10 +21,6 @@ ClickableRaidBuffs is a World of Warcraft addon that scans player and raid state
 ## Support
 For support and downloads, see the links in `CHANGELOG.txt`.
 
-## Release Notes (v7.1.1)
-- Fixed an options panel startup error on clients where `SetMinResize` is unavailable
-- Restored options access from both the minimap button and Blizzard AddOns/Settings entry after options panel init failures
-- Added a compatibility fallback for Blizzard Interface Options category registration
-- Improved Info tab layout by moving control checkboxes to a dedicated footer below the text area
-- Reduced oversized Info tab text to fit cleanly in the panel without overlap
-- General stability and UI maintenance updates
+## Change Tracking
+- `CHANGELOG.txt` is the running list of all addon changes.
+- `RELEASE_NOTES.md` contains only the notes for the current tagged release.

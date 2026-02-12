@@ -49,14 +49,21 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
-**v7.1.4**
+**Unreleased**
 
-- Fixed Profile tab import box focus so pasted import strings work reliably  
+- Merged pending fixes from the `ClickableRaidBuffs_7.1.5` baseline
+- Removed an extraneous line in `Options/Panel.lua` that could trigger a startup error
+- Retained the Profile tab import box focus fix so pasted import strings work reliably
+- Removed `curseforge.md` and updated docs ownership (`CHANGELOG.txt` = running history, `RELEASE_NOTES.md` = current tag only)
 
 
 =======================================================================================================================
                                                 HISTORICAL PATCH NOTES
 =======================================================================================================================
+
+**v7.1.4**
+
+- Fixed Profile tab import box focus so pasted import strings work reliably
 
 **v7.0.3**
 

@@ -608,4 +608,3 @@ panel:HookScript("OnSizeChanged", function(_, width, height)
     panel._relayoutTabs()
   end
 end)
-  desc:SetJustifyH("LEFT")
