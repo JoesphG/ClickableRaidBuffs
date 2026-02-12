@@ -42,19 +42,23 @@ local function IsUnitInSpellRange(spellID, unit)
     unitFlag = normalizeRangeFlag(UnitInRange(unit))
   end
 
-  -- Treat either positive signal as in range. This avoids false suppressions
-  -- from spell-specific range quirks when group proximity still says "in range".
-  if spellFlag == true or unitFlag == true then
+  -- Prefer explicit spell-range checks when available.
+  -- Only fall back to UnitInRange when spell range is unknown.
+  if spellFlag == true then
     return true
   end
-
-  -- Suppress only when we have explicit false from both checks.
-  if spellFlag == false and unitFlag == false then
+  if spellFlag == false then
+    return false
+  end
+  if unitFlag == true then
+    return true
+  end
+  if unitFlag == false then
     return false
   end
 
-  -- Fail open on unknown range to avoid suppressing valid rebuff prompts.
-  return true
+  -- Unknown range is treated as out-of-range for strict suppression behavior.
+  return false
 end
 
 local function UnitHasAnyBuffFromIDs(unit, ids)
