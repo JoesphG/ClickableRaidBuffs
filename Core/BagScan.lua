@@ -360,6 +360,10 @@ function scanAllBags()
   local playerLevel = clickableRaidBuffCache.playerInfo.playerLevel or UnitLevel("player") or 999
   local inInstance = clickableRaidBuffCache.playerInfo.inInstance or select(1, IsInInstance())
   local rested = clickableRaidBuffCache.playerInfo.restedXPArea or IsResting()
+  local FOOD = ClickableRaidData and ClickableRaidData["FOOD"] or nil
+  local FLASK = ClickableRaidData and ClickableRaidData["FLASK"] or nil
+  local MH = ClickableRaidData and ClickableRaidData["MAIN_HAND"] or nil
+  local OH = ClickableRaidData and ClickableRaidData["OFF_HAND"] or nil
 
   local dirty, haveDirty = {}, false
   if ns.ConsumeDirtyBags then
@@ -384,6 +388,25 @@ function scanAllBags()
     end
   end
 
+  -- Incremental dirty-bag scans can miss tracked items that sit in untouched bags.
+  -- Include known tracked IDs so oils/weapon buffs remain discoverable on partial updates.
+  if haveDirty then
+    local function markKnown(tbl)
+      if type(tbl) ~= "table" then
+        return
+      end
+      for itemID in pairs(tbl) do
+        if type(itemID) == "number" then
+          seen[itemID] = true
+        end
+      end
+    end
+    markKnown(FOOD)
+    markKnown(FLASK)
+    markKnown(MH)
+    markKnown(OH)
+  end
+
   local count = {}
   for itemID in pairs(seen) do
     count[itemID] = C_Item.GetItemCount(itemID, false, false, false, false) or 0
@@ -391,11 +414,6 @@ function scanAllBags()
 
   local wfExpire = GetWellFedExpire()
   local flaskExpire = clickableRaidBuffCache.playerInfo.flaskExpireTime
-
-  local FOOD = ClickableRaidData and ClickableRaidData["FOOD"] or nil
-  local FLASK = ClickableRaidData and ClickableRaidData["FLASK"] or nil
-  local MH = ClickableRaidData and ClickableRaidData["MAIN_HAND"] or nil
-  local OH = ClickableRaidData and ClickableRaidData["OFF_HAND"] or nil
 
   local touched = { FOOD = {}, FLASK = {}, MAIN_HAND = {}, OFF_HAND = {} }
 
