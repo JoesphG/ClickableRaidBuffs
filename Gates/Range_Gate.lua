@@ -32,21 +32,25 @@ local function IsUnitInSpellRange(spellID, unit)
     return nil
   end
 
+  local spellFlag, unitFlag = nil, nil
+
   if C_Spell and C_Spell.IsSpellInRange then
-    local ret = normalizeRangeFlag(C_Spell.IsSpellInRange(spellID, unit))
-    if ret == true then
-      return true
-    end
-    if ret == false then
-      return false
-    end
+    spellFlag = normalizeRangeFlag(C_Spell.IsSpellInRange(spellID, unit))
   end
 
   if UnitInRange then
-    local ur = normalizeRangeFlag(UnitInRange(unit))
-    if ur == true then
-      return true
-    end
+    unitFlag = normalizeRangeFlag(UnitInRange(unit))
+  end
+
+  -- Treat either positive signal as in range. This avoids false suppressions
+  -- from spell-specific range quirks when group proximity still says "in range".
+  if spellFlag == true or unitFlag == true then
+    return true
+  end
+
+  -- Suppress only when we have explicit false from both checks.
+  if spellFlag == false and unitFlag == false then
+    return false
   end
 
   -- Fail open on unknown range to avoid suppressing valid rebuff prompts.

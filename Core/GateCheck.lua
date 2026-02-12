@@ -3,6 +3,7 @@
 -- ====================================
 
 local addonName, ns = ...
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 ns._GateHandlers = ns._GateHandlers or {}
 
@@ -59,8 +60,17 @@ function ns.PassesGates(data, playerLevel, inInstance, rested)
       if (name == "rested" and hasEvenRested) or (name == "alive" and hasEvenDead) then
       else
         local fn = ns._GateHandlers and ns._GateHandlers[name]
-        if fn and not fn(ctx, data) then
-          return false
+        if fn then
+          local ok, pass = xpcall(fn, geterrorhandler(), ctx, data)
+          if ok then
+            if IsSecret and IsSecret(pass) then
+              -- Secret gate results are treated as unknown; fail open.
+            elseif not pass then
+              return false
+            end
+          else
+            -- A gate error should not suppress all icon updates. Fail open.
+          end
         end
       end
     end
