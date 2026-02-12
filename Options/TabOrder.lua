@@ -13,4 +13,5 @@ O.TAB_ORDER = {
   "Ignore",
   "Alerts",
   "Customize",
+  "Profiles",
 }

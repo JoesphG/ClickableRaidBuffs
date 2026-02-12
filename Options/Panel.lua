@@ -274,12 +274,13 @@ local function Build()
     current = i
   end
 
-  local function CreateTab(parent, text, index)
+  local function CreateTab(parent, text, index, totalTabs)
     local b = CreateFrame("Button", nil, parent, "BackdropTemplate")
 
     local total = tabsBar:GetWidth() or 480
-    local gaps = TAB_CFG.gap * (O.TAB_COUNT - 1)
-    local each = (total - gaps) / O.TAB_COUNT
+    local count = math.max(1, tonumber(totalTabs) or O.TAB_COUNT or 1)
+    local gaps = TAB_CFG.gap * (count - 1)
+    local each = (total - gaps) / count
     local w = math.max(80, math.floor(each + 0.5))
 
     b:SetSize(w, TAB_CFG.h)
@@ -305,7 +306,7 @@ local function Build()
     return b
   end
 
-  local function AddPage(sectionTitle, buildFunc)
+  local function AddPage(sectionTitle, buildFunc, totalTabs)
     local page = CreateFrame("Frame", nil, pagesHolder)
     page:SetPoint("TOPLEFT", 0, 0)
     page:SetPoint("TOPRIGHT", 0, 0)
@@ -339,17 +340,17 @@ local function Build()
     local id = #pages + 1
     pages[id] = page
 
-    local tab = CreateTab(tabsBar, sectionTitle or ("Tab " .. id), id)
+    local tab = CreateTab(tabsBar, sectionTitle or ("Tab " .. id), id, totalTabs)
     if id == 1 then
       tab:SetPoint("LEFT", tabsBar, "LEFT", 0, 0)
     else
       tab:SetPoint("LEFT", tabs[id - 1], "RIGHT", TAB_CFG.gap, 0)
     end
 
-    if id == O.TAB_COUNT then
+    if id == totalTabs then
       local total = tabsBar:GetWidth() or 480
       local w = tab:GetWidth()
-      local used = (w + TAB_CFG.gap) * (O.TAB_COUNT - 1)
+      local used = (w + TAB_CFG.gap) * (totalTabs - 1)
       local lastW = math.max(80, total - used)
       tab:SetWidth(lastW)
     end
@@ -375,8 +376,9 @@ local function Build()
     end
   end
   ApplyTabOrder(collected)
+  local totalTabs = math.max(1, #collected)
   for _, info in ipairs(collected) do
-    AddPage(info.title, info.build)
+    AddPage(info.title, info.build, totalTabs)
   end
 
   if #pages > 0 then

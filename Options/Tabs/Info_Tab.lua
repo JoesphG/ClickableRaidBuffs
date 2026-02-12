@@ -107,7 +107,9 @@ O.RegisterSection(function(AddSection)
         .. "      |cFF00ccff/crb /buff /funki|r |cffff7d0Flock|r  -  Toggle icon lock\n"
         .. "      |cFF00ccff/crb /buff /funki|r |cffff7d0Fminimap|r  -  Toggle minimap icon\n"
         .. "      |cFF00ccff/crb /buff /funki|r |cffff7d0Freset|r  -  Reset all settings to default and reload UI\n"
-        .. "      |cFF00ccff/crb /buff /funki|r |cffff7d0Fdebug|r  -  Print hidden raid buff reasons"
+        .. "      |cFF00ccff/crb /buff /funki|r |cffff7d0Fdebug|r  -  Print hidden raid buff reasons\n"
+        .. "      |cFF00ccff/crb /buff /funki|r |cffff7d0Fexport|r  -  Export profile string\n"
+        .. "      |cFF00ccff/crb /buff /funki|r |cffff7d0Fimport|r  -  Open profile import"
     )
 
     local unlockCB = CreateFrame("CheckButton", nil, inner, "BackdropTemplate")
