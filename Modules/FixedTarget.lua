@@ -60,7 +60,7 @@ local function BuildTrackedSpellList()
     return out
   end
   for spellID, data in pairs(tbl) do
-    if type(spellID) == "number" and type(data) == "table" and data.count then
+    if type(spellID) == "number" and type(data) == "table" and data.count and data.type ~= "trinket" then
       out[spellID] = data
     end
   end

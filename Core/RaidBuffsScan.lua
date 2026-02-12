@@ -47,6 +47,27 @@ local function IsRowKnown(data, rowKey)
   end
 end
 
+local function IsItemEquipped(itemID)
+  if not itemID then
+    return false
+  end
+  local s13 = GetInventoryItemID("player", 13)
+  if s13 and s13 == itemID then
+    return true
+  end
+  local s14 = GetInventoryItemID("player", 14)
+  if s14 and s14 == itemID then
+    return true
+  end
+  if IsEquippedItem and IsEquippedItem(itemID) then
+    return true
+  end
+  if C_Item and C_Item.IsEquippedItem and C_Item.IsEquippedItem(itemID) then
+    return true
+  end
+  return false
+end
+
 local function DebugGateEval(data, playerLevel, inInstance, rested)
   local reasons = {}
   local suppressed = false
@@ -171,9 +192,15 @@ function ns.DebugRaidBuffVisibility()
   local hidden = 0
 
   for rowKey, data in pairs(classBuffs) do
-    if data and data.type ~= "trinket" then
+    if data then
       local checkID = data.isKnown ~= nil and data.isKnown or (data.spellID or rowKey)
-      if IsRowKnown(data, checkID) then
+      local include
+      if data.type == "trinket" then
+        include = IsItemEquipped(data.itemID or rowKey)
+      else
+        include = IsRowKnown(data, checkID)
+      end
+      if include then
         local reasons = {}
         local ok, gateReasons, suppressed = DebugGateEval(data, playerLevel, inInstance, rested)
         if not ok then
@@ -690,11 +717,22 @@ function scanRaidBuffs()
       entry.centerText = ""
     end
 
+    if data.type == "trinket" then
+      entry.itemID = data.itemID or rowKey
+      local tgt = (data.target == "player") and "player" or "target"
+      if tgt == "target" then
+        entry.macro = "/use [@target,help,nodead] item:" .. tostring(entry.itemID)
+      else
+        entry.macro = "/use [@player] item:" .. tostring(entry.itemID)
+      end
+    end
+
     clickableRaidBuffCache.displayable[catName][rowKey] = entry
   end
 
   for rowKey, data in pairs(classBuffs) do
-    if data and data.type ~= "trinket" then
+    if data then
+      local include
       local checkID
       if data.isKnown ~= nil then
         checkID = data.isKnown
@@ -705,7 +743,12 @@ function scanRaidBuffs()
           checkID = data.spellID or rowKey
         end
       end
-      local include = PlayerKnowsSpell(checkID)
+      if data.type == "trinket" then
+        local itemID = data.itemID or rowKey
+        include = IsItemEquipped(itemID)
+      else
+        include = PlayerKnowsSpell(checkID)
+      end
       if include and passesGates(data, playerLevel, inInstance, rested) then
         addEntry(rowKey, data, "RAID_BUFFS")
       end
