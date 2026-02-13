@@ -39,9 +39,10 @@ Core\RosterWatch.lua
 Core\MinimapButton.lua
 Core\Mover.lua
 Core\Exclusions.lua
+Core\Expansion.lua
 Core\Click.lua
 Core\GateCheck.lua
-Core\ProfileIO.lua
+# Core\ProfileIO.lua
 Core\EncourageReset.lua
 
 # --- Gates ---
@@ -120,6 +121,6 @@ Options\Tabs\Thresholds_Tab.lua
 Options\Tabs\Layout_Tab.lua
 Options\Tabs\Ignore_Tab.lua
 Options\Tabs\Customize_Tab.lua
-Options\Tabs\Profile_Tab.lua
+# Options\Tabs\Profile_Tab.lua
 
 Core\MidnightBootstrap.lua

@@ -184,6 +184,9 @@ function ns.MidnightShowError()
 end
 
 C_Timer.After(0, function()
+  if ns.ApplyExpansionMetadata then
+    ns.ApplyExpansionMetadata()
+  end
   if ns.MIDNIGHT_LIMP_MODE then
     ns.MidnightBootstrap()
   end

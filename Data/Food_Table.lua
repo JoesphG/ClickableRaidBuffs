@@ -7,6 +7,7 @@ ClickableRaidData["FOOD"] = {
   --MIDNIGHT
   [242749] = {
     name = "Hearty Crimson Calamari",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -17,6 +18,7 @@ ClickableRaidData["FOOD"] = {
   },
   [266986] = {
     name = "Hearty Quel'dorei Medley",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -27,6 +29,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242761] = {
     name = "Hearty Spellfire Filet",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -37,6 +40,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242767] = {
     name = "Hearty Hearthflame Supper",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -47,6 +51,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242770] = {
     name = "Hearty Mana-Infused Stew",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -57,6 +62,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242760] = {
     name = "Hearty Twilight Angler's Medley",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -67,6 +73,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242747] = {
     name = "Hearty Royal Roast",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -77,6 +84,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242746] = {
     name = "Hearty Champion's Bento",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -87,6 +95,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242757] = {
     name = "Hearty Warped Wise Wings",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -97,6 +106,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242763] = {
     name = "Hearty Fried Bloomtail",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -107,6 +117,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242765] = {
     name = "Hearty Sunwell Delight",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -117,6 +128,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242744] = {
     name = "Hearty Quel'dorei Medley",
+    expansionId = 11,
     icon = 4659334,
     minLevel = 90,
     topLbl = "Feast",
@@ -127,6 +139,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242772] = {
     name = "Hearty Silvermoon Standard",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -137,6 +150,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242769] = {
     name = "Hearty Bloom Skewers",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -147,6 +161,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242758] = {
     name = "Hearty Fel-Kissed Filet",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -157,6 +172,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242764] = {
     name = "Hearty Eversong Pudding",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -167,6 +183,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242775] = {
     name = "Hearty Portable Snack",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -177,6 +194,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242750] = {
     name = "Hearty Tasty Smoked Tetra",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -187,6 +205,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242754] = {
     name = "Hearty Null and Void Plate",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -197,6 +216,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242759] = {
     name = "Hearty Arcano Cutlets",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -207,6 +227,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242753] = {
     name = "Hearty Glitter Skewers",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -217,6 +238,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242774] = {
     name = "Hearty Quick Sandwich",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -227,6 +249,7 @@ ClickableRaidData["FOOD"] = {
   },
   [266985] = {
     name = "Hearty Silvermoon Parade",
+    expansionId = 11,
     icon = 1053712,
     minLevel = 90,
     topLbl = "Feast",
@@ -237,6 +260,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242768] = {
     name = "Hearty Bloodthistle-Wrapped Cutlets",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -247,6 +271,7 @@ ClickableRaidData["FOOD"] = {
   },
   [267000] = {
     name = "Hearty Flora Frenzy",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -257,6 +282,7 @@ ClickableRaidData["FOOD"] = {
   },
   [268680] = {
     name = "Hearty Flora Frenzy",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -267,6 +293,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242766] = {
     name = "Hearty Felberry Figs",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -277,6 +304,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242745] = {
     name = "Hearty Blooming Feast",
+    expansionId = 11,
     icon = 651579,
     minLevel = 90,
     topLbl = "Feast",
@@ -287,6 +315,7 @@ ClickableRaidData["FOOD"] = {
   },
   [268679] = {
     name = "Hearty Impossibly Royal Roast",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -297,6 +326,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242762] = {
     name = "Hearty Wise Tails",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -307,6 +337,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242773] = {
     name = "Hearty Forager's Medley",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -317,6 +348,7 @@ ClickableRaidData["FOOD"] = {
   },
   [266996] = {
     name = "Hearty Harandar Celebration",
+    expansionId = 11,
     icon = 7150437,
     minLevel = 90,
     topLbl = "Feast",
@@ -327,6 +359,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242748] = {
     name = "Hearty Braised Blood Hunter",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -337,6 +370,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242752] = {
     name = "Hearty Buttered Root Crab",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -347,6 +381,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242771] = {
     name = "Hearty Spiced Biscuits",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -357,6 +392,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242751] = {
     name = "Hearty Rootland Surprise",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -367,6 +403,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242755] = {
     name = "Hearty Sun-Seared Lumifin",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -377,6 +414,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242756] = {
     name = "Hearty Void-Kissed Fish Rolls",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -387,6 +425,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242776] = {
     name = "Hearty Farstrider Rations",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -398,6 +437,7 @@ ClickableRaidData["FOOD"] = {
 
   [242307] = {
     name = "Quick Sandwich",
+    expansionId = 11,
     icon = 133943,
     minLevel = 80,
     topLbl = "",
@@ -408,6 +448,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242303] = {
     name = "Mana-Infused Stew",
+    expansionId = 11,
     icon = 133943,
     minLevel = 80,
     topLbl = "",
@@ -418,6 +459,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242308] = {
     name = "Portable Snack",
+    expansionId = 11,
     icon = 133943,
     minLevel = 80,
     topLbl = "",
@@ -428,6 +470,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242305] = {
     name = "Silvermoon Standard",
+    expansionId = 11,
     icon = 133943,
     minLevel = 80,
     topLbl = "",
@@ -438,6 +481,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242306] = {
     name = "Forager's Medley",
+    expansionId = 11,
     icon = 133943,
     minLevel = 80,
     topLbl = "",
@@ -448,6 +492,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242309] = {
     name = "Farstrider Rations",
+    expansionId = 11,
     icon = 133943,
     minLevel = 80,
     topLbl = "",
@@ -458,6 +503,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242304] = {
     name = "Spiced Biscuits",
+    expansionId = 11,
     icon = 133943,
     minLevel = 80,
     topLbl = "",
@@ -468,6 +514,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242302] = {
     name = "Bloom Skewers",
+    expansionId = 11,
     icon = 133943,
     minLevel = 80,
     topLbl = "",
@@ -478,6 +525,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242295] = {
     name = "Hearthflame Supper",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -488,6 +536,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242290] = {
     name = "Wise Tails",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -498,6 +547,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242291] = {
     name = "Fried Bloomtail",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -508,6 +558,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242292] = {
     name = "Eversong Pudding",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -518,6 +569,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242289] = {
     name = "Spellfire Filet",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -528,6 +580,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242293] = {
     name = "Sunwell Delight",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -538,6 +591,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242288] = {
     name = "Twilight Angler's Medley",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -548,6 +602,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242296] = {
     name = "Bloodthistle-wrapped Cutlets",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -558,6 +613,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242294] = {
     name = "Felberry Figs",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -568,6 +624,7 @@ ClickableRaidData["FOOD"] = {
   },
   [255846] = {
     name = "Harandar Celebration",
+    expansionId = 11,
     icon = 7150437,
     minLevel = 90,
     topLbl = "",
@@ -578,6 +635,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242287] = {
     name = "Arcano Cutlets",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -588,6 +646,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242286] = {
     name = "Fel-Kissed Filet",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -598,6 +657,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242282] = {
     name = "Null and Void Plate",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -608,6 +668,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242284] = {
     name = "Void-Kissed Fish Rolls",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -618,6 +679,7 @@ ClickableRaidData["FOOD"] = {
   },
   [255848] = {
     name = "Flora Frenzy",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -628,6 +690,7 @@ ClickableRaidData["FOOD"] = {
   },
   [255847] = {
     name = "Impossibly Royal Roast",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -638,6 +701,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242281] = {
     name = "Glitter Skewers",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -648,6 +712,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242275] = {
     name = "Royal Roast",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -658,6 +723,7 @@ ClickableRaidData["FOOD"] = {
   },
   [255845] = {
     name = "Silvermoon Parade",
+    expansionId = 11,
     icon = 1053712,
     minLevel = 90,
     topLbl = "",
@@ -668,6 +734,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242280] = {
     name = "Buttered Root Crab",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -678,6 +745,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242276] = {
     name = "Braised Blood Hunter",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -688,6 +756,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242272] = {
     name = "Quel'dorei Medley",
+    expansionId = 11,
     icon = 4659334,
     minLevel = 90,
     topLbl = "",
@@ -698,6 +767,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242273] = {
     name = "Blooming Feast",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -708,6 +778,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242285] = {
     name = "Warped Wise Wings",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -718,6 +789,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242278] = {
     name = "Tasty Smoked Tetra",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -728,6 +800,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242277] = {
     name = "Crimson Calamari",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -738,6 +811,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242274] = {
     name = "Champion's Bento",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -748,6 +822,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242283] = {
     name = "Sun-Seared Lumifin",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -758,6 +833,7 @@ ClickableRaidData["FOOD"] = {
   },
   [242279] = {
     name = "Baked Lucky Loa",
+    expansionId = 11,
     icon = 133943,
     minLevel = 90,
     topLbl = "",
@@ -770,6 +846,7 @@ ClickableRaidData["FOOD"] = {
   --THE WAR WITHIN
   [222781] = {
     name = "[TWW] Hearty Feast of the Midnight Masquerade",
+    expansionId = 10,
     icon = 5793729,
     minLevel = 68,
     topLbl = "Feast",
@@ -780,6 +857,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222780] = {
     name = "[TWW] Hearty Feast of the Divine Day",
+    expansionId = 10,
     icon = 5793728,
     minLevel = 68,
     topLbl = "Feast",
@@ -790,6 +868,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222753] = {
     name = "[TWW] Hearty Roasted Mycobloom",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -800,6 +879,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222751] = {
     name = "[TWW] Hearty Simple Stew",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -810,6 +890,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222750] = {
     name = "[TWW] Hearty Skewered Fillet",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -820,6 +901,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222752] = {
     name = "[TWW] Hearty Unseasoned Field Steak",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -830,6 +912,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222756] = {
     name = "[TWW] Hearty Coreway Kabob",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -840,6 +923,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222757] = {
     name = "[TWW] Hearty Flashfire Fillet",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -850,6 +934,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222755] = {
     name = "[TWW] Hearty Hallowfall Chili",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -860,6 +945,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222754] = {
     name = "[TWW] Hearty Pan Seared Mycobloom",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -870,6 +956,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222784] = {
     name = "[TWW] Hearty Chippy Tea",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "M / H",
@@ -880,6 +967,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222766] = {
     name = "[TWW] Hearty Deepfin Patty",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H / C",
@@ -890,6 +978,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222763] = {
     name = "[TWW] Hearty Fiery Fish Sticks",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Crit",
@@ -900,6 +989,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222769] = {
     name = "[TWW] Hearty Fish and Chips",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "C / V",
@@ -910,6 +1000,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222764] = {
     name = "[TWW] Hearty Ginger Glazed Fillet",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Vers",
@@ -920,6 +1011,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222771] = {
     name = "[TWW] Hearty Marinated Tenderloins",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "M / V",
@@ -930,6 +1022,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222758] = {
     name = "[TWW] Hearty Meat and Potatoes",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Str",
@@ -940,6 +1033,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222759] = {
     name = "[TWW] Hearty Rib Stickers",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Agi",
@@ -950,6 +1044,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222770] = {
     name = "[TWW] Hearty Salt Baked Seafood",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "M / C",
@@ -960,6 +1055,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222765] = {
     name = "[TWW] Hearty Salty Dog",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Mast",
@@ -970,6 +1066,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222760] = {
     name = "[TWW] Hearty Sweet and Sour Meatballs",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Int",
@@ -980,6 +1077,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222767] = {
     name = "[TWW] Hearty Sweet and Spicy Soup",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H / V",
@@ -990,6 +1088,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222761] = {
     name = "[TWW] Hearty Tender Twilight Jerky",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Stam",
@@ -1000,6 +1099,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222762] = {
     name = "[TWW] Hearty Zesty Nibblers",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Haste",
@@ -1010,6 +1110,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222775] = {
     name = "[TWW] Hearty Angler's Delight",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Stam",
@@ -1020,6 +1121,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222773] = {
     name = "[TWW] Hearty Mycobloom Risotto",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Agi",
@@ -1030,6 +1132,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222772] = {
     name = "[TWW] Hearty Sizzling Honey Roast",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Str",
@@ -1040,6 +1143,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222774] = {
     name = "[TWW] Hearty Stuffed Cave Peppers",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Int",
@@ -1050,6 +1154,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222776] = {
     name = "[TWW] Hearty Beledar's Bounty",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H Stat",
@@ -1060,6 +1165,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222777] = {
     name = "[TWW] Hearty Empress' Farewell",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H Stat",
@@ -1070,6 +1176,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222778] = {
     name = "[TWW] Hearty Jester's Board",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H Stat",
@@ -1080,6 +1187,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222779] = {
     name = "[TWW] Hearty Outsider's Provisions",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H Stat",
@@ -1090,6 +1198,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222783] = {
     name = "[TWW] Hearty Everything Stew",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -1100,6 +1209,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222768] = {
     name = "[TWW] Hearty Sushi Special",
+    expansionId = 10,
     icon = 1053713,
     minLevel = 68,
     topLbl = "H Stat Feast",
@@ -1110,6 +1220,7 @@ ClickableRaidData["FOOD"] = {
   },
   [235853] = {
     name = "[TWW] Hearty Authentic Undermine Clam Chowder",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H Stat",
@@ -1121,6 +1232,7 @@ ClickableRaidData["FOOD"] = {
 
   [222733] = {
     name = "[TWW] Feast of the Midnight Masquerade",
+    expansionId = 10,
     icon = 5793729,
     minLevel = 68,
     topLbl = "Feast",
@@ -1131,6 +1243,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222732] = {
     name = "[TWW] Feast of the Divine Day",
+    expansionId = 10,
     icon = 5793728,
     minLevel = 68,
     topLbl = "Feast",
@@ -1141,6 +1254,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222705] = {
     name = "[TWW] Roasted Mycobloom",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -1151,6 +1265,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222703] = {
     name = "[TWW] Simple Stew",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -1161,6 +1276,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222702] = {
     name = "[TWW] Skewered Fillet",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -1171,6 +1287,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222704] = {
     name = "[TWW] Unseasoned Field Steak",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -1181,6 +1298,7 @@ ClickableRaidData["FOOD"] = {
   },
   [223968] = {
     name = "[TWW] Spongey Scramble",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -1191,6 +1309,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222708] = {
     name = "[TWW] Coreway Kabob",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -1201,6 +1320,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222709] = {
     name = "[TWW] Flashfire Fillet",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -1211,6 +1331,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222707] = {
     name = "[TWW] Hallowfall Chili",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -1221,6 +1342,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222706] = {
     name = "[TWW] Pan Seared Mycobloom",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -1231,6 +1353,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222736] = {
     name = "[TWW] Chippy Tea",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "M / H",
@@ -1241,6 +1364,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222718] = {
     name = "[TWW] Deepfin Patty",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H / C",
@@ -1251,6 +1375,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222715] = {
     name = "[TWW] Fiery Fish Sticks",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Crit",
@@ -1261,6 +1386,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222721] = {
     name = "[TWW] Fish and Chips",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "C / V",
@@ -1271,6 +1397,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222716] = {
     name = "[TWW] Ginger Glazed Fillet",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Vers",
@@ -1281,6 +1408,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222723] = {
     name = "[TWW] Marinated Tenderloins",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "M / V",
@@ -1291,6 +1419,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222710] = {
     name = "[TWW] Meat and Potatoes",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Str",
@@ -1301,6 +1430,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222711] = {
     name = "[TWW] Rib Stickers",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Agi",
@@ -1311,6 +1441,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222722] = {
     name = "[TWW] Salt Baked Seafood",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "M / C",
@@ -1321,6 +1452,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222717] = {
     name = "[TWW] Salty Dog",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Mast",
@@ -1331,6 +1463,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222712] = {
     name = "[TWW] Sweet and Sour Meatballs",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Int",
@@ -1341,6 +1474,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222719] = {
     name = "[TWW] Sweet and Spicy Soup",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H / V",
@@ -1351,6 +1485,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222713] = {
     name = "[TWW] Tender Twilight Jerky",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Stam",
@@ -1361,6 +1496,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222714] = {
     name = "[TWW] Zesty Nibblers",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Haste",
@@ -1371,6 +1507,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222727] = {
     name = "[TWW] Angler's Delight",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Stam",
@@ -1381,6 +1518,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222725] = {
     name = "[TWW] Mycobloom Risotto",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Agi",
@@ -1391,6 +1529,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222724] = {
     name = "[TWW] Sizzling Honey Roast",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Str",
@@ -1401,6 +1540,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222726] = {
     name = "[TWW] Stuffed Cave Peppers",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Int",
@@ -1411,6 +1551,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222728] = {
     name = "[TWW] Beledar's Bounty",
+    expansionId = 10,
     icon = 133943,
     minLevel = 80,
     topLbl = "H Stat",
@@ -1421,6 +1562,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222729] = {
     name = "[TWW] Empress' Farewell",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H Stat",
@@ -1431,6 +1573,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222730] = {
     name = "[TWW] Jester's Board",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H Stat",
@@ -1441,6 +1584,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222731] = {
     name = "[TWW] Outsider's Provisions",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H Stat",
@@ -1451,6 +1595,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222735] = {
     name = "[TWW] Everything Stew",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat",
@@ -1461,6 +1606,7 @@ ClickableRaidData["FOOD"] = {
   },
   [222720] = {
     name = "[TWW] The Sushi Special",
+    expansionId = 10,
     icon = 1053713,
     minLevel = 68,
     topLbl = "H Stat Feast",
@@ -1471,6 +1617,7 @@ ClickableRaidData["FOOD"] = {
   },
   [223967] = {
     name = "[TWW] Protein Slurp",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "L Stat / Size",
@@ -1481,6 +1628,7 @@ ClickableRaidData["FOOD"] = {
   },
   [223966] = {
     name = "[TWW] Everything-On-A-Stick",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "Random",
@@ -1491,6 +1639,7 @@ ClickableRaidData["FOOD"] = {
   },
   [225592] = {
     name = "[TWW] Exquisitely Eviscerated Muscle",
+    expansionId = 10,
     icon = 133943,
     minLevel = 75,
     topLbl = "Speed",
@@ -1501,6 +1650,7 @@ ClickableRaidData["FOOD"] = {
   },
   [235805] = {
     name = "[TWW] Authentic Undermine Clam Chowder",
+    expansionId = 10,
     icon = 133943,
     minLevel = 68,
     topLbl = "H Stat",

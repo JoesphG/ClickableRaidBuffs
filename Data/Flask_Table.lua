@@ -8,6 +8,7 @@ ClickableRaidData["FLASK"] = {
 
   [241322] = {
     name = "Flask of the Magisters",
+    expansionId = 11,
     icon = 7548902,
     minLevel = 81,
     topLbl = "Mast",
@@ -20,6 +21,7 @@ ClickableRaidData["FLASK"] = {
   },
   [241324] = {
     name = "Flask of the Blood Knights",
+    expansionId = 11,
     icon = 7548904,
     minLevel = 81,
     topLbl = "Haste",
@@ -32,6 +34,7 @@ ClickableRaidData["FLASK"] = {
   },
   [241326] = {
     name = "Flask of the Shattered Sun",
+    expansionId = 11,
     icon = 7548903,
     minLevel = 81,
     topLbl = "Crit",
@@ -44,6 +47,7 @@ ClickableRaidData["FLASK"] = {
   },
   [241320] = {
     name = "Flask of Thalassian Resistance",
+    expansionId = 11,
     icon = 7548905,
     minLevel = 81,
     topLbl = "Vers",
@@ -57,6 +61,7 @@ ClickableRaidData["FLASK"] = {
 
   [241323] = {
     name = "Flask of the Magisters",
+    expansionId = 11,
     icon = 7548902,
     minLevel = 81,
     topLbl = "Mast",
@@ -69,6 +74,7 @@ ClickableRaidData["FLASK"] = {
   },
   [241325] = {
     name = "Flask of the Blood Knights",
+    expansionId = 11,
     icon = 7548904,
     minLevel = 81,
     topLbl = "Haste",
@@ -81,6 +87,7 @@ ClickableRaidData["FLASK"] = {
   },
   [241327] = {
     name = "Flask of the Shattered Sun",
+    expansionId = 11,
     icon = 7548903,
     minLevel = 81,
     topLbl = "Crit",
@@ -93,6 +100,7 @@ ClickableRaidData["FLASK"] = {
   },
   [241321] = {
     name = "Flask of Thalassian Resistance",
+    expansionId = 11,
     icon = 7548905,
     minLevel = 81,
     topLbl = "Vers",
@@ -106,6 +114,7 @@ ClickableRaidData["FLASK"] = {
 
   [245933] = {
     name = "Fleeting Flask of the Magisters",
+    expansionId = 11,
     icon = 7548902,
     minLevel = 81,
     topLbl = "Mast",
@@ -118,6 +127,7 @@ ClickableRaidData["FLASK"] = {
   },
   [245931] = {
     name = "Fleeting Flask of the Blood Knights",
+    expansionId = 11,
     icon = 7548904,
     minLevel = 81,
     topLbl = "Haste",
@@ -130,6 +140,7 @@ ClickableRaidData["FLASK"] = {
   },
   [245929] = {
     name = "Fleeting Flask of the Shattered Sun",
+    expansionId = 11,
     icon = 7548903,
     minLevel = 81,
     topLbl = "Crit",
@@ -142,6 +153,7 @@ ClickableRaidData["FLASK"] = {
   },
   [245926] = {
     name = "Fleeting Flask of Thalassian Resistance",
+    expansionId = 11,
     icon = 7548905,
     minLevel = 81,
     topLbl = "Vers",
@@ -155,6 +167,7 @@ ClickableRaidData["FLASK"] = {
 
   [245932] = {
     name = "Fleeting Flask of the Magisters",
+    expansionId = 11,
     icon = 7548902,
     minLevel = 81,
     topLbl = "Mast",
@@ -167,6 +180,7 @@ ClickableRaidData["FLASK"] = {
   },
   [245930] = {
     name = "Fleeting Flask of the Blood Knights",
+    expansionId = 11,
     icon = 7548904,
     minLevel = 81,
     topLbl = "Haste",
@@ -179,6 +193,7 @@ ClickableRaidData["FLASK"] = {
   },
   [245928] = {
     name = "Fleeting Flask of the Shattered Sun",
+    expansionId = 11,
     icon = 7548903,
     minLevel = 81,
     topLbl = "Crit",
@@ -191,6 +206,7 @@ ClickableRaidData["FLASK"] = {
   },
   [245927] = {
     name = "Fleeting Flask of Thalassian Resistance",
+    expansionId = 11,
     icon = 7548905,
     minLevel = 81,
     topLbl = "Vers",
@@ -205,6 +221,7 @@ ClickableRaidData["FLASK"] = {
   --TWW
   [212747] = {
     name = "[TWW] Fleeting Flask of Saving Graces",
+    expansionId = 10,
     icon = 609901,
     minLevel = 71,
     topLbl = "Heal",
@@ -217,6 +234,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212746] = {
     name = "[TWW] Fleeting Flask of Saving Graces",
+    expansionId = 10,
     icon = 609901,
     minLevel = 71,
     topLbl = "Heal",
@@ -229,6 +247,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212745] = {
     name = "[TWW] Fleeting Flask of Saving Graces",
+    expansionId = 10,
     icon = 609901,
     minLevel = 71,
     topLbl = "Heal",
@@ -241,6 +260,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212301] = {
     name = "[TWW] Flask of Saving Graces",
+    expansionId = 10,
     icon = 609901,
     minLevel = 71,
     topLbl = "Heal",
@@ -253,6 +273,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212300] = {
     name = "[TWW] Flask of Saving Graces",
+    expansionId = 10,
     icon = 609901,
     minLevel = 71,
     topLbl = "Heal",
@@ -265,6 +286,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212299] = {
     name = "[TWW] Flask of Saving Graces",
+    expansionId = 10,
     icon = 609901,
     minLevel = 71,
     topLbl = "Heal",
@@ -278,6 +300,7 @@ ClickableRaidData["FLASK"] = {
 
   [212741] = {
     name = "[TWW] Fleeting Flask of Alchemical Chaos",
+    expansionId = 10,
     icon = 5931173,
     minLevel = 71,
     topLbl = "Chaos",
@@ -290,6 +313,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212740] = {
     name = "[TWW] Fleeting Flask of Alchemical Chaos",
+    expansionId = 10,
     icon = 5931173,
     minLevel = 71,
     topLbl = "Chaos",
@@ -302,6 +326,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212739] = {
     name = "[TWW] Fleeting Flask of Alchemical Chaos",
+    expansionId = 10,
     icon = 5931173,
     minLevel = 71,
     topLbl = "Chaos",
@@ -314,6 +339,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212283] = {
     name = "[TWW] Flask of Alchemical Chaos",
+    expansionId = 10,
     icon = 5931173,
     minLevel = 71,
     topLbl = "Chaos",
@@ -326,6 +352,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212282] = {
     name = "[TWW] Flask of Alchemical Chaos",
+    expansionId = 10,
     icon = 5931173,
     minLevel = 71,
     topLbl = "Chaos",
@@ -338,6 +365,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212281] = {
     name = "[TWW] Flask of Alchemical Chaos",
+    expansionId = 10,
     icon = 5931173,
     minLevel = 71,
     topLbl = "Chaos",
@@ -351,6 +379,7 @@ ClickableRaidData["FLASK"] = {
 
   [212738] = {
     name = "[TWW] Fleeting Flask of Tempered Mastery",
+    expansionId = 10,
     icon = 5931174,
     minLevel = 71,
     topLbl = "Mast",
@@ -363,6 +392,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212736] = {
     name = "[TWW] Fleeting Flask of Tempered Mastery",
+    expansionId = 10,
     icon = 5931174,
     minLevel = 71,
     topLbl = "Mast",
@@ -375,6 +405,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212735] = {
     name = "[TWW] Fleeting Flask of Tempered Mastery",
+    expansionId = 10,
     icon = 5931174,
     minLevel = 71,
     topLbl = "Mast",
@@ -387,6 +418,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212280] = {
     name = "[TWW] Flask of Tempered Mastery",
+    expansionId = 10,
     icon = 5931174,
     minLevel = 71,
     topLbl = "Mast",
@@ -399,6 +431,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212279] = {
     name = "[TWW] Flask of Tempered Mastery",
+    expansionId = 10,
     icon = 5931174,
     minLevel = 71,
     topLbl = "Mast",
@@ -411,6 +444,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212278] = {
     name = "[TWW] Flask of Tempered Mastery",
+    expansionId = 10,
     icon = 5931174,
     minLevel = 71,
     topLbl = "Mast",
@@ -424,6 +458,7 @@ ClickableRaidData["FLASK"] = {
 
   [212734] = {
     name = "[TWW] Fleeting Flask of Tempered Versatility",
+    expansionId = 10,
     icon = 5931170,
     minLevel = 71,
     topLbl = "Vers",
@@ -436,6 +471,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212733] = {
     name = "[TWW] Fleeting Flask of Tempered Versatility",
+    expansionId = 10,
     icon = 5931170,
     minLevel = 71,
     topLbl = "Vers",
@@ -448,6 +484,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212732] = {
     name = "[TWW] Fleeting Flask of Tempered Versatility",
+    expansionId = 10,
     icon = 5931170,
     minLevel = 71,
     topLbl = "Vers",
@@ -460,6 +497,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212277] = {
     name = "[TWW] Flask of Tempered Versatility",
+    expansionId = 10,
     icon = 5931170,
     minLevel = 71,
     topLbl = "Vers",
@@ -472,6 +510,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212276] = {
     name = "[TWW] Flask of Tempered Versatility",
+    expansionId = 10,
     icon = 5931170,
     minLevel = 71,
     topLbl = "Vers",
@@ -484,6 +523,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212275] = {
     name = "[TWW] Flask of Tempered Versatility",
+    expansionId = 10,
     icon = 5931170,
     minLevel = 71,
     topLbl = "Vers",
@@ -497,6 +537,7 @@ ClickableRaidData["FLASK"] = {
 
   [212731] = {
     name = "[TWW] Fleeting Flask of Tempered Swiftness",
+    expansionId = 10,
     icon = 5931172,
     minLevel = 71,
     topLbl = "Haste",
@@ -509,6 +550,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212730] = {
     name = "[TWW] Fleeting Flask of Tempered Swiftness",
+    expansionId = 10,
     icon = 5931172,
     minLevel = 71,
     topLbl = "Haste",
@@ -521,6 +563,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212729] = {
     name = "[TWW] Fleeting Flask of Tempered Swiftness",
+    expansionId = 10,
     icon = 5931172,
     minLevel = 71,
     topLbl = "Haste",
@@ -533,6 +576,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212274] = {
     name = "[TWW] Flask of Tempered Swiftness",
+    expansionId = 10,
     icon = 5931172,
     minLevel = 71,
     topLbl = "Haste",
@@ -545,6 +589,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212273] = {
     name = "[TWW] Flask of Tempered Swiftness",
+    expansionId = 10,
     icon = 5931172,
     minLevel = 71,
     topLbl = "Haste",
@@ -557,6 +602,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212272] = {
     name = "[TWW] Flask of Tempered Swiftness",
+    expansionId = 10,
     icon = 5931172,
     minLevel = 71,
     topLbl = "Haste",
@@ -570,6 +616,7 @@ ClickableRaidData["FLASK"] = {
 
   [212728] = {
     name = "[TWW] Fleeting Flask of Tempered Aggression",
+    expansionId = 10,
     icon = 5931175,
     minLevel = 71,
     topLbl = "Crit",
@@ -582,6 +629,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212727] = {
     name = "[TWW] Fleeting Flask of Tempered Aggression",
+    expansionId = 10,
     icon = 5931175,
     minLevel = 71,
     topLbl = "Crit",
@@ -594,6 +642,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212725] = {
     name = "[TWW] Fleeting Flask of Tempered Aggression",
+    expansionId = 10,
     icon = 5931175,
     minLevel = 71,
     topLbl = "Crit",
@@ -606,6 +655,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212271] = {
     name = "[TWW] Flask of Tempered Aggression",
+    expansionId = 10,
     icon = 5931175,
     minLevel = 71,
     topLbl = "Crit",
@@ -618,6 +668,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212270] = {
     name = "[TWW] Flask of Tempered Aggression",
+    expansionId = 10,
     icon = 5931175,
     minLevel = 71,
     topLbl = "Crit",
@@ -630,6 +681,7 @@ ClickableRaidData["FLASK"] = {
   },
   [212269] = {
     name = "[TWW] Flask of Tempered Aggression",
+    expansionId = 10,
     icon = 5931175,
     minLevel = 71,
     topLbl = "Crit",

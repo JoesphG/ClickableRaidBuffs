@@ -7,6 +7,7 @@ ClickableRaidData["OFF_HAND"] = {
   --Midnight
   [237367] = {
     name = "Refulgent Weightstone",
+    expansionId = 11,
     weaponType = "BLUNT",
     dual = true,
     rank = 121,
@@ -17,6 +18,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [237369] = {
     name = "Refulgent Weightstone",
+    expansionId = 11,
     weaponType = "BLUNT",
     dual = true,
     rank = 122,
@@ -28,6 +30,7 @@ ClickableRaidData["OFF_HAND"] = {
 
   [237370] = {
     name = "Refulgent Whetstone",
+    expansionId = 11,
     weaponType = "BLADED",
     dual = true,
     rank = 121,
@@ -38,6 +41,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [237371] = {
     name = "Refulgent Whetstone",
+    expansionId = 11,
     weaponType = "BLADED",
     dual = true,
     rank = 122,
@@ -49,6 +53,7 @@ ClickableRaidData["OFF_HAND"] = {
 
   [257749] = {
     name = "Laced Zoomshots",
+    expansionId = 11,
     weaponType = "RANGED",
     dual = false,
     rank = 121,
@@ -59,6 +64,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [257750] = {
     name = "Laced Zoomshots",
+    expansionId = 11,
     weaponType = "RANGED",
     dual = false,
     rank = 122,
@@ -70,6 +76,7 @@ ClickableRaidData["OFF_HAND"] = {
 
   [257751] = {
     name = "Weighted Boomshots",
+    expansionId = 11,
     weaponType = "RANGED",
     dual = false,
     rank = 121,
@@ -80,6 +87,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [257752] = {
     name = "Weighted Boomshots",
+    expansionId = 11,
     weaponType = "RANGED",
     dual = false,
     rank = 122,
@@ -91,6 +99,7 @@ ClickableRaidData["OFF_HAND"] = {
 
   [243733] = {
     name = "Thalassian Phoenix Oil",
+    expansionId = 11,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 121,
@@ -101,6 +110,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [243734] = {
     name = "Thalassian Phoenix Oil",
+    expansionId = 11,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 122,
@@ -112,6 +122,7 @@ ClickableRaidData["OFF_HAND"] = {
 
   [243735] = {
     name = "Oil of Dawn",
+    expansionId = 11,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 121,
@@ -122,6 +133,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [243736] = {
     name = "Oil of Dawn",
+    expansionId = 11,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 122,
@@ -133,6 +145,7 @@ ClickableRaidData["OFF_HAND"] = {
 
   [243737] = {
     name = "Smuggler's Enchanted Edge",
+    expansionId = 11,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 121,
@@ -143,6 +156,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [243738] = {
     name = "Smuggler's Enchanted Edge",
+    expansionId = 11,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 122,
@@ -155,6 +169,7 @@ ClickableRaidData["OFF_HAND"] = {
   --TWW
   [222504] = {
     name = "[TWW] Ironclaw Whetstone",
+    expansionId = 10,
     weaponType = "BLADED",
     dual = true,
     rank = 3,
@@ -165,6 +180,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [222503] = {
     name = "[TWW] Ironclaw Whetstone",
+    expansionId = 10,
     weaponType = "BLADED",
     dual = true,
     rank = 2,
@@ -175,6 +191,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [222502] = {
     name = "[TWW] Ironclaw Whetstone",
+    expansionId = 10,
     weaponType = "BLADED",
     dual = true,
     rank = 1,
@@ -186,6 +203,7 @@ ClickableRaidData["OFF_HAND"] = {
 
   [222510] = {
     name = "[TWW] Ironclaw Weightstone",
+    expansionId = 10,
     weaponType = "BLUNT",
     dual = true,
     rank = 3,
@@ -196,6 +214,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [222509] = {
     name = "[TWW] Ironclaw Weightstone",
+    expansionId = 10,
     weaponType = "BLUNT",
     dual = true,
     rank = 2,
@@ -206,6 +225,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [222508] = {
     name = "[TWW] Ironclaw Weightstone",
+    expansionId = 10,
     weaponType = "BLUNT",
     dual = true,
     rank = 1,
@@ -217,6 +237,7 @@ ClickableRaidData["OFF_HAND"] = {
 
   [224107] = {
     name = "[TWW] Algari Mana Oil",
+    expansionId = 10,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 3,
@@ -227,6 +248,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [224106] = {
     name = "[TWW] Algari Mana Oil",
+    expansionId = 10,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 2,
@@ -237,6 +259,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [224105] = {
     name = "[TWW] Algari Mana Oil",
+    expansionId = 10,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 1,
@@ -248,6 +271,7 @@ ClickableRaidData["OFF_HAND"] = {
 
   [224113] = {
     name = "[TWW] Oil of Deep Toxins",
+    expansionId = 10,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 3,
@@ -258,6 +282,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [224112] = {
     name = "[TWW] Oil of Deep Toxins",
+    expansionId = 10,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 2,
@@ -268,6 +293,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [224111] = {
     name = "[TWW] Oil of Deep Toxins",
+    expansionId = 10,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 1,
@@ -279,6 +305,7 @@ ClickableRaidData["OFF_HAND"] = {
 
   [224110] = {
     name = "[TWW] Oil of Beledar's Grace",
+    expansionId = 10,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 3,
@@ -289,6 +316,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [224109] = {
     name = "[TWW] Oil of Beledar's Grace",
+    expansionId = 10,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 2,
@@ -299,6 +327,7 @@ ClickableRaidData["OFF_HAND"] = {
   },
   [224108] = {
     name = "[TWW] Oil of Beledar's Grace",
+    expansionId = 10,
     weaponType = "NEUTRAL",
     dual = true,
     rank = 1,
@@ -310,6 +339,7 @@ ClickableRaidData["OFF_HAND"] = {
 
   [220156] = {
     name = "[TWW] Bubbling Wax",
+    expansionId = 10,
     weaponType = "NEUTRAL",
     dual = true,
     rank = nil,

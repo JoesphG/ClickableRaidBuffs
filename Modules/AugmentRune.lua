@@ -132,6 +132,9 @@ local function rebuildAugmentRune()
       if not data then
         break
       end
+      if ns.IsExpansionEnabled and not ns.IsExpansionEnabled(data.expansionId) then
+        break
+      end
       if not passesGates(data.gates) then
         break
       end

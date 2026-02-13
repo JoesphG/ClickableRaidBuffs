@@ -419,37 +419,49 @@ function scanAllBags()
 
   for itemID in pairs(seen) do
     local qty = count[itemID] or 0
-    if FOOD and FOOD[itemID] then
-      UpsertFoodOrFlask("FOOD", itemID, FOOD[itemID], qty, wfExpire, flaskExpire, playerLevel, inInstance, rested)
+    local foodRow = FOOD and FOOD[itemID]
+    if foodRow and (not ns.IsExpansionEnabled or ns.IsExpansionEnabled(foodRow.expansionId)) then
+      UpsertFoodOrFlask("FOOD", itemID, foodRow, qty, wfExpire, flaskExpire, playerLevel, inInstance, rested)
       touched.FOOD[itemID] = true
     end
-    if FLASK and FLASK[itemID] then
-      UpsertFoodOrFlask("FLASK", itemID, FLASK[itemID], qty, wfExpire, flaskExpire, playerLevel, inInstance, rested)
+    local flaskRow = FLASK and FLASK[itemID]
+    if flaskRow and (not ns.IsExpansionEnabled or ns.IsExpansionEnabled(flaskRow.expansionId)) then
+      UpsertFoodOrFlask("FLASK", itemID, flaskRow, qty, wfExpire, flaskExpire, playerLevel, inInstance, rested)
       touched.FLASK[itemID] = true
     end
-    if MH and MH[itemID] then
-      UpsertWeaponEnchant("MAIN_HAND", itemID, MH[itemID], "mainHand", qty, playerLevel, inInstance, rested)
+    local mhRow = MH and MH[itemID]
+    if mhRow and (not ns.IsExpansionEnabled or ns.IsExpansionEnabled(mhRow.expansionId)) then
+      UpsertWeaponEnchant("MAIN_HAND", itemID, mhRow, "mainHand", qty, playerLevel, inInstance, rested)
       touched.MAIN_HAND[itemID] = true
     end
-    if OH and OH[itemID] then
-      UpsertWeaponEnchant("OFF_HAND", itemID, OH[itemID], "offHand", qty, playerLevel, inInstance, rested)
+    local ohRow = OH and OH[itemID]
+    if ohRow and (not ns.IsExpansionEnabled or ns.IsExpansionEnabled(ohRow.expansionId)) then
+      UpsertWeaponEnchant("OFF_HAND", itemID, ohRow, "offHand", qty, playerLevel, inInstance, rested)
       touched.OFF_HAND[itemID] = true
     end
   end
 
   local disp = clickableRaidBuffCache.displayable
+  local sourceByCat = { FOOD = FOOD, FLASK = FLASK, MAIN_HAND = MH, OFF_HAND = OH }
   for cat, mark in pairs(touched) do
     local map = disp[cat]
     if map then
       for itemID, entry in pairs(map) do
         if not mark[itemID] and not (ns.IsExcluded and ns.IsExcluded(itemID)) then
-          local qty = count[itemID]
-          if qty == nil then
-            qty = C_Item.GetItemCount(itemID, false, false, false, false) or 0
-          end
-          if qty <= 0 then
+          local src = sourceByCat[cat]
+          local row = src and src[itemID]
+          if row and ns.IsExpansionEnabled and not ns.IsExpansionEnabled(row.expansionId) then
             map[itemID] = nil
             Release(cat, entry)
+          else
+            local qty = count[itemID]
+            if qty == nil then
+              qty = C_Item.GetItemCount(itemID, false, false, false, false) or 0
+            end
+            if qty <= 0 then
+              map[itemID] = nil
+              Release(cat, entry)
+            end
           end
         end
       end

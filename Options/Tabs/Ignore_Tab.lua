@@ -284,7 +284,17 @@ local function flattenItems(src)
       local name = (type(v) == "table" and v.name) or tostring(v)
       local rank = (type(v) == "table" and v.rank) or nil
       local icon = (type(v) == "table" and v.icon) or select(1, GetItemIconSafe(id))
-      items[#items + 1] = { id = id, isItem = true, name = name, rank = rank, icon = icon }
+      local expansionId = (type(v) == "table" and tonumber(v.expansionId)) or nil
+      if not ns.IsExpansionEnabled or ns.IsExpansionEnabled(expansionId) then
+        items[#items + 1] = {
+          id = id,
+          isItem = true,
+          name = name,
+          rank = rank,
+          icon = icon,
+          expansionId = expansionId,
+        }
+      end
     end
   end
   sortItems(items)
@@ -1103,18 +1113,21 @@ O.RegisterSection(function(AddSection)
               name = (type(v) == "table" and v.name) or tostring(v),
               rank = (type(v) == "table" and v.rank) or nil,
               icon = (type(v) == "table" and v.icon) or select(1, GetItemIconSafe(id)),
+              expansionId = (type(v) == "table" and tonumber(v.expansionId)) or nil,
             }
-            local heartyFlag = false
-            if type(v) == "table" then
-              heartyFlag = (v.hearty == true)
-                or (type(v.topLbl) == "string" and v.topLbl:lower():find("hearty", 1, true))
-                or (type(v.btmLbl) == "string" and v.btmLbl:lower():find("hearty", 1, true))
-                or (v.foodType == "hearty" or v.kind == "hearty")
-            end
-            if heartyFlag then
-              hearty[#hearty + 1] = entry
-            else
-              plain[#plain + 1] = entry
+            if not ns.IsExpansionEnabled or ns.IsExpansionEnabled(entry.expansionId) then
+              local heartyFlag = false
+              if type(v) == "table" then
+                heartyFlag = (v.hearty == true)
+                  or (type(v.topLbl) == "string" and v.topLbl:lower():find("hearty", 1, true))
+                  or (type(v.btmLbl) == "string" and v.btmLbl:lower():find("hearty", 1, true))
+                  or (v.foodType == "hearty" or v.kind == "hearty")
+              end
+              if heartyFlag then
+                hearty[#hearty + 1] = entry
+              else
+                plain[#plain + 1] = entry
+              end
             end
           end
         end
@@ -1135,18 +1148,29 @@ O.RegisterSection(function(AddSection)
             local name = (type(v) == "table" and v.name) or tostring(v)
             local rank = (type(v) == "table" and v.rank) or nil
             local icon = (type(v) == "table" and v.icon) or select(1, GetItemIconSafe(id))
-            local isFleeting = false
-            if type(v) == "table" then
-              isFleeting = (v.fleeting == true)
-                or (type(v.topLbl) == "string" and v.topLbl:lower():find("fleeting", 1, true))
-                or (type(v.btmLbl) == "string" and v.btmLbl:lower():find("fleeting", 1, true))
-                or (v.kind == "fleeting" or v.flaskType == "fleeting")
-            end
-            local entry = { id = id, isItem = true, name = name, rank = rank, icon = icon, fleeting = isFleeting }
-            if isFleeting then
-              fleeting[#fleeting + 1] = entry
-            else
-              normal[#normal + 1] = entry
+            local expansionId = (type(v) == "table" and tonumber(v.expansionId)) or nil
+            if not ns.IsExpansionEnabled or ns.IsExpansionEnabled(expansionId) then
+              local isFleeting = false
+              if type(v) == "table" then
+                isFleeting = (v.fleeting == true)
+                  or (type(v.topLbl) == "string" and v.topLbl:lower():find("fleeting", 1, true))
+                  or (type(v.btmLbl) == "string" and v.btmLbl:lower():find("fleeting", 1, true))
+                  or (v.kind == "fleeting" or v.flaskType == "fleeting")
+              end
+              local entry = {
+                id = id,
+                isItem = true,
+                name = name,
+                rank = rank,
+                icon = icon,
+                fleeting = isFleeting,
+                expansionId = expansionId,
+              }
+              if isFleeting then
+                fleeting[#fleeting + 1] = entry
+              else
+                normal[#normal + 1] = entry
+              end
             end
           end
         end
@@ -1177,7 +1201,11 @@ O.RegisterSection(function(AddSection)
                 local name = (type(v) == "table" and v.name) or tostring(v)
                 local rank = (type(v) == "table" and v.rank) or nil
                 local icon = (type(v) == "table" and v.icon) or select(1, GetItemIconSafe(id))
-                combined[#combined + 1] = { id = id, isItem = true, name = name, rank = rank, icon = icon }
+                local expansionId = (type(v) == "table" and tonumber(v.expansionId)) or nil
+                if not ns.IsExpansionEnabled or ns.IsExpansionEnabled(expansionId) then
+                  combined[#combined + 1] =
+                    { id = id, isItem = true, name = name, rank = rank, icon = icon, expansionId = expansionId }
+                end
               end
             end
           end
@@ -1260,18 +1288,21 @@ O.RegisterSection(function(AddSection)
       clearHeaders()
       updateContentWidth()
 
-      local function splitTWWBlocks(blocks)
+      local function splitExpansionBlocks(blocks)
         local normalBlocks = {}
         local twwBlocks = {}
+        local midnightBlocks = {}
 
         for i = 1, #blocks do
           local block = blocks[i]
-          local tww, normal = {}, {}
+          local tww, midnight, normal = {}, {}, {}
 
           for j = 1, #(block.items or {}) do
             local it = block.items[j]
-            if type(it.name) == "string" and it.name:find("^%[TWW%]") then
+            if it.expansionId == 10 then
               tww[#tww + 1] = it
+            elseif it.expansionId == 11 then
+              midnight[#midnight + 1] = it
             else
               normal[#normal + 1] = it
             end
@@ -1284,6 +1315,13 @@ O.RegisterSection(function(AddSection)
             }
           end
 
+          if #midnight > 0 then
+            midnightBlocks[#midnightBlocks + 1] = {
+              label = "Midnight " .. (block.label or ""),
+              items = midnight,
+            }
+          end
+
           if #tww > 0 then
             twwBlocks[#twwBlocks + 1] = {
               label = "The War Within " .. (block.label or ""),
@@ -1292,7 +1330,9 @@ O.RegisterSection(function(AddSection)
           end
         end
 
-        -- concatenate: normal first, then TWW
+        for i = 1, #midnightBlocks do
+          normalBlocks[#normalBlocks + 1] = midnightBlocks[i]
+        end
         for i = 1, #twwBlocks do
           normalBlocks[#normalBlocks + 1] = twwBlocks[i]
         end
@@ -1300,7 +1340,7 @@ O.RegisterSection(function(AddSection)
         return normalBlocks
       end
 
-      local blocks = splitTWWBlocks(collectForTab(activeKeyForList))
+      local blocks = splitExpansionBlocks(collectForTab(activeKeyForList))
       local y, iLine = 2, 0
       local nameW = calcNameWidth()
 

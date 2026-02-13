@@ -159,18 +159,6 @@ SlashCmdList["CLICKABLERAIDBUFFS"] = function(msg)
     else
       print("|cFF00ccffCRB:|r Debug diagnostics are not available.")
     end
-  elseif msg == "export" then
-    if type(ns.ProfileUI_ShowExport) == "function" then
-      ns.ProfileUI_ShowExport()
-    else
-      print("|cFF00ccffCRB:|r Profile export UI is not available.")
-    end
-  elseif msg == "import" then
-    if type(ns.ProfileUI_ShowImport) == "function" then
-      ns.ProfileUI_ShowImport()
-    else
-      print("|cFF00ccffCRB:|r Profile import UI is not available.")
-    end
   elseif msg == "" then
     if ns.ToggleOptions then
       ns.ToggleOptions()
@@ -184,8 +172,6 @@ SlashCmdList["CLICKABLERAIDBUFFS"] = function(msg)
     print("  /crb minimap   - Toggle showing the minimap button")
     print("  /crb reset     - Reset settings to default and reload UI")
     print("  /crb debug     - Print hidden raid buff gate/visibility reasons")
-    print("  /crb export    - Open Profile tab and export profile string")
-    print("  /crb import    - Open Profile tab for profile import")
     print("  /crb           - Open/close the options panel")
   end
 end
