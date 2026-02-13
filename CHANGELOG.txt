@@ -49,6 +49,12 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
+**v7.1.12**
+
+- Rollback release: restored addon code to the stable `v7.1.6` baseline
+- Reverted post-`v7.1.6` changes that introduced Mythic+ buff/consumable icon refresh regressions
+- Released as a stability checkpoint while the M+ icon falloff/reappear fix is reworked
+
 **v7.1.6**
 
 - Removed an extraneous line in `Options/Panel.lua` that could trigger a startup error
