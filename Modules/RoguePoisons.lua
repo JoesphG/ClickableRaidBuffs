@@ -3,12 +3,17 @@
 -- ====================================
 
 local addonName, ns = ...
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 clickableRaidBuffCache = clickableRaidBuffCache or {}
 clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
 
 local CAT = "ROGUE_POISONS"
 local TALENT_DOUBLE_PER_CAT = 381801
+
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
 
 local function DB()
   return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
@@ -63,9 +68,11 @@ local function auraRemOnPlayer(buffId)
     if not a then
       break
     end
-    if a.spellId == buffId and a.sourceUnit and UnitIsUnit(a.sourceUnit, "player") then
-      if a.expirationTime and a.expirationTime > 0 then
-        return a.expirationTime - GetTime()
+    local sid = a.spellId
+    if IsNonSecretNumber(sid) and sid == buffId and a.sourceUnit and UnitIsUnit(a.sourceUnit, "player") then
+      local exp = a.expirationTime
+      if IsNonSecretNumber(exp) and exp > 0 then
+        return exp - GetTime()
       else
         return math.huge
       end

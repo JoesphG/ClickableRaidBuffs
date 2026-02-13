@@ -3,6 +3,7 @@
 -- ====================================
 
 local addonName, ns = ...
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 local EATING_ICON = 132805
 local AuraByIndex = C_UnitAuras and C_UnitAuras.GetAuraDataByIndex
@@ -15,6 +16,10 @@ local _suppressActive = false
 
 local EATING_NAMES = {}
 local WELLFED_NAMES = {}
+
+local function IsNonSecretString(v)
+  return type(v) == "string" and not (IsSecret and IsSecret(v))
+end
 
 local function DB()
   return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
@@ -97,7 +102,8 @@ local function ScanPlayerEatingAura()
     if not aura then
       break
     end
-    if aura.name and EATING_NAMES[aura.name] then
+    local auraName = aura.name
+    if IsNonSecretString(auraName) and EATING_NAMES[auraName] then
       local exp = aura.expirationTime or 0
       local dur = aura.duration or 0
       if (not dur or dur <= 0) and exp and exp > 0 then
@@ -117,7 +123,8 @@ local function HasWellFedOverThreshold(thresh)
     if not aura then
       break
     end
-    if aura.name and WELLFED_NAMES[aura.name] then
+    local auraName = aura.name
+    if IsNonSecretString(auraName) and WELLFED_NAMES[auraName] then
       local exp = aura.expirationTime
       if exp and exp > now and (exp - now) > thresh then
         return true
@@ -190,7 +197,7 @@ local function OnUnitAura(unit, updateInfo)
     for i = 1, #updateInfo.addedAuras do
       local a = updateInfo.addedAuras[i]
       local n = a and a.name
-      if n and (EATING_NAMES[n] or WELLFED_NAMES[n]) then
+      if IsNonSecretString(n) and (EATING_NAMES[n] or WELLFED_NAMES[n]) then
         changed = true
         break
       end
@@ -202,7 +209,7 @@ local function OnUnitAura(unit, updateInfo)
       local id = updateInfo.updatedAuraInstanceIDs[i]
       local a = AuraByInstance("player", id)
       local n = a and a.name
-      if id == lastInstanceID or (n and (EATING_NAMES[n] or WELLFED_NAMES[n])) then
+      if id == lastInstanceID or (IsNonSecretString(n) and (EATING_NAMES[n] or WELLFED_NAMES[n])) then
         changed = true
         break
       end

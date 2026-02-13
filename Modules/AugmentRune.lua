@@ -4,6 +4,7 @@
 
 local addonName, ns = ...
 ns = ns or {}
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 clickableRaidBuffCache = clickableRaidBuffCache or {}
 clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
@@ -12,6 +13,10 @@ local GetItemCount = GetItemCount
 local GetTime = GetTime
 local AuraByIndex = C_UnitAuras and C_UnitAuras.GetAuraDataByIndex
 local AuraByInstance = C_UnitAuras and C_UnitAuras.GetAuraDataByAuraInstanceID
+
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
 
 local function DB()
   return (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB or {}
@@ -71,11 +76,12 @@ local function GetExpireForIDs(ids)
     if not a then
       break
     end
-    if a.spellId and ids then
+    local sid = a.spellId
+    if IsNonSecretNumber(sid) and ids then
       for j = 1, #ids do
-        if a.spellId == ids[j] then
+        if sid == ids[j] then
           local ex = a.expirationTime
-          if ex and ex > 0 and (not best or ex > best) then
+          if IsNonSecretNumber(ex) and ex > 0 and (not best or ex > best) then
             best = ex
           end
         end
@@ -144,6 +150,9 @@ local function rebuildAugmentRune()
       end
 
       local expire = GetExpireForIDs(data.buffID)
+      if expire == math.huge then
+        break
+      end
 
       local entry = ns.copyItemData and ns.copyItemData(data) or {}
       entry.category = "AUGMENT_RUNE"
@@ -154,7 +163,7 @@ local function rebuildAugmentRune()
         entry.centerText = ""
       end
 
-      if expire and expire ~= math.huge then
+      if expire then
         local remaining = expire - now
         if remaining > 0 and remaining <= threshS then
           entry.expireTime = expire
@@ -211,7 +220,7 @@ local function AugmentRune_OnPlayerAura(unit, updateInfo)
     for i = 1, #added do
       local a = added[i]
       local id = a and a.spellId
-      if id and set[id] then
+      if IsNonSecretNumber(id) and set[id] then
         if ns.UpdateAugmentRunes then
           ns.UpdateAugmentRunes()
         end
@@ -225,7 +234,7 @@ local function AugmentRune_OnPlayerAura(unit, updateInfo)
     for i = 1, #updated do
       local info = AuraByInstance("player", updated[i])
       local id = info and info.spellId
-      if id and set[id] then
+      if IsNonSecretNumber(id) and set[id] then
         if ns.UpdateAugmentRunes then
           ns.UpdateAugmentRunes()
         end

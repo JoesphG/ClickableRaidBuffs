@@ -6,6 +6,18 @@ ClickableRaidData = ClickableRaidData or {}
 
 ClickableRaidData["AUGMENT_RUNE"] = {
 
+  --Dragonflight
+  [201325] = {
+    name = "Draconic Augment Rune",
+    buffID = { 393438 },
+    icon = 5087621,
+    topLbl = "",
+    btmLbl = "",
+    gates = { "rested" },
+    consumable = true,
+    expansionId = 9,
+  },
+
   --Midnight
   [259085] = {
     name = "Void-Touched Augment Rune",

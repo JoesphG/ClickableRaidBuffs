@@ -3,10 +3,15 @@
 -- ====================================
 
 local addonName, ns = ...
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 local SACRIFICE_SPELL = 108503
 local SACRIFICE_BUFF = 196099
 local WARLOCK_CLASSID = 9
+
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
 
 local function PlayerClassID()
   local id = clickableRaidBuffCache
@@ -45,7 +50,7 @@ local function HasSacBuff()
     if not a then
       break
     end
-    if a.spellId == SACRIFICE_BUFF then
+    if IsNonSecretNumber(a.spellId) and a.spellId == SACRIFICE_BUFF then
       return true
     end
     i = i + 1

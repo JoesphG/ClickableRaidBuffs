@@ -3,6 +3,7 @@
 -- ====================================
 
 local addonName, ns = ...
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 clickableRaidBuffCache = clickableRaidBuffCache or {}
 clickableRaidBuffCache.playerInfo = clickableRaidBuffCache.playerInfo or {}
@@ -10,6 +11,10 @@ clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
 
 local FALLBACK = { 432473, 432021, 431974, 431973, 431972, 431971 }
 local FLASK_IDS, FLEETING_BY_BUFFID
+
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
 
 local function BuildSetsOnce()
   if FLASK_IDS then
@@ -58,7 +63,8 @@ local function IsActiveFlaskFleeting()
     if not a then
       break
     end
-    if FLEETING_BY_BUFFID[a.spellId] then
+    local sid = a.spellId
+    if IsNonSecretNumber(sid) and FLEETING_BY_BUFFID[sid] then
       return true
     end
     i = i + 1

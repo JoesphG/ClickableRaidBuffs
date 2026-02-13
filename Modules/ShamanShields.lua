@@ -3,6 +3,7 @@
 -- ====================================
 
 local addonName, ns = ...
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 clickableRaidBuffCache = clickableRaidBuffCache or {}
 clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
@@ -15,6 +16,10 @@ DB().fixedTargets = DB().fixedTargets or {}
 local CAT = "SHAMAN_SHIELDS"
 local ORBIT_TALENT = 383010
 local TRUNC_N = 6
+
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
 
 local function InCombat()
   return InCombatLockdown()
@@ -88,10 +93,12 @@ local function auraRem(unit, buffId, mineOnly)
     if not a then
       break
     end
-    if a.spellId == buffId then
+    local sid = a.spellId
+    if IsNonSecretNumber(sid) and sid == buffId then
       if not mineOnly or (a.sourceUnit and UnitIsUnit(a.sourceUnit, "player")) then
-        if a.expirationTime and a.expirationTime > 0 then
-          return a.expirationTime - GetTime()
+        local exp = a.expirationTime
+        if IsNonSecretNumber(exp) and exp > 0 then
+          return exp - GetTime()
         else
           return math.huge
         end
@@ -222,7 +229,8 @@ local function learnEarthFixedFrom(unit, ES)
     if not a then
       break
     end
-    if a.spellId == want and a.sourceUnit and UnitIsUnit(a.sourceUnit, "player") then
+    local sid = a.spellId
+    if IsNonSecretNumber(sid) and sid == want and a.sourceUnit and UnitIsUnit(a.sourceUnit, "player") then
       local who = shortName(unit)
       local me = shortName("player")
       if who and who ~= me and DB().fixedTargets[974] ~= who then

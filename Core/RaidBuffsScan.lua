@@ -3,10 +3,19 @@
 -- ====================================
 
 local addonName, ns = ...
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 clickableRaidBuffCache = clickableRaidBuffCache or {}
 clickableRaidBuffCache.playerInfo = clickableRaidBuffCache.playerInfo or {}
 clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
+
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
+
+local function IsNonSecretString(v)
+  return type(v) == "string" and not (IsSecret and IsSecret(v))
+end
 
 local function getPlayerClass()
   local _, _, classID = UnitClass("player")
@@ -273,10 +282,12 @@ function ns.HandleRaidBuff_UNIT_AURA(unit, updateInfo)
     if not aura then
       return false
     end
-    if aura.spellId and watchSpell[aura.spellId] then
+    local auraSpellID = aura.spellId
+    if IsNonSecretNumber(auraSpellID) and watchSpell[auraSpellID] then
       return true
     end
-    if aura.name and watchName[aura.name] then
+    local auraName = aura.name
+    if IsNonSecretString(auraName) and watchName[auraName] then
       return true
     end
     return false
@@ -391,7 +402,8 @@ function scanRaidBuffs()
         if not a then
           break
         end
-        if a.name == name then
+        local auraName = a and a.name
+        if IsNonSecretString(auraName) and auraName == name then
           have = have + 1
           break
         end
@@ -443,12 +455,14 @@ function scanRaidBuffs()
           break
         end
         if targetName then
-          if a.name == targetName then
+          local auraName = a and a.name
+          if IsNonSecretString(auraName) and auraName == targetName then
             found = true
             break
           end
         else
-          if a.spellId and wantById[a.spellId] then
+          local auraSpellID = a and a.spellId
+          if IsNonSecretNumber(auraSpellID) and wantById[auraSpellID] then
             found = true
             break
           end
@@ -576,7 +590,8 @@ function scanRaidBuffs()
               if not a then
                 break
               end
-              if a.name == name then
+              local auraName = a and a.name
+              if IsNonSecretString(auraName) and auraName == name then
                 matched = true
                 break
               end
@@ -664,7 +679,8 @@ function scanRaidBuffs()
               if not a then
                 break
               end
-              if a.name and nameSet[a.name] then
+              local auraName = a and a.name
+              if IsNonSecretString(auraName) and nameSet[auraName] then
                 matched = true
                 break
               end
@@ -695,7 +711,8 @@ function scanRaidBuffs()
               if not a then
                 break
               end
-              if a.spellId and idSet[a.spellId] then
+              local auraSpellID = a and a.spellId
+              if IsNonSecretNumber(auraSpellID) and idSet[auraSpellID] then
                 matched = true
                 break
               end

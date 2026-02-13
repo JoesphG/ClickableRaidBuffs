@@ -6,6 +6,14 @@ local addonName, ns = ...
 ns = ns or {}
 local IsSecret = ns.Compat and ns.Compat.IsSecret
 
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
+
+local function IsNonSecretString(v)
+  return type(v) == "string" and not (IsSecret and IsSecret(v))
+end
+
 function ns.MineOnly_IsActive(data)
   if not data then
     return false
@@ -28,10 +36,12 @@ local function _auraMatchesMineOnly(a, idSet, nameSet, nameMode)
   if not byPlayer then
     return false
   end
-  if idSet and a.spellId and idSet[a.spellId] then
+  local sid = a.spellId
+  if idSet and IsNonSecretNumber(sid) and idSet[sid] then
     return true
   end
-  if nameMode and nameSet and a.name and nameSet[a.name] then
+  local auraName = a.name
+  if nameMode and nameSet and IsNonSecretString(auraName) and nameSet[auraName] then
     return true
   end
   return false

@@ -5,6 +5,14 @@
 local addonName, ns = ...
 local IsSecret = ns.Compat and ns.Compat.IsSecret
 
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
+
+local function IsNonSecretString(v)
+  return type(v) == "string" and not (IsSecret and IsSecret(v))
+end
+
 function ns.GetLocalizedBuffName(spellID)
   local info = C_Spell.GetSpellInfo(spellID)
   return info and info.name or nil
@@ -89,7 +97,7 @@ function ns.UnitHasAnyBuffByIDs(unit, ids)
       break
     end
     local sid = aura.spellId
-    if type(sid) == "number" and ids[sid] then
+    if IsNonSecretNumber(sid) and ids[sid] then
       return true
     end
     idx = idx + 1
@@ -108,9 +116,9 @@ function ns.UnitHasAnyBuffByNames(unit, names)
       break
     end
     local name = aura.name
-    if name and type(name) == "string" and names[name] then
+    if IsNonSecretString(name) and names[name] then
       local sid = aura.spellId
-      if not (type(sid) == "number" and NAME_MODE_EXCLUDE[sid]) then
+      if not (IsNonSecretNumber(sid) and NAME_MODE_EXCLUDE[sid]) then
         return true
       end
     end
@@ -146,12 +154,13 @@ function ns.GetPlayerBuffExpire(spellIDs, nameMode, infinite)
         break
       end
 
+      local auraName = aura.name
+      local auraSpellID = aura.spellId
       if
-        aura.name
-        and type(aura.name) == "string"
-        and nameLookup[aura.name]
-        and type(aura.spellId) == "number"
-        and not NAME_MODE_EXCLUDE[aura.spellId]
+        IsNonSecretString(auraName)
+        and nameLookup[auraName]
+        and IsNonSecretNumber(auraSpellID)
+        and not NAME_MODE_EXCLUDE[auraSpellID]
       then
         return safeExpiration(aura)
       end
@@ -172,9 +181,7 @@ function ns.GetPlayerBuffExpire(spellIDs, nameMode, infinite)
       end
 
       local sid = aura.spellId
-      if IsSecret and IsSecret(sid) then
-        -- Secret spell ids cannot be used for table lookup.
-      elseif type(sid) == "number" and spellLookup[sid] then
+      if IsNonSecretNumber(sid) and spellLookup[sid] then
         return safeExpiration(aura)
       end
 
@@ -207,13 +214,10 @@ function ns.GetRaidBuffExpire(spellIDs, nameMode, infinite)
       end
 
       local sid = aura.spellId
-      if IsSecret and IsSecret(sid) then
-        -- Secret spell ids cannot be used for table lookup.
-      elseif type(sid) == "number" then
+      if IsNonSecretNumber(sid) then
         if nameMode then
-          if IsSecret and IsSecret(aura.name) then
-            -- Secret names cannot be used for lookup.
-          elseif aura.name and type(aura.name) == "string" and nameLookup[aura.name] and not NAME_MODE_EXCLUDE[sid] then
+          local auraName = aura.name
+          if IsNonSecretString(auraName) and nameLookup[auraName] and not NAME_MODE_EXCLUDE[sid] then
             found = true
             local exp = aura.expirationTime
             if IsSecret and IsSecret(exp) then
@@ -274,17 +278,11 @@ function ns.GetRaidBuffExpireMine(spellIDs, nameMode, infinite)
         break
       end
 
-      if IsSecret and IsSecret(aura.spellId) then
-        -- Secret spell ids cannot be used for table lookup.
-      elseif type(aura.spellId) == "number" and UnitGUID(aura.sourceUnit) == playerGUID then
+      local auraSpellID = aura.spellId
+      if IsNonSecretNumber(auraSpellID) and UnitGUID(aura.sourceUnit) == playerGUID then
         if nameMode then
-          if
-            not (IsSecret and IsSecret(aura.name))
-            and aura.name
-            and type(aura.name) == "string"
-            and nameLookup[aura.name]
-            and not NAME_MODE_EXCLUDE[aura.spellId]
-          then
+          local auraName = aura.name
+          if IsNonSecretString(auraName) and nameLookup[auraName] and not NAME_MODE_EXCLUDE[auraSpellID] then
             local exp = aura.expirationTime
             if IsSecret and IsSecret(exp) then
               return nil
@@ -292,7 +290,7 @@ function ns.GetRaidBuffExpireMine(spellIDs, nameMode, infinite)
             return (infinite or exp == 0) and math.huge or exp
           end
         else
-          if spellLookup[aura.spellId] then
+          if spellLookup[auraSpellID] then
             local exp = aura.expirationTime
             if IsSecret and IsSecret(exp) then
               return nil
