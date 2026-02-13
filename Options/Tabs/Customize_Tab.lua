@@ -432,7 +432,7 @@ end
 
 O.RegisterSection(function(AddSection)
   AddSection("Customize", function(content, Row)
-    local row = Row(385)
+    local row = Row("fill")
 
     local card = CreateFrame("Frame", nil, row, "BackdropTemplate")
     PaintBackdrop(card, THEME.cardBG, THEME.cardBR)

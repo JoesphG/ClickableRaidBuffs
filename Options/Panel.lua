@@ -207,7 +207,11 @@ settingsProxy:SetScript("OnShow", function(self)
   local openBtn = CreateFrame("Button", nil, self, "BackdropTemplate")
   openBtn:SetSize(220, 42)
   openBtn:SetPoint("TOP", desc, "BOTTOM", 0, -18)
-  openBtn:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1 })
+  openBtn:SetBackdrop({
+    bgFile = "Interface\\Buttons\\WHITE8x8",
+    edgeFile = "Interface\\Buttons\\WHITE8x8",
+    edgeSize = 1,
+  })
   openBtn:SetBackdropColor(0.15, 0.20, 0.29, 1)
   openBtn:SetBackdropBorderColor(0.30, 0.45, 0.66, 1)
   local openLabel = openBtn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
@@ -236,7 +240,6 @@ settingsProxy:SetScript("OnShow", function(self)
       ns.OpenOptions()
     end
   end)
-
 end)
 
 if Settings and Settings.RegisterCanvasLayoutCategory then
@@ -500,10 +503,11 @@ local function Build()
     content:SetPoint("BOTTOM", 0, 12)
 
     local last, contentY = nil, 0
+    local usedFillRow = false
     local function Row(h)
       local r = CreateFrame("Frame", nil, content)
-      local hh = h or 36
-      r:SetHeight(hh)
+      local fill = (h == "fill")
+      local hh = (not fill) and (h or 36) or nil
       r:SetPoint("LEFT")
       r:SetPoint("RIGHT")
       if not last then
@@ -511,7 +515,13 @@ local function Build()
       else
         r:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -O.ROW_V_GAP)
       end
-      contentY = contentY + hh + (last and O.ROW_V_GAP or 0)
+      if fill and not usedFillRow then
+        r:SetPoint("BOTTOM", content, "BOTTOM", 0, 0)
+        usedFillRow = true
+      else
+        r:SetHeight(hh)
+        contentY = contentY + hh + (last and O.ROW_V_GAP or 0)
+      end
       last = r
       return r
     end

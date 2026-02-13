@@ -6,8 +6,6 @@ local addonName, ns = ...
 ns.Options = ns.Options or {}
 local O = ns.Options
 
-local EXCLUSIONS_WINDOW_HEIGHT = (O and O.EXCLUSIONS_WINDOW_HEIGHT) or 385
-
 local function DB()
   return (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB or {}
 end
@@ -592,7 +590,7 @@ end
 
 O.RegisterSection(function(AddSection)
   AddSection("Buffs", function(content, Row)
-    local row = Row(EXCLUSIONS_WINDOW_HEIGHT - 6)
+    local row = Row("fill")
 
     local card = CreateFrame("Frame", nil, row, "BackdropTemplate")
     PaintBackdrop(card, THEME.cardBG, THEME.cardBR)
