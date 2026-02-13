@@ -42,14 +42,15 @@ local function IsUnitInSpellRange(spellID, unit)
     unitFlag = normalizeRangeFlag(UnitInRange(unit))
   end
 
-  -- Prefer explicit spell-range checks when available.
-  -- Only fall back to UnitInRange when spell range is unknown.
+  -- Prefer explicit spell-range results when available.
   if spellFlag == true then
     return true
   end
   if spellFlag == false then
     return false
   end
+
+  -- Fall back to UnitInRange when spell API is unknown.
   if unitFlag == true then
     return true
   end
@@ -57,8 +58,8 @@ local function IsUnitInSpellRange(spellID, unit)
     return false
   end
 
-  -- Unknown range is treated as out-of-range for strict suppression behavior.
-  return false
+  -- Unknown/unknown: fail open to avoid stale suppression.
+  return true
 end
 
 local function UnitHasAnyBuffFromIDs(unit, ids)

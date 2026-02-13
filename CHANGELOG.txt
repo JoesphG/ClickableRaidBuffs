@@ -49,16 +49,25 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
+**v7.1.7**
+
+- Added an Expansions options panel with toggles for The War Within and Midnight
+- Consumables and augment runes now respect expansion toggles and hide disabled-expansion entries
+- Replaced name-prefix expansion detection with expansion metadata normalization in core consumable/rune data
+- Fixed disabled-expansion consumables lingering when still present in bags by purging stale entries during cleanup
+- Improved raid range gate handling for mid-dungeon updates and out-of-combat re-evaluation
+- Fixed raid buff reminder icons not reliably reappearing after combat in some Mythic+ scenarios
+
+=======================================================================================================================
+                                                HISTORICAL PATCH NOTES
+=======================================================================================================================
+
 **v7.1.6**
 
 - Removed an extraneous line in `Options/Panel.lua` that could trigger a startup error
 - Profile tab import box focus fix so pasted import strings work reliably
 - Improved bag scan helper for consumables to be lighter weight and more reliable
 - Updated docs
-
-=======================================================================================================================
-                                                HISTORICAL PATCH NOTES
-=======================================================================================================================
 
 
 **v7.1.5**

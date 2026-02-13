@@ -19,9 +19,6 @@ local realCombatClear
 local _wasLocked = false
 
 function ns.ExecutionLocked()
-  if C_ChallengeMode and C_ChallengeMode.IsChallengeModeActive and C_ChallengeMode.IsChallengeModeActive() then
-    return true
-  end
   if InCombatLockdown and InCombatLockdown() then
     return true
   end

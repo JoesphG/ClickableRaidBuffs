@@ -1,6 +1,8 @@
-# ClickableRaidBuffs v7.1.6 Release Notes
+# ClickableRaidBuffs v7.1.7 Release Notes
 
-- Removed an extraneous line in `Options/Panel.lua` that could trigger a startup error
-- Profile tab import box focus fix so pasted import strings work reliably
-- Improved bag scan helper for consumables to be lighter weight and more reliable
-- Updated docs
+- Added a new Expansions panel in Customize options with toggles for The War Within and Midnight consumables/runes
+- Added expansion-aware filtering so disabled expansions are hidden from reminders and Ignore-list item sections
+- Added expansion metadata normalization for consumable/rune data and removed `[TWW]` name-prefix reliance
+- Fixed consumable cleanup so disabled-expansion items are removed immediately instead of lingering while still in bags
+- Refined raid range gate behavior to better handle in-combat/out-of-combat transitions and mid-dungeon state updates
+- Fixed raid buff reminders failing to return in some Mythic+ out-of-combat scenarios after buffs dropped during combat
