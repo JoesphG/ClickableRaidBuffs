@@ -122,5 +122,3 @@ Options\Tabs\Layout_Tab.lua
 Options\Tabs\Ignore_Tab.lua
 Options\Tabs\Customize_Tab.lua
 Options\Tabs\Profile_Tab.lua
-
-Core\MidnightBootstrap.lua

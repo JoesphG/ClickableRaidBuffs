@@ -120,6 +120,9 @@ loader:SetScript("OnEvent", function(_, _, name)
 
   applyDefaults(db, D)
   deriveMissing(db, D)
+  if type(ns.ApplyExpansionMetadata) == "function" then
+    ns.ApplyExpansionMetadata()
+  end
 
   loader:UnregisterEvent("ADDON_LOADED")
 end)

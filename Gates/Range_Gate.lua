@@ -111,8 +111,13 @@ function ns.IsRangeTickerRunning()
 end
 
 local function IsTickerEligible()
-  if type(ns.locked) == "function" and ns.locked() then
+  if type(ns.ExecutionLocked) == "function" and ns.ExecutionLocked() then
     return false
+  end
+  if type(ns.ExecutionLocked) ~= "function" then
+    if ns._inEncounter then
+      return false
+    end
   end
   if ns._inCombat or (InCombatLockdown and InCombatLockdown()) then
     return false
