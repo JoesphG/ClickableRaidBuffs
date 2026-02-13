@@ -19,7 +19,7 @@ local function GetSpellRange(spellID)
 end
 
 local function IsUnitInSpellRange(spellID, unit)
-  local function normalizeRangeFlag(v)
+  local function normalizeSpellFlag(v)
     if IsSecret and IsSecret(v) then
       return nil
     end
@@ -29,37 +29,51 @@ local function IsUnitInSpellRange(spellID, unit)
     if v == false then
       return false
     end
+    if v == 1 then
+      return true
+    end
+    if v == 0 then
+      return false
+    end
     return nil
   end
 
-  local spellFlag, unitFlag = nil, nil
+  local function normalizeUnitFlag(v)
+    if IsSecret and IsSecret(v) then
+      return nil
+    end
+    if v == true or v == 1 then
+      return true
+    end
+    if v == false then
+      return false
+    end
+    return nil
+  end
+
+  local spellFlag = nil
 
   if C_Spell and C_Spell.IsSpellInRange then
-    spellFlag = normalizeRangeFlag(C_Spell.IsSpellInRange(spellID, unit))
+    spellFlag = normalizeSpellFlag(C_Spell.IsSpellInRange(spellID, unit))
   end
 
+  -- Spell-range check is authoritative when available.
+  if spellFlag ~= nil then
+    return spellFlag
+  end
+
+  local unitFlag = nil
   if UnitInRange then
-    unitFlag = normalizeRangeFlag(UnitInRange(unit))
+    unitFlag = normalizeUnitFlag(UnitInRange(unit))
   end
 
-  -- Prefer explicit spell-range results when available.
-  if spellFlag == true then
-    return true
-  end
-  if spellFlag == false then
-    return false
+  -- Fall back to coarse group range only when spell range is unknown.
+  if unitFlag ~= nil then
+    return unitFlag
   end
 
-  -- Fall back to UnitInRange when spell API is unknown.
-  if unitFlag == true then
-    return true
-  end
-  if unitFlag == false then
-    return false
-  end
-
-  -- Unknown/unknown: fail open to avoid stale suppression.
-  return true
+  -- Unknown/unknown: treat as out-of-range for strict range gating.
+  return false
 end
 
 local function UnitHasAnyBuffFromIDs(unit, ids)
