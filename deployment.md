@@ -29,11 +29,21 @@ CurseForge will package the tag and automatically set the file type based on the
 - Push the tagged commit to GitHub; CurseForge will package automatically.
 - Webhook URL format (keep token secret):
   - `https://www.curseforge.com/api/projects/{projectID}/package?token={token}`
+- If creating a manual release zip, it must contain a single top-level addon folder named `ClickableRaidBuffs/` (do not zip loose files at archive root).
 
 ## Packaging (Wago via GitHub Actions)
 - Wago packaging runs on tag pushes via `.github/workflows/release.yml` using the BigWigs packager.
 - Ensure `## X-Wago-ID: mNwQE5Ko` is present in `ClickableRaidBuffs.toc`.
 - Set `WAGO_API_TOKEN` in GitHub repo secrets before tagging.
+
+## Manual Zip Packaging (Required Structure)
+Use this command format so all files are inside the addon-named parent folder:
+
+`git archive --format=zip --prefix=ClickableRaidBuffs/ --output=/tmp/ClickableRaidBuffs-vX.Y.Z.zip vX.Y.Z`
+
+Structure requirement:
+- Top-level folder in zip: `ClickableRaidBuffs/`
+- Addon files/folders must live under that folder (e.g. `ClickableRaidBuffs/ClickableRaidBuffs.toc`)
 
 ## Tag + Push Flow
 Do this only after every pre-release checklist item is complete.

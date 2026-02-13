@@ -49,6 +49,10 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
+**v7.1.9**
+
+- Improved release package structure so distributed zip builds keep addon contents under a single `ClickableRaidBuffs` parent folder
+
 **v7.1.8**
 
 - Fixed Profile import pane paste visibility so imported strings appear reliably in the text area while still previewing correctly
