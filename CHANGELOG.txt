@@ -49,6 +49,12 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
+**v7.1.8**
+
+- Fixed Profile import pane paste visibility so imported strings appear reliably in the text area while still previewing correctly
+- Reworked Profile Import/Export text-area layout and anchoring for stable rendering and scrolling behavior
+- Updated options tab containers to fill available panel height for improved resizing behavior
+
 **v7.1.7**
 
 - Added an Expansions options panel with toggles for The War Within and Midnight

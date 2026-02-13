@@ -56,12 +56,21 @@ local function MakeBlueGreyButton(parent, text, x)
   return b
 end
 
-local function BindEditWidth(edit, scroll)
+local function BindEditSize(edit, scroll, holder)
   local function apply()
-    local w = (scroll:GetWidth() or 560) - 28
+    local host = holder or scroll
+    local w = (host:GetWidth() or 560) - 12
     edit:SetWidth(math.max(120, w))
+    local viewH = (host:GetHeight() or scroll:GetHeight() or 120) - 8
+    local textH = (edit.GetStringHeight and edit:GetStringHeight()) or 0
+    edit:SetHeight(math.max(viewH, textH + 24))
   end
-  scroll:HookScript("OnSizeChanged", apply)
+  if holder then
+    holder:HookScript("OnSizeChanged", apply)
+  else
+    scroll:HookScript("OnSizeChanged", apply)
+  end
+  edit:HookScript("OnTextChanged", apply)
   C_Timer.After(0, apply)
 end
 
@@ -90,27 +99,68 @@ O.RegisterSection(function(AddSection)
     title:SetText("Export or import Clickable Raid Buffs profile strings.")
 
     local function MakeTextArea(parent, topPad)
-      local scroll = CreateFrame("ScrollFrame", nil, parent, "UIPanelScrollFrameTemplate")
-      scroll:SetPoint("TOPLEFT", 8, -topPad)
-      scroll:SetPoint("BOTTOMRIGHT", -28, 8)
+      local holder = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+      holder:SetPoint("TOPLEFT", 8, -topPad)
+      holder:SetPoint("BOTTOMRIGHT", -8, 8)
+      PaintBackdrop(holder, { 0.04, 0.05, 0.08, 1 }, { 0.16, 0.18, 0.24, 1 })
+
+      local scroll = CreateFrame("ScrollFrame", nil, holder)
+      scroll:SetPoint("TOPLEFT", 1, -1)
+      scroll:SetPoint("BOTTOMRIGHT", -1, 1)
+      scroll:SetClipsChildren(true)
+      scroll:EnableMouse(true)
+      scroll:EnableMouseWheel(true)
 
       local edit = CreateFrame("EditBox", nil, scroll)
       edit:SetMultiLine(true)
       edit:SetAutoFocus(false)
       edit:EnableMouse(true)
+      edit:EnableKeyboard(true)
+      if edit.SetPropagateKeyboardInput then
+        edit:SetPropagateKeyboardInput(false)
+      end
       edit:SetAltArrowKeyMode(false)
+      edit:SetJustifyH("LEFT")
+      edit:SetJustifyV("TOP")
+      edit:SetTextInsets(4, 4, 4, 4)
+      edit:SetTextColor(0.95, 0.97, 1.00, 1.00)
+      edit:SetFontObject("GameFontHighlightSmall")
       edit:SetFont(FontPath(), 12, "")
       edit:SetWidth(540)
+      edit:SetHeight(120)
+      edit:SetMaxLetters(0)
+      edit:ClearAllPoints()
+      edit:SetPoint("TOPLEFT", scroll, "TOPLEFT", 0, 0)
       edit:SetScript("OnMouseDown", function(self)
+        self:SetFocus()
+      end)
+      edit:SetScript("OnMouseUp", function(self)
         self:SetFocus()
       end)
       edit:SetScript("OnEscapePressed", function(self)
         self:ClearFocus()
       end)
-      edit:SetScript("OnCursorChanged", function(self, _, y)
-        scroll:SetVerticalScroll(y)
+      edit:SetScript("OnEditFocusGained", function(self)
+        self:HighlightText(0, 0)
+      end)
+      scroll:SetScript("OnMouseWheel", function(self, delta)
+        local child = self:GetScrollChild()
+        if not child then
+          return
+        end
+        local current = self:GetVerticalScroll() or 0
+        local maxScroll = math.max(0, (child:GetHeight() or 0) - (self:GetHeight() or 0))
+        local nextScroll = math.max(0, math.min(maxScroll, current - delta * 20))
+        self:SetVerticalScroll(nextScroll)
+      end)
+      scroll:SetScript("OnMouseDown", function()
+        edit:SetFocus()
+      end)
+      scroll:SetScript("OnMouseUp", function()
+        edit:SetFocus()
       end)
       scroll:SetScrollChild(edit)
+      BindEditSize(edit, scroll, holder)
       return edit, scroll
     end
 
@@ -132,9 +182,22 @@ O.RegisterSection(function(AddSection)
     importBox:SetPoint("TOPLEFT", rowImport, "TOPLEFT", 0, -54)
     importBox:SetPoint("BOTTOMRIGHT", rowImport, "BOTTOMRIGHT", 0, 0)
     PaintBackdrop(importBox, { 0.06, 0.07, 0.10, 1 }, { 0.20, 0.22, 0.28, 1 })
+    importBox:EnableMouse(true)
 
     local importEdit, importScroll = MakeTextArea(importBox, 8)
-    BindEditWidth(importEdit, importScroll)
+    importBox:SetScript("OnMouseDown", function()
+      importEdit:SetFocus()
+    end)
+    importBox:SetScript("OnMouseUp", function()
+      importEdit:SetFocus()
+    end)
+    rowImport:HookScript("OnShow", function()
+      C_Timer.After(0, function()
+        if importEdit and importEdit.SetFocus then
+          importEdit:SetFocus()
+        end
+      end)
+    end)
 
     local rowExport = Row(160)
     local exportHeader = rowExport:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
@@ -156,7 +219,6 @@ O.RegisterSection(function(AddSection)
     PaintBackdrop(exportBox, { 0.06, 0.07, 0.10, 1 }, { 0.20, 0.22, 0.28, 1 })
 
     local exportEdit, exportScroll = MakeTextArea(exportBox, 8)
-    BindEditWidth(exportEdit, exportScroll)
     local exportValue = ""
     local exportMutating = false
     exportEdit:SetText("")
