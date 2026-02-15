@@ -49,15 +49,29 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
+**v7.1.16**
+
+- Reverted change to name of Ignore tab in menu
+- Removed extraneous items from consumables lists
+- Fixed an issue with spacing on the Info tab to avoid text clipping
+
+
+=======================================================================================================================
+                                                HISTORICAL PATCH NOTES
+=======================================================================================================================
+
+
 **v7.1.15**
 
 - Hardened aura handling against secret values to prevent repeated `table index is secret` errors
 - Applied secret-safe guards across Food Status, Raid Buff scanning, Trinkets, Fixed Target, and core buff expiry lookups
 - Added explicit `expansionId` metadata to all consumable entries so expansion filters apply consistently
 
+
 **v7.1.14**
 
 - Added additional consumable tracking entries for food, flask, weapon buffs, and legacy augment rune support
+
 
 **v7.1.13**
 - Added expansion filters for consumables and augment runes, with toggles for The War Within and Midnight
@@ -66,11 +80,13 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
 - Ignore list now respects expansion filters and groups expansion entries more clearly
 - Improved expansion naming normalization so legacy `[TWW]` and `[MIDNIGHT]` prefixes are cleaned up in UI labels
 
+
 **v7.1.12**
 
 - Rollback release: restored addon code to the stable `v7.1.6` baseline
 - Reverted post-`v7.1.6` changes that introduced Mythic+ buff/consumable icon refresh regressions
 - Released as a stability checkpoint while the M+ icon falloff/reappear fix is reworked
+
 
 **v7.1.6**
 
@@ -78,10 +94,6 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
 - Profile tab import box focus fix so pasted import strings work reliably
 - Improved bag scan helper for consumables to be lighter weight and more reliable
 - Updated docs
-
-=======================================================================================================================
-                                                HISTORICAL PATCH NOTES
-=======================================================================================================================
 
 
 **v7.1.5**

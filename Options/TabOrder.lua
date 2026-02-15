@@ -10,7 +10,6 @@ O.TAB_ORDER = {
   "Info",
   "Layout",
   "Thresholds",
-  "Buffs",
-  "Alerts",
+  "Ignore",
   "Customize",
 }

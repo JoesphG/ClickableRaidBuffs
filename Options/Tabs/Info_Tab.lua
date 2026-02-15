@@ -156,7 +156,7 @@ O.RegisterSection(function(AddSection)
     PaintBackdrop(hideCB, { 0.05, 0.06, 0.08, 1 }, { 0.22, 0.24, 0.30, 1 })
 
     local ver = contentFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    ver:SetPoint("TOPLEFT", inner, "TOPLEFT", -45, -12)
+    ver:SetPoint("TOP", icon, "TOP", 5, 33)
     ver:SetWidth(200)
     ver:SetFont("Interface\\AddOns\\ClickableRaidBuffs\\Media\\Fonts\\Fira_Sans\\FiraSans-ExtraBold.ttf", 22, "")
     ver:SetJustifyH("RIGHT")
