@@ -1663,30 +1663,37 @@ ClickableRaidData["FOOD"] = {
   -- Additional Midnight consumables imported from BuffReminders.
   [242532] = {
     name = "[Midnight] Additional Food",
+    expansionId = 11,
     gates = { "instance", "rested" },
   },
   [260264] = {
     name = "[Midnight] Additional Food",
+    expansionId = 11,
     gates = { "instance", "rested" },
   },
   [260275] = {
     name = "[Midnight] Additional Food",
+    expansionId = 11,
     gates = { "instance", "rested" },
   },
   [260276] = {
     name = "[Midnight] Additional Food",
+    expansionId = 11,
     gates = { "instance", "rested" },
   },
   [260277] = {
     name = "[Midnight] Additional Food",
+    expansionId = 11,
     gates = { "instance", "rested" },
   },
   [260286] = {
     name = "[Midnight] Additional Food",
+    expansionId = 11,
     gates = { "instance", "rested" },
   },
   [260299] = {
     name = "[Midnight] Additional Food",
+    expansionId = 11,
     gates = { "instance", "rested" },
   },
 }

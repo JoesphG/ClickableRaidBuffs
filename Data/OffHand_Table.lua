@@ -352,30 +352,35 @@ ClickableRaidData["OFF_HAND"] = {
   -- Additional Midnight consumables imported from BuffReminders.
   [237372] = {
     name = "[Midnight] Additional Weapon Buff",
+    expansionId = 11,
     weaponType = "NEUTRAL",
     dual = true,
     gates = { "instance", "rested" },
   },
   [237373] = {
     name = "[Midnight] Additional Weapon Buff",
+    expansionId = 11,
     weaponType = "NEUTRAL",
     dual = true,
     gates = { "instance", "rested" },
   },
   [268032] = {
     name = "[Midnight] Additional Weapon Buff",
+    expansionId = 11,
     weaponType = "NEUTRAL",
     dual = true,
     gates = { "instance", "rested" },
   },
   [268033] = {
     name = "[Midnight] Additional Weapon Buff",
+    expansionId = 11,
     weaponType = "NEUTRAL",
     dual = true,
     gates = { "instance", "rested" },
   },
   [268034] = {
     name = "[Midnight] Additional Weapon Buff",
+    expansionId = 11,
     weaponType = "NEUTRAL",
     dual = true,
     gates = { "instance", "rested" },

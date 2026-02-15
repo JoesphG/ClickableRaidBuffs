@@ -66,6 +66,7 @@ ClickableRaidData["AUGMENT_RUNE"] = {
   },
   [181468] = {
     name = "Veiled Augment Rune",
+    expansionId = 11,
     buffID = { 347901 },
     topLbl = "",
     btmLbl = "",
