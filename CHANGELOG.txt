@@ -49,6 +49,12 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
+**v7.1.15**
+
+- Hardened aura handling against secret values to prevent repeated `table index is secret` errors
+- Applied secret-safe guards across Food Status, Raid Buff scanning, Trinkets, Fixed Target, and core buff expiry lookups
+- Added explicit `expansionId` metadata to all consumable entries so expansion filters apply consistently
+
 **v7.1.14**
 
 - Added additional consumable tracking entries for food, flask, weapon buffs, and legacy augment rune support

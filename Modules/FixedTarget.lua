@@ -3,6 +3,15 @@
 -- ====================================
 
 local addonName, ns = ...
+local IsSecret = ns.Compat and ns.Compat.IsSecret
+
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
+
+local function IsNonSecretString(v)
+  return type(v) == "string" and not (IsSecret and IsSecret(v))
+end
 
 local function DB()
   local d = (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB
@@ -92,13 +101,15 @@ local function UnitHasMyAuraForRow(unit, row)
     if not aura then
       break
     end
-    if aura.sourceUnit and UnitIsUnit(aura.sourceUnit, "player") then
+    local sourceUnit = aura.sourceUnit
+    if sourceUnit and not (IsSecret and IsSecret(sourceUnit)) and UnitIsUnit(sourceUnit, "player") then
       if wantByName then
-        if aura.name == wantByName then
+        if IsNonSecretString(aura.name) and aura.name == wantByName then
           return true
         end
       else
-        if aura.spellId and idLookup[aura.spellId] then
+        local sid = aura.spellId
+        if IsNonSecretNumber(sid) and idLookup[sid] then
           return true
         end
       end

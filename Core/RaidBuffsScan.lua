@@ -3,10 +3,19 @@
 -- ====================================
 
 local addonName, ns = ...
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 clickableRaidBuffCache = clickableRaidBuffCache or {}
 clickableRaidBuffCache.playerInfo = clickableRaidBuffCache.playerInfo or {}
 clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
+
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
+
+local function IsNonSecretString(v)
+  return type(v) == "string" and not (IsSecret and IsSecret(v))
+end
 
 local function getPlayerClass()
   local _, _, classID = UnitClass("player")
@@ -273,10 +282,12 @@ function ns.HandleRaidBuff_UNIT_AURA(unit, updateInfo)
     if not aura then
       return false
     end
-    if aura.spellId and watchSpell[aura.spellId] then
+    local sid = aura.spellId
+    if IsNonSecretNumber(sid) and watchSpell[sid] then
       return true
     end
-    if aura.name and watchName[aura.name] then
+    local name = aura.name
+    if IsNonSecretString(name) and watchName[name] then
       return true
     end
     return false
@@ -295,10 +306,12 @@ function ns.HandleRaidBuff_UNIT_AURA(unit, updateInfo)
     if updateInfo.updatedAuraInstanceIDs and not shouldPoke then
       for k, v in pairs(updateInfo.updatedAuraInstanceIDs) do
         local id = (type(v) == "number") and v or k
-        local a = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, id)
-        if auraMatches(a) then
-          shouldPoke = true
-          break
+        if IsNonSecretNumber(id) then
+          local a = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, id)
+          if auraMatches(a) then
+            shouldPoke = true
+            break
+          end
         end
       end
     end
@@ -644,7 +657,7 @@ function scanRaidBuffs()
               if id then
                 local n = (ns.GetLocalizedBuffName and ns.GetLocalizedBuffName(id))
                   or (C_Spell.GetSpellInfo(id) or {}).name
-                if n then
+                if IsNonSecretString(n) then
                   nameSet[n] = true
                 end
               end
@@ -652,7 +665,7 @@ function scanRaidBuffs()
           elseif type(ids) == "number" then
             local n = (ns.GetLocalizedBuffName and ns.GetLocalizedBuffName(ids))
               or (C_Spell.GetSpellInfo(ids) or {}).name
-            if n then
+            if IsNonSecretString(n) then
               nameSet[n] = true
             end
           end
@@ -664,7 +677,8 @@ function scanRaidBuffs()
               if not a then
                 break
               end
-              if a.name and nameSet[a.name] then
+              local name = a.name
+              if IsNonSecretString(name) and nameSet[name] then
                 matched = true
                 break
               end
@@ -695,7 +709,8 @@ function scanRaidBuffs()
               if not a then
                 break
               end
-              if a.spellId and idSet[a.spellId] then
+              local sid = a.spellId
+              if IsNonSecretNumber(sid) and idSet[sid] then
                 matched = true
                 break
               end

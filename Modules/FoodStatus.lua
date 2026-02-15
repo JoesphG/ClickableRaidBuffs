@@ -3,6 +3,7 @@
 -- ====================================
 
 local addonName, ns = ...
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 local EATING_ICON = 132805
 local AuraByIndex = C_UnitAuras and C_UnitAuras.GetAuraDataByIndex
@@ -15,6 +16,24 @@ local _suppressActive = false
 
 local EATING_NAMES = {}
 local WELLFED_NAMES = {}
+
+local function IsNonSecretString(v)
+  return type(v) == "string" and not (IsSecret and IsSecret(v))
+end
+
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
+
+local function HasName(tbl, name)
+  if type(tbl) ~= "table" then
+    return false
+  end
+  if not IsNonSecretString(name) then
+    return false
+  end
+  return tbl[name] == true
+end
 
 local function DB()
   return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
@@ -37,7 +56,7 @@ function BuildNameSets()
     for _, id in pairs(srcE) do
       local info = C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(id)
       local name = info and info.name
-      if name then
+      if IsNonSecretString(name) then
         EATING_NAMES[name] = true
       end
     end
@@ -48,7 +67,7 @@ function BuildNameSets()
     for _, id in pairs(srcW) do
       local info = C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(id)
       local name = info and info.name
-      if name then
+      if IsNonSecretString(name) then
         WELLFED_NAMES[name] = true
       end
     end
@@ -97,14 +116,15 @@ local function ScanPlayerEatingAura()
     if not aura then
       break
     end
-    if aura.name and EATING_NAMES[aura.name] then
-      local exp = aura.expirationTime or 0
-      local dur = aura.duration or 0
+    if HasName(EATING_NAMES, aura and aura.name) then
+      local exp = IsNonSecretNumber(aura.expirationTime) and aura.expirationTime or 0
+      local dur = IsNonSecretNumber(aura.duration) and aura.duration or 0
       if (not dur or dur <= 0) and exp and exp > 0 then
         dur = math.max(0, exp - now)
       end
       local start = (exp and dur and exp > 0 and dur > 0) and (exp - dur) or now
-      return true, aura, exp or 0, dur or 0, start, aura.auraInstanceID
+      local inst = IsNonSecretNumber(aura.auraInstanceID) and aura.auraInstanceID or nil
+      return true, aura, exp or 0, dur or 0, start, inst
     end
   end
   return false
@@ -117,8 +137,8 @@ local function HasWellFedOverThreshold(thresh)
     if not aura then
       break
     end
-    if aura.name and WELLFED_NAMES[aura.name] then
-      local exp = aura.expirationTime
+    if HasName(WELLFED_NAMES, aura and aura.name) then
+      local exp = IsNonSecretNumber(aura.expirationTime) and aura.expirationTime or nil
       if exp and exp > now and (exp - now) > thresh then
         return true
       end
@@ -190,7 +210,7 @@ local function OnUnitAura(unit, updateInfo)
     for i = 1, #updateInfo.addedAuras do
       local a = updateInfo.addedAuras[i]
       local n = a and a.name
-      if n and (EATING_NAMES[n] or WELLFED_NAMES[n]) then
+      if HasName(EATING_NAMES, n) or HasName(WELLFED_NAMES, n) then
         changed = true
         break
       end
@@ -200,11 +220,13 @@ local function OnUnitAura(unit, updateInfo)
   if not changed and updateInfo.updatedAuraInstanceIDs and AuraByInstance then
     for i = 1, #updateInfo.updatedAuraInstanceIDs do
       local id = updateInfo.updatedAuraInstanceIDs[i]
-      local a = AuraByInstance("player", id)
-      local n = a and a.name
-      if id == lastInstanceID or (n and (EATING_NAMES[n] or WELLFED_NAMES[n])) then
-        changed = true
-        break
+      if IsNonSecretNumber(id) then
+        local a = AuraByInstance("player", id)
+        local n = a and a.name
+        if id == lastInstanceID or HasName(EATING_NAMES, n) or HasName(WELLFED_NAMES, n) then
+          changed = true
+          break
+        end
       end
     end
   end
@@ -212,7 +234,7 @@ local function OnUnitAura(unit, updateInfo)
   if not changed and updateInfo.removedAuraInstanceIDs then
     for i = 1, #updateInfo.removedAuraInstanceIDs do
       local id = updateInfo.removedAuraInstanceIDs[i]
-      if id == lastInstanceID or _suppressActive then
+      if (IsNonSecretNumber(id) and id == lastInstanceID) or _suppressActive then
         changed = true
         break
       end

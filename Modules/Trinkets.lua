@@ -3,10 +3,19 @@
 -- ====================================
 
 local addonName, ns = ...
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 clickableRaidBuffCache = clickableRaidBuffCache or {}
 clickableRaidBuffCache.playerInfo = clickableRaidBuffCache.playerInfo or {}
 clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
+
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
+
+local function IsNonSecretString(v)
+  return type(v) == "string" and not (IsSecret and IsSecret(v))
+end
 
 local function getPlayerClass()
   local _, _, classID = UnitClass("player")
@@ -65,12 +74,14 @@ function ns.Trinkets_RebuildWatch()
         if data.nameMode then
           local n = ns.GetLocalizedBuffName and ns.GetLocalizedBuffName(ids[1])
             or (C_Spell.GetSpellInfo(ids[1]) or {}).name
-          if n then
+          if IsNonSecretString(n) then
             ns._trinketWatch.name[n] = true
           end
         else
           for _, id in ipairs(ids) do
-            ns._trinketWatch.spellId[id] = true
+            if IsNonSecretNumber(id) then
+              ns._trinketWatch.spellId[id] = true
+            end
           end
         end
       end
@@ -100,10 +111,12 @@ function ns.Trinkets_OnUnitAura(unit, updateInfo)
     if not aura then
       return false
     end
-    if aura.spellId and watchSpell[aura.spellId] then
+    local sid = aura.spellId
+    if IsNonSecretNumber(sid) and watchSpell[sid] then
       return true
     end
-    if aura.name and watchName[aura.name] then
+    local name = aura.name
+    if IsNonSecretString(name) and watchName[name] then
       return true
     end
     return false
@@ -122,10 +135,12 @@ function ns.Trinkets_OnUnitAura(unit, updateInfo)
     if updateInfo.updatedAuraInstanceIDs and not shouldPoke then
       for k, v in pairs(updateInfo.updatedAuraInstanceIDs) do
         local id = (type(v) == "number") and v or k
-        local a = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, id)
-        if auraMatches(a) then
-          shouldPoke = true
-          break
+        if IsNonSecretNumber(id) then
+          local a = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, id)
+          if auraMatches(a) then
+            shouldPoke = true
+            break
+          end
         end
       end
     end
@@ -495,7 +510,7 @@ function ns.Trinkets_Scan()
               if id then
                 local n = (ns.GetLocalizedBuffName and ns.GetLocalizedBuffName(id))
                   or (C_Spell.GetSpellInfo(id) or {}).name
-                if n then
+                if IsNonSecretString(n) then
                   nameSet[n] = true
                 end
               end
@@ -503,7 +518,7 @@ function ns.Trinkets_Scan()
           elseif type(ids) == "number" then
             local n = (ns.GetLocalizedBuffName and ns.GetLocalizedBuffName(ids))
               or (C_Spell.GetSpellInfo(ids) or {}).name
-            if n then
+            if IsNonSecretString(n) then
               nameSet[n] = true
             end
           end
@@ -515,7 +530,8 @@ function ns.Trinkets_Scan()
               if not a then
                 break
               end
-              if a.name and nameSet[a.name] then
+              local name = a.name
+              if IsNonSecretString(name) and nameSet[name] then
                 matched = true
                 break
               end
@@ -546,7 +562,8 @@ function ns.Trinkets_Scan()
               if not a then
                 break
               end
-              if a.spellId and idSet[a.spellId] then
+              local sid = a.spellId
+              if IsNonSecretNumber(sid) and idSet[sid] then
                 matched = true
                 break
               end
