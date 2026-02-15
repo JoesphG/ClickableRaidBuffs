@@ -64,4 +64,12 @@ ClickableRaidData["AUGMENT_RUNE"] = {
     exclude = { 243191, 246492 },
     consumable = true,
   },
+  [181468] = {
+    name = "Veiled Augment Rune",
+    buffID = { 347901 },
+    topLbl = "",
+    btmLbl = "",
+    gates = { "rested" },
+    consumable = true,
+  },
 }

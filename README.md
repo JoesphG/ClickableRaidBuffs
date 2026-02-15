@@ -18,6 +18,11 @@ ClickableRaidBuffs is a World of Warcraft addon that scans player and raid state
 - Core logic is under `Core/`, data tables in `Data/`, and UI in `UI/`.
 - Options UI lives under `Options/`.
 
+### Quick Start
+1. Run `make init` to verify tooling and prepare local check directories.
+2. Run `make check` to validate format and Lua diagnostics.
+3. Run `make fmt` to apply formatting.
+
 ## Support
 For support and downloads, see the links in `CHANGELOG.txt`.
 

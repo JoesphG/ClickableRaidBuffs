@@ -692,4 +692,66 @@ ClickableRaidData["FLASK"] = {
     buffID = { 431971 },
     gates = { "instance", "rested" },
   },
+
+  -- Additional Midnight consumables imported from BuffReminders.
+  [236774] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [236776] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [236780] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [236950] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [240991] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [241310] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [241311] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [241312] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [241313] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [241314] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [241315] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [241316] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [241317] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [241334] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
+  [241335] = {
+    name = "[Midnight] Additional Flask",
+    gates = { "instance", "rested" },
+  },
 }

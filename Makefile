@@ -3,7 +3,10 @@ LUALS ?= lua-language-server
 
 CHECK_GLOB = --glob '**/*.lua' --glob '!Libs/**'
 
-.PHONY: check check-format check-luals fmt release-check
+.PHONY: init check check-format check-luals fmt release-check
+
+init:
+	./Tools/dev_setup.sh
 
 check: check-format check-luals
 
