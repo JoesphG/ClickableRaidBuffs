@@ -1,5 +1,3 @@
-# ClickableRaidBuffs v7.1.16 Release Notes
+# ClickableRaidBuffs v7.1.17 Release Notes
 
-- Reverted change to name of Ignore tab in menu
-- Removed extraneous items from consumables lists
-- Fixed an issue with spacing on the Info tab to avoid text clipping
+- Fixed an error in Augment Rune aura updates that could trigger `table index is secret`.

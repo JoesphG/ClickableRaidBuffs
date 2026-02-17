@@ -4,6 +4,7 @@
 
 local addonName, ns = ...
 ns = ns or {}
+local IsSecret = ns.Compat and ns.Compat.IsSecret
 
 clickableRaidBuffCache = clickableRaidBuffCache or {}
 clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
@@ -12,6 +13,10 @@ local GetItemCount = GetItemCount
 local GetTime = GetTime
 local AuraByIndex = C_UnitAuras and C_UnitAuras.GetAuraDataByIndex
 local AuraByInstance = C_UnitAuras and C_UnitAuras.GetAuraDataByAuraInstanceID
+
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
 
 local function DB()
   return (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB or {}
@@ -211,7 +216,7 @@ local function AugmentRune_OnPlayerAura(unit, updateInfo)
     for i = 1, #added do
       local a = added[i]
       local id = a and a.spellId
-      if id and set[id] then
+      if IsNonSecretNumber(id) and set[id] then
         if ns.UpdateAugmentRunes then
           ns.UpdateAugmentRunes()
         end
@@ -223,9 +228,10 @@ local function AugmentRune_OnPlayerAura(unit, updateInfo)
   local updated = updateInfo.updatedAuraInstanceIDs
   if updated and AuraByInstance then
     for i = 1, #updated do
-      local info = AuraByInstance("player", updated[i])
+      local instanceID = updated[i]
+      local info = IsNonSecretNumber(instanceID) and AuraByInstance("player", instanceID) or nil
       local id = info and info.spellId
-      if id and set[id] then
+      if IsNonSecretNumber(id) and set[id] then
         if ns.UpdateAugmentRunes then
           ns.UpdateAugmentRunes()
         end
