@@ -1,3 +1,3 @@
-# ClickableRaidBuffs v7.1.17 Release Notes
+# ClickableRaidBuffs v7.1.18 Release Notes
 
-- Fixed an error in Augment Rune aura updates that could trigger `table index is secret`.
+- Added Darkmoon Top Hat (item 171364) to Cosmetics support with buff detection for spell IDs 136583, 46668, and 423942.

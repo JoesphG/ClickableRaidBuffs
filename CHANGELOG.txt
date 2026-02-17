@@ -49,14 +49,19 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
-**v7.1.17**
+**v7.1.18**
 
-- Fixed an error in Augment Rune aura updates that could trigger `table index is secret`.
+- Added Darkmoon Top Hat (item 171364) to Cosmetics support with buff detection for spell IDs 136583, 46668, and 423942.
 
 
 =======================================================================================================================
                                                 HISTORICAL PATCH NOTES
 =======================================================================================================================
+
+
+**v7.1.17**
+
+- Fixed an error in Augment Rune aura updates that could trigger `table index is secret`.
 
 
 **v7.1.16**

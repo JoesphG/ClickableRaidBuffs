@@ -20,6 +20,11 @@ ClickableRaidData["COSMETIC"] = {
     gates = { "notMap", { notMap = 2215 } },
   },
   [197767] = { name = "Blubbery Muffin", itemID = 197767, buffID = { 382761 } },
+  [171364] = {
+    name = "Darkmoon Top Hat",
+    itemID = 171364,
+    buffID = { 136583, 46668, 423942 },
+  },
   [2460] = { name = "Elixer of Tongues", itemID = 2460, buffID = { 382761 } },
   [6657] = {
     name = "Savory Deviate Delight",
