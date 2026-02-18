@@ -49,14 +49,19 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
-**v7.1.18**
+**v7.1.19**
 
-- Added Darkmoon Top Hat (item 171364) to Cosmetics support with buff detection for spell IDs 136583, 46668, and 423942.
+- Added range-aware visibility for cast-on-others raid buffs so icons only show when at least one missing recipient is in range.
 
 
 =======================================================================================================================
                                                 HISTORICAL PATCH NOTES
 =======================================================================================================================
+
+
+**v7.1.18**
+
+- Added Darkmoon Top Hat (item 171364) to Cosmetics support with buff detection for spell IDs 136583, 46668, and 423942.
 
 
 **v7.1.17**

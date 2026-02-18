@@ -76,7 +76,7 @@ local RAID_PALADIN = {
     btmLbl = STATUS_TEXT_TARGET,
     count = 1,
     nameMode = true,
-    gates = { "instance", "rested", "group", "mineOnly" },
+    gates = { "instance", "rested", "group", "range", "mineOnly" },
   },
   [156910] = {
     name = "Beacon of Faith",
@@ -88,7 +88,7 @@ local RAID_PALADIN = {
     btmLbl = STATUS_TEXT_TARGET,
     count = 1,
     nameMode = true,
-    gates = { "instance", "rested", "group", "mineOnly" },
+    gates = { "instance", "rested", "group", "range", "mineOnly" },
   },
   [32223] = {
     name = "Crusader Aura",
@@ -235,7 +235,7 @@ local RAID_WARLOCK = {
     topLbl = "",
     btmLbl = STATUS_TEXT_TARGET,
     count = 1,
-    gates = { "instance", "rested", "group", "mineOnly" },
+    gates = { "instance", "rested", "group", "range", "mineOnly" },
   },
   [108503] = {
     name = "Grimoire of Sacrifice",
@@ -278,7 +278,7 @@ local RAID_DRUID = {
     btmLbl = STATUS_TEXT_TARGET,
     count = 1,
     nameMode = true,
-    gates = { "rested", "group", "mineOnly" },
+    gates = { "rested", "group", "range", "mineOnly" },
   },
 }
 
@@ -333,7 +333,7 @@ local RAID_EVOKER = {
     topLbl = "",
     btmLbl = STATUS_TEXT_TARGET,
     count = 1,
-    gates = { "instance", "rested", "group", "mineOnly" },
+    gates = { "instance", "rested", "group", "range", "mineOnly" },
     role = "healer",
   },
   [412710] = {
@@ -345,7 +345,7 @@ local RAID_EVOKER = {
     topLbl = "",
     btmLbl = STATUS_TEXT_TARGET,
     count = 1,
-    gates = { "instance", "rested", "group", "mineOnly" },
+    gates = { "instance", "rested", "group", "range", "mineOnly" },
   },
 }
 

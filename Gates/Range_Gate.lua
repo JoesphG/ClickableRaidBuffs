@@ -64,6 +64,22 @@ local function UnitHasAnyBuffFromIDs(unit, ids)
   return false
 end
 
+local function UnitHasBuffForEntry(unit, ids, mineOnly)
+  if mineOnly and ns.MineOnly_UnitHasBuff then
+    local ok = ns.MineOnly_UnitHasBuff(unit, ids, nil, false)
+    return ok and true or false
+  end
+  return UnitHasAnyBuffFromIDs(unit, ids)
+end
+
+local function UnitMatchesRole(unit, role)
+  if not role then
+    return true
+  end
+  local assigned = UnitGroupRolesAssigned and UnitGroupRolesAssigned(unit)
+  return assigned == string.upper(tostring(role))
+end
+
 local function ResolveBuffIDsForData(data)
   if not data then
     return {}
@@ -144,21 +160,19 @@ local function TickRangeGate()
     for spellID, entry in pairs(ns._rangeTracked) do
       local maxRange, spellName = GetSpellRange(spellID)
       local ids = entry.ids or {}
+      local castOnOthers = entry.castOnOthers and true or false
+      local role = entry.role
+      local mineOnly = entry.mineOnly and true or false
       local miss = {}
       local anyMissingOutOfRange = false
       local foundInRange = false
-      local playerHas = UnitHasAnyBuffFromIDs("player", ids)
+      local playerHas = UnitHasBuffForEntry("player", ids, mineOnly)
+      local canCheckOthers = castOnOthers or playerHas
 
-      if not playerHas then
-        if entry.lastSuppressed ~= false then
-          entry.lastSuppressed = false
-          anySuppressionChanged = true
-        end
-        spells[#spells + 1] = { spellID = spellID, name = spellName, maxRange = maxRange, missing = miss }
-      else
+      if canCheckOthers then
         for i = 1, #units do
           local u = units[i]
-          if u ~= "player" and not UnitHasAnyBuffFromIDs(u, ids) then
+          if u ~= "player" and UnitMatchesRole(u, role) and not UnitHasBuffForEntry(u, ids, mineOnly) then
             local inRange = IsUnitInSpellRange(spellID, u)
             miss[#miss + 1] = { unit = u, name = UnitName(u), inRange = inRange }
             if inRange then
@@ -169,27 +183,27 @@ local function TickRangeGate()
             end
           end
         end
-
-        if #miss > 0 then
-          anyMissing = true
-        end
-
-        local nowSuppressed = (#miss > 0) and not foundInRange
-        if entry.lastSuppressed ~= nowSuppressed then
-          entry.lastSuppressed = nowSuppressed
-          anySuppressionChanged = true
-        end
-
-        local nowAllIn = (#miss > 0) and (foundInRange and not anyMissingOutOfRange) or false
-        local desiredGlow = nowAllIn and "special" or nil
-
-        if entry.desiredGlow ~= desiredGlow then
-          entry.desiredGlow = desiredGlow
-          anyGlowChanged = true
-        end
-
-        spells[#spells + 1] = { spellID = spellID, name = spellName, maxRange = maxRange, missing = miss }
       end
+
+      if #miss > 0 then
+        anyMissing = true
+      end
+
+      local nowSuppressed = (#miss > 0) and not foundInRange
+      if entry.lastSuppressed ~= nowSuppressed then
+        entry.lastSuppressed = nowSuppressed
+        anySuppressionChanged = true
+      end
+
+      local nowAllIn = (#miss > 0) and (foundInRange and not anyMissingOutOfRange) or false
+      local desiredGlow = nowAllIn and "special" or nil
+
+      if entry.desiredGlow ~= desiredGlow then
+        entry.desiredGlow = desiredGlow
+        anyGlowChanged = true
+      end
+
+      spells[#spells + 1] = { spellID = spellID, name = spellName, maxRange = maxRange, missing = miss }
     end
   end
 
@@ -241,10 +255,14 @@ function ns.RangeGate_OnRosterOrSpellsChanged()
     local units = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or {}
     for spellID, entry in pairs(ns._rangeTracked) do
       local ids = entry.ids or {}
-      if UnitHasAnyBuffFromIDs("player", ids) then
+      local castOnOthers = entry.castOnOthers and true or false
+      local role = entry.role
+      local mineOnly = entry.mineOnly and true or false
+      local playerHas = UnitHasBuffForEntry("player", ids, mineOnly)
+      if castOnOthers or playerHas then
         for i = 1, #units do
           local u = units[i]
-          if u ~= "player" and not UnitHasAnyBuffFromIDs(u, ids) then
+          if u ~= "player" and UnitMatchesRole(u, role) and not UnitHasBuffForEntry(u, ids, mineOnly) then
             shouldRun = true
             break
           end
@@ -263,15 +281,20 @@ function ns.RangeGate_OnRosterOrSpellsChanged()
   end
 end
 
-local function EnsureTracked(spellID, ids)
+local function EnsureTracked(spellID, ids, data)
   if not ns._rangeTracked then
     ns._rangeTracked = {}
   end
   local t = ns._rangeTracked[spellID]
+  local castOnOthers = ((data and data.target) and data.target ~= "player") or ((data and data.count) ~= nil)
+  local mineOnly = (ns.MineOnly_IsActive and ns.MineOnly_IsActive(data)) or false
   if not t then
-    ns._rangeTracked[spellID] = { ids = ids }
+    ns._rangeTracked[spellID] = { ids = ids, castOnOthers = castOnOthers, role = data and data.role, mineOnly = mineOnly }
   else
     t.ids = ids
+    t.castOnOthers = castOnOthers
+    t.role = data and data.role
+    t.mineOnly = mineOnly
   end
 end
 
@@ -282,26 +305,27 @@ function ns.Gate_Range(ctx, data)
 
   local ids = ResolveBuffIDsForData(data)
   local spellID = data.spellID
-  EnsureTracked(spellID, ids)
+  EnsureTracked(spellID, ids, data)
 
-  local playerHas = UnitHasAnyBuffFromIDs("player", ids)
-  if not playerHas then
-    StopTicker()
-    return true
-  end
+  local castOnOthers = ((data.target and data.target ~= "player") or (data.count ~= nil)) and true or false
+  local mineOnly = (ns.MineOnly_IsActive and ns.MineOnly_IsActive(data)) or false
+  local role = data.role
+  local playerHas = UnitHasBuffForEntry("player", ids, mineOnly)
 
   local units = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or {}
   local anyMissing = false
   local anyMissingInRange = false
 
-  for i = 1, #units do
-    local u = units[i]
-    if u ~= "player" and not UnitHasAnyBuffFromIDs(u, ids) then
-      anyMissing = true
-      local inRange = IsUnitInSpellRange(spellID, u)
-      if inRange then
-        anyMissingInRange = true
-        break
+  if castOnOthers or playerHas then
+    for i = 1, #units do
+      local u = units[i]
+      if u ~= "player" and UnitMatchesRole(u, role) and not UnitHasBuffForEntry(u, ids, mineOnly) then
+        anyMissing = true
+        local inRange = IsUnitInSpellRange(spellID, u)
+        if inRange then
+          anyMissingInRange = true
+          break
+        end
       end
     end
   end
