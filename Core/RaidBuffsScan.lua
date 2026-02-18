@@ -351,12 +351,20 @@ end
 function scanRaidBuffs()
   clickableRaidBuffCache.displayable.RAID_BUFFS = {}
 
+  local db = ns.GetDB and ns.GetDB() or {}
+  local ownershipMode = db.raidBuffOwnershipMode
+
   local classID = clickableRaidBuffCache.playerInfo.playerClassId or getPlayerClass()
-  if not classID then
+  if not classID and ownershipMode ~= "all" then
     return
   end
 
-  local classBuffs = ClickableRaidData and ClickableRaidData[classID]
+  local classBuffs
+  if ownershipMode == "all" then
+    classBuffs = ClickableRaidData and ClickableRaidData.ALL_RAID_BUFFS
+  else
+    classBuffs = ClickableRaidData and ClickableRaidData[classID]
+  end
   if not classBuffs then
     return
   end
@@ -364,11 +372,85 @@ function scanRaidBuffs()
   local playerLevel = clickableRaidBuffCache.playerInfo.playerLevel or UnitLevel("player") or 0
   local inInstance = clickableRaidBuffCache.playerInfo.inInstance
   local rested = clickableRaidBuffCache.playerInfo.restedXPArea
-  local db = ns.GetDB and ns.GetDB() or {}
-
   local threshold = (
     ns.MPlus_GetEffectiveThresholdSecs and ns.MPlus_GetEffectiveThresholdSecs("spell", db.spellThreshold or 15)
   ) or ((db.spellThreshold or 15) * 60)
+
+  local presentClassIDs, casterClassesByEntry
+  if ownershipMode == "all" then
+    presentClassIDs = {}
+    do
+      local units = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or { "player" }
+      for i = 1, #units do
+        local _, _, cid = UnitClass(units[i])
+        if type(cid) == "number" then
+          presentClassIDs[cid] = true
+        end
+      end
+    end
+
+    casterClassesByEntry = {}
+    local CLASS_ID_BY_TOKEN = {
+      WARRIOR = 1,
+      PALADIN = 2,
+      HUNTER = 3,
+      ROGUE = 4,
+      PRIEST = 5,
+      DEATHKNIGHT = 6,
+      SHAMAN = 7,
+      MAGE = 8,
+      WARLOCK = 9,
+      MONK = 10,
+      DRUID = 11,
+      DEMONHUNTER = 12,
+      EVOKER = 13,
+    }
+    local byClass = ClickableRaidData and ClickableRaidData.ALL_RAID_BUFFS_BY_CLASS
+    if type(byClass) == "table" then
+      for token, rows in pairs(byClass) do
+        local classID = CLASS_ID_BY_TOKEN[token]
+        if classID and type(rows) == "table" then
+          for _, row in pairs(rows) do
+            if type(row) == "table" then
+              local set = casterClassesByEntry[row]
+              if not set then
+                set = {}
+                casterClassesByEntry[row] = set
+              end
+              set[classID] = true
+            end
+          end
+        end
+      end
+    end
+  end
+
+  local function hasCasterPresent(data)
+    if ownershipMode ~= "all" then
+      return true
+    end
+    local set = casterClassesByEntry and casterClassesByEntry[data]
+    if type(set) ~= "table" then
+      return true
+    end
+    for classID in pairs(set) do
+      if presentClassIDs and presentClassIDs[classID] then
+        return true
+      end
+    end
+    return false
+  end
+
+  local function RaidBuffMineOnlyActive(data)
+    local mode = db.raidBuffOwnershipMode
+    if mode == "mine" then
+      return true
+    end
+    if mode == "all" then
+      return false
+    end
+    return (ns.MineOnly_IsActive and ns.MineOnly_IsActive(data)) or false
+  end
 
   local function passesGates(data, playerLevelX, inInstanceX, restedX)
     return ns.PassesGates(data, playerLevelX, inInstanceX, restedX)
@@ -548,7 +630,7 @@ function scanRaidBuffs()
       ns.MPlus_GetEffectiveThresholdSecs and ns.MPlus_GetEffectiveThresholdSecs("spell", db.spellThreshold or 15)
     ) or ((db.spellThreshold or 15) * 60)
 
-    local mineOnlyActive = (ns.MineOnly_IsActive and ns.MineOnly_IsActive(data)) or false
+    local mineOnlyActive = RaidBuffMineOnlyActive(data)
 
     local ex
     if mineOnlyActive then
@@ -726,6 +808,9 @@ function scanRaidBuffs()
       if numPlayers and numPlayers > 0 then
         total = math.min(total, numPlayers)
       end
+      if have > total then
+        have = total
+      end
 
       entry.centerText = tostring(have) .. " / " .. tostring(total)
     elseif catName == "RAID_BUFFS" and (data.count ~= nil) then
@@ -749,20 +834,24 @@ function scanRaidBuffs()
     if data then
       local include
       local checkID
-      if data.isKnown ~= nil then
-        checkID = data.isKnown
+      if ownershipMode == "all" then
+        include = data.check == "raid" and data.count == nil and data.target == "player" and hasCasterPresent(data)
       else
-        if type(rowKey) == "number" and C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(rowKey) then
-          checkID = rowKey
+        if data.isKnown ~= nil then
+          checkID = data.isKnown
         else
-          checkID = data.spellID or rowKey
+          if type(rowKey) == "number" and C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(rowKey) then
+            checkID = rowKey
+          else
+            checkID = data.spellID or rowKey
+          end
         end
-      end
-      if data.type == "trinket" then
-        local itemID = data.itemID or rowKey
-        include = IsItemEquipped(itemID)
-      else
-        include = PlayerKnowsSpell(checkID)
+        if data.type == "trinket" then
+          local itemID = data.itemID or rowKey
+          include = IsItemEquipped(itemID)
+        else
+          include = PlayerKnowsSpell(checkID)
+        end
       end
       if include and passesGates(data, playerLevel, inInstance, rested) then
         addEntry(rowKey, data, "RAID_BUFFS")

@@ -71,25 +71,38 @@ function ns.GetGroupUnits(opts)
   local includePlayer = (opts.includePlayer ~= false)
   local onlyExisting = (opts.onlyExisting == true)
   local units = {}
+  local seen = {}
+  local hasPlayer = false
+
+  local function addUnit(u)
+    local key = (UnitGUID and UnitGUID(u)) or u
+    if key and not seen[key] then
+      seen[key] = true
+      units[#units + 1] = u
+    end
+    if UnitIsUnit and UnitIsUnit(u, "player") then
+      hasPlayer = true
+    end
+  end
 
   if IsInRaid() then
     for i = 1, GetNumGroupMembers() do
       local u = "raid" .. i
       if (not onlyExisting) or UnitExists(u) then
-        units[#units + 1] = u
+        addUnit(u)
       end
     end
   elseif IsInGroup() then
     for i = 1, GetNumSubgroupMembers() do
       local u = "party" .. i
       if (not onlyExisting) or UnitExists(u) then
-        units[#units + 1] = u
+        addUnit(u)
       end
     end
   end
 
-  if includePlayer then
-    units[#units + 1] = "player"
+  if includePlayer and not hasPlayer then
+    addUnit("player")
   end
   return units
 end

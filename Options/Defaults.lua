@@ -37,6 +37,7 @@ local D = {
     [10] = true, -- TWW
     [11] = true, -- Midnight
   },
+  raidBuffOwnershipMode = "all", -- "all" or "mine"
 }
 
 O.DEFAULTS = D

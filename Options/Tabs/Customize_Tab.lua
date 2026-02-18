@@ -347,6 +347,72 @@ local function BuildExpansionsPanel(parent)
   return holder
 end
 
+local function RefreshRaidBuffOwnership()
+  if ns and ns.RequestRebuild then
+    ns.RequestRebuild()
+  end
+  if ns and ns.PokeUpdateBus then
+    ns.PokeUpdateBus()
+  end
+  if ns and ns.RenderAll then
+    ns.RenderAll()
+  end
+end
+
+local function BuildRaidBuffsPanel(parent)
+  local holder = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+  holder:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10)
+  holder:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", -10, 10)
+
+  local desc = holder:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+  desc:SetFont(THEME.fontPath(), THEME.sizeLabel(), "")
+  desc:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, -4)
+  desc:SetPoint("TOPRIGHT", holder, "TOPRIGHT", -8, -4)
+  desc:SetJustifyH("LEFT")
+  desc:SetJustifyV("TOP")
+  desc:SetText(
+    "Choose raid buff ownership mode: "
+      .. "\"All\" counts buffs from anyone, while \"Mine Only\" only counts buffs you applied."
+  )
+
+  local d = DB()
+  d.raidBuffOwnershipMode = d.raidBuffOwnershipMode or "all"
+
+  local cbAll, labAll
+  local cbMine, labMine
+
+  local function setMode(mode)
+    d.raidBuffOwnershipMode = mode
+    if cbAll and cbMine then
+      cbAll:SetChecked(mode == "all")
+      cbMine:SetChecked(mode == "mine")
+    end
+    RefreshRaidBuffOwnership()
+  end
+
+  cbAll, labAll = NewCheckbox(holder, "All Raid Buffs", d.raidBuffOwnershipMode ~= "mine", function(_, v)
+    if v then
+      setMode("all")
+    else
+      cbAll:SetChecked(true)
+    end
+  end)
+  cbAll:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -12)
+  labAll:SetPoint("LEFT", cbAll, "RIGHT", 8, 0)
+
+  cbMine, labMine = NewCheckbox(holder, "Mine Only", d.raidBuffOwnershipMode == "mine", function(_, v)
+    if v then
+      setMode("mine")
+    else
+      cbMine:SetChecked(true)
+    end
+  end)
+  cbMine:SetPoint("TOPLEFT", cbAll, "BOTTOMLEFT", 0, -12)
+  labMine:SetPoint("LEFT", cbMine, "RIGHT", 8, 0)
+
+  return holder
+end
+
 local function BuildDelvesPanel(parent)
   local holder = CreateFrame("Frame", nil, parent, "BackdropTemplate")
   holder:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10)
@@ -476,6 +542,10 @@ O.RegisterSection(function(AddSection)
     expansionsBtn:SetPoint("LEFT", mountsBtn, "RIGHT", THEME.tabGap, 0)
     expansionsBtn:SetWidth(100)
 
+    local raidBuffsBtn = MakeMiniTab(tabRow, "Raid Buffs")
+    raidBuffsBtn:SetPoint("LEFT", expansionsBtn, "RIGHT", THEME.tabGap, 0)
+    raidBuffsBtn:SetWidth(100)
+
     local panels = {}
 
     local function showPanel(key)
@@ -508,6 +578,10 @@ O.RegisterSection(function(AddSection)
         panels.EXPANSIONS = panels.EXPANSIONS or BuildExpansionsPanel(inner)
         panels.EXPANSIONS:Show()
       end
+      if key == "RAIDBUFFS" then
+        panels.RAIDBUFFS = panels.RAIDBUFFS or BuildRaidBuffsPanel(inner)
+        panels.RAIDBUFFS:Show()
+      end
     end
 
     local function selectTab(which)
@@ -517,6 +591,7 @@ O.RegisterSection(function(AddSection)
       StyleTabNormal(delvesBtn)
       StyleTabNormal(mountsBtn)
       StyleTabNormal(expansionsBtn)
+      StyleTabNormal(raidBuffsBtn)
       if which == "MYTHIC" then
         StyleTabSelected(mythicBtn)
       end
@@ -534,6 +609,9 @@ O.RegisterSection(function(AddSection)
       end
       if which == "EXPANSIONS" then
         StyleTabSelected(expansionsBtn)
+      end
+      if which == "RAIDBUFFS" then
+        StyleTabSelected(raidBuffsBtn)
       end
       showPanel(which)
     end
@@ -555,6 +633,9 @@ O.RegisterSection(function(AddSection)
     end)
     expansionsBtn:SetScript("OnClick", function()
       selectTab("EXPANSIONS")
+    end)
+    raidBuffsBtn:SetScript("OnClick", function()
+      selectTab("RAIDBUFFS")
     end)
 
     card:SetScript("OnShow", function()
